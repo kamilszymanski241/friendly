@@ -1,3 +1,5 @@
+# friendly
+Engineering project developed to help people find interesting events and activities nearby.
 This is a Kotlin Multiplatform project targeting Android, iOS.
 
 * `/composeApp` is for code that will be shared across your Compose Multiplatform applications.
