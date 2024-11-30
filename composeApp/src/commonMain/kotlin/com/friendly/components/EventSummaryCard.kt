@@ -32,7 +32,7 @@ fun EventSummaryCard(event: Event, modifier: Modifier = Modifier) {
                 .padding(10.dp)
                 .fillMaxWidth(),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = Color.White,
                 contentColor = Color.Black
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
@@ -59,7 +59,7 @@ fun EventSummaryCard(event: Event, modifier: Modifier = Modifier) {
                         modifier = Modifier.weight(2/5f, false)
                     ) {
                         val max = event.maxParticipants.toString()
-                        val current = event.users.size.toString()
+                        //val current = event.users.size.toString()
                         Row (
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -67,17 +67,17 @@ fun EventSummaryCard(event: Event, modifier: Modifier = Modifier) {
                                 imageVector = Icons.Default.Person,
                                 contentDescription = "personIcon"
                             )
-                            Text(
-                                text = "$current/$max",
-                                fontSize = 25.sp
-                            )
+                          //  Text(
+                               // text = "$current/$max",
+                              //  fontSize = 25.sp
+                           // )
                         }
                     }
                 }
                 Row {
                     Text(
                         modifier = Modifier.padding(start = 10.dp, end = 10.dp),
-                        text = event.dateTime,
+                        text = event.date,
                         fontSize = 15.sp,
 
                         )
@@ -96,6 +96,7 @@ fun EventSummaryCard(event: Event, modifier: Modifier = Modifier) {
     }
 }
 
+/*
 @Preview
 @Composable
 fun EventsPreview() {
@@ -105,13 +106,13 @@ fun EventsPreview() {
     var ev = Event(
         title = "TITLETITLDDDDDDDDDDDDDDDDDDDDDDDDDDDDETITLE",
         address = "ADDRESSADDRESSADDRESSADDRESSADDRESSADDRESS",
-        dateTime = "DATETIME",
+        date = "DATETIME",
         maxParticipants = 50,
         description = "DESCRIPTIONDESCRIPTION",
-        eventId = 20,
-        users = uslist
+        eventId = 20
+        //users = uslist
     )
     var evlist = ArrayList<Event>()
     evlist.add(ev)
     EventSummaryCard(ev)
-}
+}*/

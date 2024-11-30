@@ -1,11 +1,14 @@
 package com.friendly.di
 
-import com.friendly.dataServices.EventsDataService
-import com.friendly.dataServices.IEventsDataService
-import com.friendly.httpClient
+import com.friendly.repositories.EventRepository
+import com.friendly.repositories.IEventRepository
+import com.friendly.viewModels.EventViewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 
 val appModule = module {
-    single<IEventsDataService> { EventsDataService() }
+    //single<IEventsDataService> { EventsDataService() }
+    single<IEventRepository> {EventRepository()}
+    viewModelOf(::EventViewModel)
 }

@@ -13,10 +13,10 @@ import androidx.navigation.compose.rememberNavController
 import com.friendly.components.NavBar
 import com.friendly.components.TopBar
 import com.friendly.di.initKoin
-import com.friendly.features.CreateEventScreen
-import com.friendly.features.DiscoverScreen
-import com.friendly.features.MyEventsScreen
-import com.friendly.features.UpcomingEventsScreen
+import com.friendly.screens.CreateEventScreen
+import com.friendly.screens.DiscoverScreen
+import com.friendly.screens.MyEventsScreen
+import com.friendly.screens.UpcomingEventsScreen
 import com.friendly.navigation.AppBarNavigation
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme

@@ -1,29 +1,27 @@
 package com.friendly.models
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-
-@Serializable
 data class Event(
 
-    @SerialName("eventId")
-    val eventId : Int,
+    val eventId: Int,
 
-    @SerialName("dateTime")
-    val dateTime : String,
+    val createdAt: String,
 
-    @SerialName("address")
-    val address : String,
+    val title: String,
 
-    @SerialName("title")
-    val title : String,
+    val country: String,
 
-    @SerialName("description")
-    val description : String,
+    val city: String,
 
-    @SerialName("maxParticipants")
-    val maxParticipants: Int,
+    val postalCode: String,
 
-    @SerialName("users")
-    var users : List<User> = emptyList()
+    val address: String,
+
+    val description: String?,
+
+    val maxParticipants: Int?,
+
+    val date: String,
+
+    val time: String
+
 )

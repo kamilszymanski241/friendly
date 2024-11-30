@@ -19,6 +19,6 @@ data class User(
     @SerialName("age")
     val age : Int,
 
-    @SerialName("events")
-    var events : List<Event> = emptyList()
+/*    @SerialName("events")
+    var events : List<Event> = emptyList()*/
 )

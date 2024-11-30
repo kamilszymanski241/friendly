@@ -1,5 +1,15 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
+
+fun getLocalProperty(key: String, defaultValue: String = ""): String {
+    val properties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        properties.load(localPropertiesFile.inputStream())
+    }
+    return properties.getProperty(key, defaultValue)
+}
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -7,6 +17,13 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.gmazzo.build.config)
+}
+
+buildConfig{
+    buildConfigField("String", "SUPABASE_ANON_KEY", "\"${getLocalProperty("SUPABASE_ANON_KEY")}\"")
+    buildConfigField("String", "SECRET", "\"${getLocalProperty("SECRET")}\"")
+    buildConfigField("String", "SUPABASE_URL", "\"${getLocalProperty("SUPABASE_URL")}\"")
 }
 
 kotlin {
@@ -51,13 +68,17 @@ kotlin {
             implementation(libs.ktor.client.core)
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation((libs.ktor.client.content.negotiation))
+            implementation((libs.ktor.client.utils))
 
             implementation(libs.kotlinx.coroutines.core)
-            implementation((libs.insert.koin.core))
-            implementation(platform("io.github.jan-tennert.supabase:bom:3.0.2"))
-            implementation("io.github.jan-tennert.supabase:postgrest-kt")
-            implementation("io.github.jan-tennert.supabase:auth-kt")
-            implementation("io.github.jan-tennert.supabase:realtime-kt")
+
+            implementation(libs.insert.koin.core)
+            implementation(libs.insert.koin.compose)
+            implementation(libs.insert.koin.compose.viewmodel)
+
+            implementation(libs.supabase.postgrest)
+            implementation(libs.supabase.storage)
+            implementation(libs.supabase.auth)
         }
         iosMain.dependencies {
             implementation((libs.ktor.client.darwin))
@@ -102,4 +123,3 @@ dependencies {
 
     debugImplementation(compose.uiTooling)
 }
-

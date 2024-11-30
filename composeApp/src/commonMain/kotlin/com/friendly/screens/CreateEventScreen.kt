@@ -1,4 +1,4 @@
-package com.friendly.features
+package com.friendly.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,9 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -24,12 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.friendly.dataServices.DataServiceHelper
-import com.friendly.models.Event
 import com.friendly.models.User
-import com.friendly.navigation.AppBarNavigation
 import com.friendly.themes.FriendlyAppTheme
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -139,7 +132,7 @@ fun CreateEventScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             val scope = rememberCoroutineScope()
-            Button(
+/*            Button(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.tertiary,
                     contentColor = Color.White
@@ -163,7 +156,7 @@ fun CreateEventScreen(navController: NavController) {
                 Text(
                     text = "Create!"
                 )
-            }
+            }*/
         }
     }
 }
