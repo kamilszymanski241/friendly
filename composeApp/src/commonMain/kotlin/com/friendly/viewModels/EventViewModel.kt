@@ -11,6 +11,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class EventViewModel: ViewModel(), KoinComponent {
+
     private val eventRepository: IEventRepository by inject()
 
     private val _eventsList = MutableStateFlow<List<Event>>(listOf())

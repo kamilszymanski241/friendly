@@ -20,9 +20,8 @@ import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun DiscoverScreen() {
+fun DiscoverScreen(eventViewModel: EventViewModel = koinInject()) {
 
-    val eventViewModel = koinViewModel<EventViewModel>()
     val events = eventViewModel.eventsList.collectAsState(initial = listOf()).value
     EventsOverview(events, Modifier)
 }

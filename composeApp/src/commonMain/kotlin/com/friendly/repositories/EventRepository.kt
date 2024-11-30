@@ -14,15 +14,11 @@ class EventRepository: IEventRepository, KoinComponent {
 
     private val postgrest: Postgrest by inject()
 
-    private val supabaseClient: SupabaseClient by inject()
-
     override suspend fun getEvents(): List<EventDTO> {
-/*        return withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO){
             val result = postgrest.from("Events")
                 .select().decodeList<EventDTO>()
             result
-        }*/
-        val events = supabaseClient.from("Events").select().decodeList<EventDTO>()
-        return events
+        }
     }
 }

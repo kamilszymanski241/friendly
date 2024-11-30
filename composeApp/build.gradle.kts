@@ -120,6 +120,5 @@ compose.resources {
 }
 
 dependencies {
-
     debugImplementation(compose.uiTooling)
 }

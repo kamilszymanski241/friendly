@@ -19,6 +19,8 @@ import com.friendly.screens.MyEventsScreen
 import com.friendly.screens.UpcomingEventsScreen
 import com.friendly.navigation.AppBarNavigation
 import com.friendly.navigation.AppNavigation
+import com.friendly.screens.SignIn
+import com.friendly.screens.SignUp
 import com.friendly.themes.FriendlyAppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -32,7 +34,7 @@ fun App() {
             ) {
                 val navController = rememberNavController()
                 Scaffold(
-                    topBar = { TopBar() },
+                    topBar = { TopBar(navController) },
                     bottomBar = {NavBar(navController)},
                     containerColor = MaterialTheme.colorScheme.secondary
                 ) { innerPadding ->
@@ -52,6 +54,10 @@ fun App() {
                         }
                         composable(AppNavigation.CreateEvent.route){
                             CreateEventScreen(navController)
+                        }
+                        composable(AppNavigation.SignUp.route)
+                        {
+                            SignUp(navController)
                         }
                     }
                 }
