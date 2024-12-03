@@ -1,5 +1,7 @@
 package com.friendly.screens
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -7,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -30,9 +33,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.friendly.generated.resources.Res
+import com.friendly.generated.resources.friendly_logo_green
+import com.friendly.generated.resources.friendly_logo_white
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.SignUpViewModel
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 
 @Composable
@@ -42,15 +49,20 @@ fun SignUp(navController: NavController, viewModel: SignUpViewModel = koinInject
         val password = viewModel.password.collectAsState()
         val passwordRepeat = viewModel.passwordRepeat.collectAsState()
         val errorMessage = viewModel.errorMessage.collectAsState()
-        val coroutineScope = rememberCoroutineScope()
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .fillMaxHeight()
                 .padding(20.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(10.dp))
+            Image(
+                painter = painterResource(Res.drawable.friendly_logo_white),
+                contentDescription = "logo",
+                modifier = Modifier
+                    .size(220.dp, 100.dp)
+                    .padding(bottom = 30.dp)
+            )
             Text(
                 text = "Sign up!",
                 fontSize = 40.sp

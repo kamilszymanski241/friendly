@@ -7,8 +7,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material3.ButtonColors
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -27,12 +29,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.friendly_logo_white
-import com.friendly.navigation.AppBarNavigation
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import org.jetbrains.compose.resources.painterResource
@@ -60,7 +60,7 @@ fun TopBar(navController: NavController) {
                     )
                     TextButton(
                         onClick = {
-                            navController.navigate(AppNavigation.SignUp.route) {
+                            navController.navigate(AppNavigation.SignIn.route) {
                                 launchSingleTop = true
                                 restoreState = true
                                 popUpTo(navController.graph.startDestinationId) {
@@ -70,7 +70,7 @@ fun TopBar(navController: NavController) {
                         }
                     ) {
                         Text(
-                            text = "Sign In",
+                            text = AppNavigation.SignIn.label,
                             fontSize = 16.sp,
                             color = Color.White
                         )
@@ -93,47 +93,100 @@ fun NavBar(navController: NavController) {
                 .wrapContentHeight(),
             containerColor = MaterialTheme.colorScheme.tertiary,
             contentColor = Color.White
-        ){
+        ) {
             val navBackStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = navBackStackEntry?.destination?.route
 
-            val items = listOf(
-                AppBarNavigation.Discover,
-                AppBarNavigation.UpcomingEvents,
-                AppBarNavigation.MyEvents
-            )
-            items.forEach {screen ->
-                NavigationBarItem(
-                    selected = currentRoute == screen.route,
-                    onClick = {
-                        if(currentRoute != screen.route){
-                            navController.navigate(screen.route) {
-                                launchSingleTop = true
-                                restoreState = true
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
-                                }
+            NavigationBarItem(
+                selected = currentRoute == AppNavigation.Discover.route,
+                onClick = {
+                    if (currentRoute != AppNavigation.Discover.route) {
+                        navController.navigate(AppNavigation.Discover.route) {
+                            launchSingleTop = true
+                            restoreState = true
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
                             }
                         }
-                    },
-                    icon = {
-                        Icon(
-                            imageVector = screen.icon,
-                            contentDescription = null,
-                            tint = Color.White
-                        )
-                    },
-                    label = {
-                        Text (
-                            text = screen.label,
-                            color = Color.White
-                        )
-                    },
-                    colors = NavigationBarItemDefaults.colors(
-                        indicatorColor = MaterialTheme.colorScheme.secondary
+                    }
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = null,
+                        tint = Color.White
                     )
+                },
+                label = {
+                    Text(
+                        text = AppNavigation.Discover.label,
+                        color = Color.White
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = MaterialTheme.colorScheme.secondary
                 )
-            }
+            )
+            NavigationBarItem(
+                selected = currentRoute == AppNavigation.UpcomingEvents.route,
+                onClick = {
+                    if (currentRoute != AppNavigation.UpcomingEvents.route) {
+                        navController.navigate(AppNavigation.UpcomingEvents.route) {
+                            launchSingleTop = true
+                            restoreState = true
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                        }
+                    }
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                },
+                label = {
+                    Text(
+                        text = AppNavigation.UpcomingEvents.label,
+                        color = Color.White
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = MaterialTheme.colorScheme.secondary
+                )
+            )
+            NavigationBarItem(
+                selected = currentRoute == AppNavigation.MyEvents.route,
+                onClick = {
+                    if(currentRoute != AppNavigation.MyEvents.route){
+                        navController.navigate(AppNavigation.MyEvents.route) {
+                            launchSingleTop = true
+                            restoreState = true
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                        }
+                    }
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Default.AccountBox,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                },
+                label = {
+                    Text (
+                        text = AppNavigation.MyEvents.label,
+                        color = Color.White
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = MaterialTheme.colorScheme.secondary
+                )
+            )
         }
     }
 }

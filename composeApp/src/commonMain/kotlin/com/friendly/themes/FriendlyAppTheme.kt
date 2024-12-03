@@ -30,9 +30,9 @@ fun FriendlyAppTheme(
         )
     } else {
         lightColorScheme(
-            primary = Color(0xFFc9d6d1),
-            secondary = Color(0xFF4c9078),
-            tertiary = Color(0xFF223f35)
+            primary = Color(0xFFc9d6d1),//bardzo jasny zielony
+            secondary = Color(0xFF4c9078),//jasny zielony
+            tertiary = Color(0xFF223f35)//ciemny zielony
         )
     }
     val typography = Typography(

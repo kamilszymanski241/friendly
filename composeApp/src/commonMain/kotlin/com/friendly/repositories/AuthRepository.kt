@@ -17,7 +17,7 @@ class AuthRepository: IAuthRepository, KoinComponent {
             }
             true
         } catch (e: Exception) {
-            false
+            throw e
         }
     }
 
