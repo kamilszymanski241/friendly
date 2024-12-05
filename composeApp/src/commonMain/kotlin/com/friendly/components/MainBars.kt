@@ -22,6 +22,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,13 +36,18 @@ import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.friendly_logo_white
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
+import com.friendly.viewModels.UserSessionViewModel
+import io.github.jan.supabase.auth.Auth
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(navController: NavController) {
+fun TopBar(navController: NavController, auth: Auth = koinInject(), viewModel: UserSessionViewModel = koinInject ()) {
+    val user by viewModel.user.collectAsState()
+    val userDetails by viewModel.userDetails.collectAsState()
     FriendlyAppTheme {
         TopAppBar(
             colors = topAppBarColors(
@@ -53,27 +59,59 @@ fun TopBar(navController: NavController) {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
+                    /*Image(
                         painter = painterResource(Res.drawable.friendly_logo_white),
                         contentDescription = "logo",
                         modifier = Modifier.size(100.dp)
-                    )
-                    TextButton(
-                        onClick = {
-                            navController.navigate(AppNavigation.SignIn.route) {
-                                launchSingleTop = true
-                                restoreState = true
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
+                    )*/
+                    if(user == null) {
+                        TextButton(
+                            onClick = {
+                                navController.navigate(AppNavigation.SignIn.route) {
+                                    launchSingleTop = true
+                                    restoreState = true
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
                                 }
                             }
+                        ) {
+                            Text(
+                                text = AppNavigation.SignIn.label,
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
                         }
-                    ) {
-                        Text(
-                            text = AppNavigation.SignIn.label,
-                            fontSize = 16.sp,
-                            color = Color.White
-                        )
+                    }
+                    else{
+                        TextButton(
+                            onClick = {
+                                //TODO NAVIGATE TO PROFILE
+                            }
+                        ) {
+                            Text(
+                                text = user!!.email!!,
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
+                        }
+                        TextButton(
+                            onClick = {
+                                viewModel.onSignOut()
+                            }
+                        ) {
+                            Text(
+                                text = "Sign Out",
+                                fontSize = 16.sp,
+                                color = Color.Red
+                            )
+                        }
+                        if(userDetails!= null)
+                        {
+                            Text(
+                                text = userDetails!!.name
+                            )
+                        }
                     }
                 }
             }

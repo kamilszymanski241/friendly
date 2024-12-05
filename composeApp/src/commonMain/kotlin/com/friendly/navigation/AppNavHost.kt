@@ -1,6 +1,5 @@
 package com.friendly.navigation
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -8,10 +7,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.friendly.screens.CreateEventScreen
 import com.friendly.screens.DiscoverScreen
+import com.friendly.screens.FillUserDetailsScreen
 import com.friendly.screens.MyEventsScreen
-import com.friendly.screens.SignIn
-import com.friendly.screens.SignUp
+import com.friendly.screens.SignInScreen
+import com.friendly.screens.SignUpScreen
 import com.friendly.screens.UpcomingEventsScreen
+import com.friendly.screens.UploadProfilePictureScreen
 
 @Composable
 fun AppNavHost(
@@ -37,10 +38,17 @@ fun AppNavHost(
             CreateEventScreen(navController)
         }
         composable(AppNavigation.SignIn.route) {
-            SignIn(navController)
+            SignInScreen(navController)
         }
         composable(AppNavigation.SignUp.route) {
-            SignUp(navController)
+            SignUpScreen(navController)
+        }
+        composable(AppNavigation.FillUserDetails.route) {
+            FillUserDetailsScreen(navController)
+        }
+        composable(AppNavigation.UploadProfilePicture.route)
+        {
+            UploadProfilePictureScreen(navController)
         }
     }
 }

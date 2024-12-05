@@ -18,6 +18,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,11 +37,17 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 
 @Composable
-fun SignIn(navController: NavController, viewModel: SignInViewModel = koinInject () ) {
+fun SignInScreen(navController: NavController, viewModel: SignInViewModel = koinInject () ) {
     FriendlyAppTheme {
         val email = viewModel.email.collectAsState(initial = "")
         val password = viewModel.password.collectAsState()
         val errorMessage = viewModel.errorMessage.collectAsState()
+        val successState = viewModel.success.collectAsState()
+        LaunchedEffect(successState.value) {
+            if (successState.value) {
+                navController.navigate(AppNavigation.Discover.route)
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -123,13 +130,7 @@ fun SignIn(navController: NavController, viewModel: SignInViewModel = koinInject
             Spacer(modifier = Modifier.height(10.dp))
             TextButton(
                 onClick = {
-                    navController.navigate(AppNavigation.SignUp.route) {
-                        launchSingleTop = true
-                        restoreState = true
-                        popUpTo(navController.graph.startDestinationId) {
-                            saveState = true
-                        }
-                    }
+                    navController.navigate(AppNavigation.SignUp.route)
                 }
             ) {
                 Text(

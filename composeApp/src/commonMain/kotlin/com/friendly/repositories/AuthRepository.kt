@@ -33,4 +33,13 @@ class AuthRepository: IAuthRepository, KoinComponent {
         }
     }
 
+    override suspend fun signOut(): Boolean {
+        return try {
+            auth.signOut()
+            true
+        }catch (e: Exception){
+            throw e
+        }
+    }
+
 }

@@ -21,13 +21,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.friendly.models.User
+import com.friendly.models.UserDetails
 import com.friendly.themes.FriendlyAppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CreateEventScreen(navController: NavController) {
-    FriendlyAppTheme {
+/*    FriendlyAppTheme {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -36,9 +36,9 @@ fun CreateEventScreen(navController: NavController) {
             horizontalAlignment = Alignment.CenterHorizontally,
         )
         {
-            val user = User(userId = 1, name = "Anna", surname = "Nowak", age = 18)
-            val userList = ArrayList<User>()
-            userList.add(user)
+            val userDetails = UserDetails(userId = 1, name = "Anna", surname = "Nowak", age = 18)
+            val userDetailsList = ArrayList<UserDetails>()
+            userDetailsList.add(userDetails)
             val title = remember {
                 mutableStateOf("")
             }
@@ -132,7 +132,7 @@ fun CreateEventScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(20.dp))
 
             val scope = rememberCoroutineScope()
-/*            Button(
+            Button(
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.tertiary,
                     contentColor = Color.White
@@ -156,9 +156,9 @@ fun CreateEventScreen(navController: NavController) {
                 Text(
                     text = "Create!"
                 )
-            }*/
+            }
         }
-    }
+    }*/
 }
 
 @Preview

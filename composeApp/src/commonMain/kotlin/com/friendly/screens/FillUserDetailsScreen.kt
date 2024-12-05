@@ -1,13 +1,11 @@
 package com.friendly.screens
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
@@ -17,7 +15,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,43 +24,27 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.friendly.generated.resources.Res
-import com.friendly.generated.resources.friendly_logo_white
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
-import com.friendly.viewModels.SignUpViewModel
-import org.jetbrains.compose.resources.painterResource
+import com.friendly.viewModels.UserDetailsViewModel
 import org.koin.compose.koinInject
 
 @Composable
-fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = koinInject () ) {
+fun FillUserDetailsScreen(navController: NavController, viewModel: UserDetailsViewModel = koinInject ())
+{
     FriendlyAppTheme {
-        val email = viewModel.email.collectAsState(initial = "")
-        val password = viewModel.password.collectAsState()
-        val passwordRepeat = viewModel.passwordRepeat.collectAsState()
+        val name = viewModel.name.collectAsState(initial = "")
+        val surname = viewModel.surname.collectAsState(initial = "")
         val errorMessage = viewModel.errorMessage.collectAsState()
-        val successState = viewModel.success.collectAsState()
-        LaunchedEffect(successState.value) {
-            if (successState.value) {
-                navController.navigate(AppNavigation.FillUserDetails.route)
-            }
-        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight()
                 .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Image(
-                painter = painterResource(Res.drawable.friendly_logo_white),
-                contentDescription = "logo",
-                modifier = Modifier
-                    .size(220.dp, 100.dp)
-                    .padding(bottom = 30.dp)
-            )
             Text(
-                text = "Sign up!",
+                text = "Let's begin!",
                 fontSize = 40.sp
             )
             Spacer(modifier = Modifier.height(10.dp))
@@ -81,13 +62,13 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = koin
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent
                 ),
-                value = email.value,
+                value = name.value,
                 onValueChange = {
-                    viewModel.onEmailChange(it)
+                    viewModel.onNameChange(it)
                 },
                 label = {
                     Text(
-                        text = "Email",
+                        text = "Name",
                         color = Color.Black
                     )
                 },
@@ -102,34 +83,13 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = koin
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent
                 ),
-                value = password.value,
+                value = surname.value,
                 onValueChange = {
-                    viewModel.onPasswordChange(it)
+                    viewModel.onSurnameChange(it)
                 },
                 label = {
                     Text(
-                        text = "Password",
-                        color = Color.Black
-                    )
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            TextField(
-                modifier = Modifier,
-                shape = RoundedCornerShape(16.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
-                ),
-                value = passwordRepeat.value,
-                onValueChange = {
-                    viewModel.onPasswordRepeatChange(it)
-                },
-                label = {
-                    Text(
-                        text = "Repeat password",
+                        text = "Surname",
                         color = Color.Black
                     )
                 },
@@ -140,14 +100,16 @@ fun SignUpScreen(navController: NavController, viewModel: SignUpViewModel = koin
             Button(
                 onClick = {
                     localSoftwareKeyboardController?.hide()
-                    viewModel.onSignUp()
+                    viewModel.onContinue()
+                    navController.navigate(AppNavigation.UploadProfilePicture.route)
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.tertiary,
                     contentColor = Color.White
                 )) {
-                Text("Sign up")
+                Text("Continue")
             }
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }

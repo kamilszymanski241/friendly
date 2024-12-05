@@ -1,6 +1,7 @@
 package com.friendly.repositories
 
 import com.friendly.DTOs.EventDTO
+import com.friendly.models.Event
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.from

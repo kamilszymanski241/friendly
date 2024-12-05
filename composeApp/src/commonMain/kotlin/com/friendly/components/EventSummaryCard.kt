@@ -20,9 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.friendly.models.Event
-import com.friendly.models.User
 import com.friendly.themes.FriendlyAppTheme
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun EventSummaryCard(event: Event, modifier: Modifier = Modifier) {

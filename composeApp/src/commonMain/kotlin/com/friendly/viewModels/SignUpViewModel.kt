@@ -27,6 +27,10 @@ class SignUpViewModel: ViewModel(), KoinComponent {
     private val _errorMessage = MutableStateFlow<String?>("")
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
+    private val _success = MutableStateFlow<Boolean>(value = false)
+    val success = _success
+
+
     fun onEmailChange(email: String) {
         _email.value = email
     }
@@ -44,10 +48,13 @@ class SignUpViewModel: ViewModel(), KoinComponent {
             if(password.value == passwordRepeat.value)
             {
                 try {
-                    authRepository.signUp(
+                    if(authRepository.signUp(
                         email = _email.value,
                         password = _password.value
-                    )
+                    ))
+                    {
+                        _success.value = true
+                    }
                 }
                 catch (e: Exception)
                 {

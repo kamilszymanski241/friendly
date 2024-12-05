@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class EventViewModel: ViewModel(), KoinComponent {
+class DiscoverScreenViewModel: ViewModel(), KoinComponent {
 
     private val eventRepository: IEventRepository by inject()
 
@@ -21,13 +21,15 @@ class EventViewModel: ViewModel(), KoinComponent {
     val isLoading: Flow<Boolean> = _isLoading
 
     init{
-        getEvents()
+        viewModelScope.launch {
+            getEvents()
+        }
     }
 
     fun getEvents(){
         viewModelScope.launch{
             val events = eventRepository.getEvents()
-            _eventsList.emit(events.map{ it -> it.asDomainModel()})
+            _eventsList.emit(events.map { it -> it.asDomainModel() })
         }
     }
 }
