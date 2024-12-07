@@ -9,4 +9,8 @@ interface ISessionManager {
     val sessionStatus: StateFlow<SessionStatus>
     val currentUser: StateFlow<UserInfo?>
     val currentUserDetails: StateFlow<UserDetails?>
+    val userDetailsStatus: StateFlow<UserDetailsStatus>
+    fun setUserDetails(userDetails: UserDetails?)
+    fun setUserDetailsStatus(userDetailsStatus: UserDetailsStatus)
+    suspend fun initUserDetails()
 }

@@ -9,4 +9,5 @@ sealed class AppNavigation(val route: String, val label: String){
     object MyEvents: AppNavigation (route = "myEvents", label = "My Events")
     object FillUserDetails: AppNavigation(route = "fillUserDetails", label = "Fill User Details")
     object UploadProfilePicture: AppNavigation(route = "uploadAProfilePicture", label = "Upload A Profile Picture")
+    object RegisterEmailAndPassword: AppNavigation(route = "registerEmailAndPassword", label = "Please provide email and password")
 }

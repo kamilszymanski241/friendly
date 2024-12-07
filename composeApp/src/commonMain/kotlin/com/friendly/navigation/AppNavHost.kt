@@ -5,15 +5,20 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navigation
 import com.friendly.screens.CreateEventScreen
 import com.friendly.screens.DiscoverScreen
 import com.friendly.screens.FillUserDetailsScreen
 import com.friendly.screens.MyEventsScreen
+import com.friendly.screens.RegisterEmailAndPasswordScreen
 import com.friendly.screens.SignInScreen
 import com.friendly.screens.SignUpScreen
 import com.friendly.screens.UpcomingEventsScreen
-import com.friendly.screens.UploadProfilePictureScreen
+import com.friendly.viewModels.RegisterEmailAndPasswordViewModel
+import org.koin.compose.viewmodel.koinNavViewModel
+import org.koin.core.annotation.KoinExperimentalAPI
 
+@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,
@@ -43,12 +48,15 @@ fun AppNavHost(
         composable(AppNavigation.SignUp.route) {
             SignUpScreen(navController)
         }
+
         composable(AppNavigation.FillUserDetails.route) {
+            val viewModel: RegisterEmailAndPasswordViewModel = koinNavViewModel()
             FillUserDetailsScreen(navController)
         }
-        composable(AppNavigation.UploadProfilePicture.route)
-        {
-            UploadProfilePictureScreen(navController)
+
+        composable(AppNavigation.RegisterEmailAndPassword.route) {
+            val viewModel: RegisterEmailAndPasswordViewModel = koinNavViewModel()
+            RegisterEmailAndPasswordScreen(navController)
         }
     }
 }

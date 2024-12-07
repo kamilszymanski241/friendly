@@ -28,7 +28,8 @@ fun App() {
                 currentRoute == AppNavigation.SignUp.route ||
                 currentRoute == AppNavigation.SignIn.route ||
                 currentRoute == AppNavigation.FillUserDetails.route ||
-                currentRoute == AppNavigation.UploadProfilePicture.route
+                currentRoute == AppNavigation.UploadProfilePicture.route||
+                currentRoute == AppNavigation.RegisterEmailAndPassword.route
                 ) {
                 AuthLayout(navController)
             }

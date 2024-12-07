@@ -5,7 +5,6 @@ import com.friendly.repositories.IUserDetailsRepository
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.auth.user.UserInfo
-import io.ktor.util.valuesOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -16,7 +15,7 @@ import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class SessionManager: KoinComponent, ISessionManager{
+class SessionManager: KoinComponent, ISessionManager {
 
     private val auth: Auth by inject()
     private val userDetailsRepository: IUserDetailsRepository by inject()
@@ -30,22 +29,49 @@ class SessionManager: KoinComponent, ISessionManager{
     private val _currentUserDetails = MutableStateFlow<UserDetails?>(null)
     override val currentUserDetails: StateFlow<UserDetails?> = _currentUserDetails.asStateFlow()
 
+    private val _userDetailsStatus = MutableStateFlow(UserDetailsStatus.Initializing)
+    override val userDetailsStatus: StateFlow<UserDetailsStatus> = _userDetailsStatus.asStateFlow()
+
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            auth.sessionStatus.collect { status ->
-                _sessionStatus.value = status
-                if (status is SessionStatus.Authenticated) {
-                    _currentUser.value = status.session.user
-                    try {
-                        _currentUserDetails.value = userDetailsRepository.getUserDetails(_currentUser.value!!.id).asDomainModel()
-                    }catch(e: Exception)
-                    {
-                        println(e.message)
+            auth.sessionStatus.collect {
+                _sessionStatus.value = it
+                when (it) {
+                    is SessionStatus.Authenticated -> {
+                        _currentUser.value = it.session.user
+                       initUserDetails()
                     }
-                } else if (status is SessionStatus.NotAuthenticated) {
-                    _currentUser.value = null
+                    is SessionStatus.NotAuthenticated -> {
+                        _currentUser.value = null
+                        if(it.isSignOut){
+                            _currentUserDetails.value = null
+                            _userDetailsStatus.value = UserDetailsStatus.Initializing
+                        }
+                    }
+                    SessionStatus.Initializing -> {}
+                    is SessionStatus.RefreshFailure -> {}
                 }
             }
         }
+    }
+    override suspend fun initUserDetails(){
+        try {
+            _currentUserDetails.value =
+                userDetailsRepository.getUserDetails(_currentUser.value!!.id)
+                    .asDomainModel()
+            _userDetailsStatus.value = UserDetailsStatus.Success
+        } catch (e: Exception) {
+            _userDetailsStatus.value = UserDetailsStatus.Failed
+            println(e.message)
+            //TODO()
+        }
+    }
+    override fun setUserDetails(userDetails: UserDetails?)
+    {
+        _currentUserDetails.value = userDetails
+    }
+    override fun setUserDetailsStatus(userDetailsStatus: UserDetailsStatus)
+    {
+        _userDetailsStatus.value = userDetailsStatus
     }
 }

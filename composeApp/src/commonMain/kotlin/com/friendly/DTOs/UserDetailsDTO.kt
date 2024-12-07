@@ -6,14 +6,15 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserDetailsDTO (
+
     @SerialName("id")
-    val userDetailsId: String,
+    val userDetailsId: String ="",
 
     @SerialName("userId")
     val userId: String,
 
     @SerialName("created_at")
-    val createdAt: String,
+    val createdAt: String = "",
 
     @SerialName("name")
     val name: String,

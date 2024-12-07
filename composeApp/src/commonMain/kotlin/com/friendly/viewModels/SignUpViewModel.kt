@@ -13,57 +13,5 @@ import org.koin.core.component.inject
 
 class SignUpViewModel: ViewModel(), KoinComponent {
 
-    private val authRepository: IAuthRepository by inject()
 
-    private val _email = MutableStateFlow("")
-    val email: Flow<String> = _email
-
-    private val _password = MutableStateFlow("")
-    val password = _password
-
-    private val _passwordRepeat = MutableStateFlow("")
-    val passwordRepeat = _passwordRepeat
-
-    private val _errorMessage = MutableStateFlow<String?>("")
-    val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
-
-    private val _success = MutableStateFlow<Boolean>(value = false)
-    val success = _success
-
-
-    fun onEmailChange(email: String) {
-        _email.value = email
-    }
-
-    fun onPasswordChange(password: String) {
-        _password.value = password
-    }
-
-    fun onPasswordRepeatChange(password: String) {
-        _passwordRepeat.value = password
-    }
-
-    fun onSignUp() {
-        viewModelScope.launch {
-            if(password.value == passwordRepeat.value)
-            {
-                try {
-                    if(authRepository.signUp(
-                        email = _email.value,
-                        password = _password.value
-                    ))
-                    {
-                        _success.value = true
-                    }
-                }
-                catch (e: Exception)
-                {
-                    _errorMessage.value = e.message
-                }
-            }
-           else{
-               _errorMessage.value = "Passwords must be the same"
-            }
-        }
-    }
 }

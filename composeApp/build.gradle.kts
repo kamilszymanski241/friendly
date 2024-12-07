@@ -75,6 +75,7 @@ kotlin {
             implementation(libs.insert.koin.core)
             implementation(libs.insert.koin.compose)
             implementation(libs.insert.koin.compose.viewmodel)
+            implementation(libs.insert.koin.compose.viewmodel.navigation)
 
             implementation(libs.supabase.postgrest)
             implementation(libs.supabase.storage)

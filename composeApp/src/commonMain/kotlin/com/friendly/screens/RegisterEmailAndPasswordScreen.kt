@@ -1,8 +1,8 @@
 package com.friendly.screens
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,26 +27,33 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
-import com.friendly.viewModels.FillUserDetailsViewModel
 import com.friendly.viewModels.RegisterEmailAndPasswordViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun FillUserDetailsScreen(navController: NavController, viewModel: FillUserDetailsViewModel = koinViewModel ())
+fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: RegisterEmailAndPasswordViewModel = koinViewModel ())
 {
     FriendlyAppTheme {
-        val name = viewModel.name.collectAsState(initial = "")
-        val surname = viewModel.surname.collectAsState(initial = "")
+        val email = viewModel.email.collectAsState(initial = "")
+        val password = viewModel.password.collectAsState()
+        val passwordRepeat = viewModel.passwordRepeat.collectAsState()
         val errorMessage = viewModel.errorMessage.collectAsState()
+        val successState = viewModel.success.collectAsState()
+        LaunchedEffect(successState.value) {
+            if (successState.value) {
+                navController.navigate(AppNavigation.Discover.route)
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .fillMaxHeight()
                 .padding(20.dp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
+
             Text(
-                text = "Step 1/3:",
+                text = "Step 3/3:",
                 fontSize = 40.sp
             )
             Spacer(modifier = Modifier.height(10.dp))
@@ -63,13 +71,13 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: FillUserDetai
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent
                 ),
-                value = name.value,
+                value = email.value,
                 onValueChange = {
-                    viewModel.onNameChange(it)
+                    viewModel.onEmailChange(it)
                 },
                 label = {
                     Text(
-                        text = "Name",
+                        text = "Email",
                         color = Color.Black
                     )
                 },
@@ -84,13 +92,34 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: FillUserDetai
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent
                 ),
-                value = surname.value,
+                value = password.value,
                 onValueChange = {
-                    viewModel.onSurnameChange(it)
+                    viewModel.onPasswordChange(it)
                 },
                 label = {
                     Text(
-                        text = "Surname",
+                        text = "Password",
+                        color = Color.Black
+                    )
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            TextField(
+                modifier = Modifier,
+                shape = RoundedCornerShape(16.dp),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    unfocusedIndicatorColor = Color.Transparent,
+                    disabledIndicatorColor = Color.Transparent
+                ),
+                value = passwordRepeat.value,
+                onValueChange = {
+                    viewModel.onPasswordRepeatChange(it)
+                },
+                label = {
+                    Text(
+                        text = "Repeat password",
                         color = Color.Black
                     )
                 },
@@ -101,16 +130,14 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: FillUserDetai
             Button(
                 onClick = {
                     localSoftwareKeyboardController?.hide()
-                    viewModel.onContinue()
-                    navController.navigate(AppNavigation.RegisterEmailAndPassword.route)
+                    viewModel.onSignUp()
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.tertiary,
                     contentColor = Color.White
                 )) {
-                Text("Continue")
+                Text("Sign up")
             }
-            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
