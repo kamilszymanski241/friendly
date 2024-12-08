@@ -16,6 +16,7 @@ import com.friendly.viewModels.DiscoverScreenViewModel
 import com.friendly.viewModels.SignUpViewModel
 import com.friendly.viewModels.SignInViewModel
 import com.friendly.viewModels.MainLayoutViewModel
+import com.friendly.viewModels.UserProfileViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -32,4 +33,5 @@ val appModule = module {
     viewModelOf(::MainLayoutViewModel)
     viewModelOf(::FillUserDetailsViewModel)
     viewModelOf(::RegisterEmailAndPasswordViewModel)
+    viewModelOf(::UserProfileViewModel)
 }

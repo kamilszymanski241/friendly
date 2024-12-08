@@ -1,12 +1,6 @@
 package com.friendly.repositories
 
 import com.friendly.DTOs.UserDetailsDTO
-import com.friendly.models.UserDetails
-import com.friendly.session.ISessionManager
-import io.github.jan.supabase.SupabaseClient
-import io.github.jan.supabase.exceptions.HttpRequestException
-import io.github.jan.supabase.exceptions.RestException
-import io.github.jan.supabase.network.SupabaseApi
 import io.github.jan.supabase.postgrest.Postgrest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO

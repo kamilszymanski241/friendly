@@ -37,6 +37,15 @@ class StorageRepository: IStorageRepository, KoinComponent{
         {
             println(e.message)
         }
-
+    }
+    override suspend fun fetchProfilePicture(userId: String?): ByteArray
+    {
+        val bucket = storage.from("profilePictures")
+        return try{
+            bucket.downloadPublic("$userId.jpg")
+        }catch(e: Exception)
+        {
+            throw e
+        }
     }
 }

@@ -19,7 +19,7 @@ import com.friendly.navigation.AppNavigation
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AuthLayout(navController: NavHostController)
+fun NoNavBarLayout(navController: NavHostController)
 {
     Scaffold(
         topBar = {

@@ -14,6 +14,7 @@ import com.friendly.screens.RegisterEmailAndPasswordScreen
 import com.friendly.screens.SignInScreen
 import com.friendly.screens.SignUpScreen
 import com.friendly.screens.UpcomingEventsScreen
+import com.friendly.screens.UserProfileScreen
 import com.friendly.viewModels.RegisterEmailAndPasswordViewModel
 import org.koin.compose.viewmodel.koinNavViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
@@ -48,15 +49,14 @@ fun AppNavHost(
         composable(AppNavigation.SignUp.route) {
             SignUpScreen(navController)
         }
-
         composable(AppNavigation.FillUserDetails.route) {
-            val viewModel: RegisterEmailAndPasswordViewModel = koinNavViewModel()
             FillUserDetailsScreen(navController)
         }
-
         composable(AppNavigation.RegisterEmailAndPassword.route) {
-            val viewModel: RegisterEmailAndPasswordViewModel = koinNavViewModel()
             RegisterEmailAndPasswordScreen(navController)
+        }
+        composable(AppNavigation.UserProfile.route){
+            UserProfileScreen(navController)
         }
     }
 }
