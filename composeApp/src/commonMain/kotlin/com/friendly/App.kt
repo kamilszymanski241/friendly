@@ -24,13 +24,15 @@ fun App() {
         ) {
             val navController = rememberNavController()
             val currentRoute = navController.currentBackStackEntryAsState()?.value?.destination?.route
+            println(currentRoute)
             if (
                 currentRoute == AppNavigation.SignUp.route ||
                 currentRoute == AppNavigation.SignIn.route ||
                 currentRoute == AppNavigation.FillUserDetails.route ||
                 currentRoute == AppNavigation.UploadProfilePicture.route||
                 currentRoute == AppNavigation.RegisterEmailAndPassword.route||
-                currentRoute == AppNavigation.UserProfile.route
+                currentRoute == AppNavigation.UserProfile.route||
+                currentRoute == AppNavigation.EventDetails.route
                 ) {
                 NoNavBarLayout(navController)
             }

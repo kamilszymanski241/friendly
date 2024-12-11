@@ -39,7 +39,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.friendly_logo_white
-import com.friendly.generated.resources.user_default_profile_picture
 import com.friendly.navigation.AppNavHost
 import com.friendly.navigation.AppNavigation
 import com.friendly.session.UserDetailsStatus
@@ -76,6 +75,7 @@ fun TopBar(navController: NavController, viewModel: MainLayoutViewModel, auth: A
     val userProfilePicture by viewModel.userProfilePicture.collectAsState()
     val sessionStatus by viewModel.sessionStatus.collectAsState()
     val userDetailsStatus by viewModel.userDetailsStatus.collectAsState()
+    val userProfilePictureStatus by viewModel.userProfilePictureStatus.collectAsState()
     TopAppBar(
         colors = topAppBarColors(
             containerColor = MaterialTheme.colorScheme.tertiary,
@@ -109,42 +109,30 @@ fun TopBar(navController: NavController, viewModel: MainLayoutViewModel, auth: A
                             color = Color.White
                         )
                     }
-                } else if (userDetailsStatus == UserDetailsStatus.Initializing || sessionStatus == SessionStatus.Initializing) {
+                } else if (sessionStatus == SessionStatus.Initializing || userDetailsStatus == UserDetailsStatus.Initializing || userProfilePictureStatus == UserDetailsStatus.Initializing) {
                     Text(
-                        text = "Loading",
+                        text = "...",
                         fontSize = 16.sp,
                         color = Color.White
                     )
                 } else {
-                    if (userDetailsStatus == UserDetailsStatus.Success) {
+                    if (userDetailsStatus == UserDetailsStatus.Success && userDetailsStatus == UserDetailsStatus.Success) {
                         TextButton(
                             onClick = {
                                 navController.navigate(AppNavigation.UserProfile.route)
                             }
                         ) {
-                            if(userProfilePicture != null)
-                            {
-                                Image(
-                                    bitmap = userProfilePicture!!,
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .clip(CircleShape)
-                                        .border(2.dp, Color.Black, CircleShape)
-                                )
-                            }
-                            else{
-                                Image(
-                                    painter = painterResource(Res.drawable.user_default_profile_picture),
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .clip(CircleShape)
-                                        .border(2.dp, Color.Black, CircleShape)
-                                )
-                            }
+                            Image(
+                                bitmap = userProfilePicture!!,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                            )
                         }
-                    } else {
+                    } else {//TODO()
                         Text(
-                            text = "ERROR"//TODO()
+                            text = "ERROR",
+                            color = Color.Red
                         )
                     }
                 }

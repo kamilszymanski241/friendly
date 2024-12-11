@@ -2,8 +2,10 @@ package com.friendly.di
 
 import com.friendly.repositories.AuthRepository
 import com.friendly.repositories.EventRepository
+import com.friendly.repositories.EventUserRepository
 import com.friendly.repositories.IAuthRepository
 import com.friendly.repositories.IEventRepository
+import com.friendly.repositories.IEventUserRepository
 import com.friendly.repositories.IStorageRepository
 import com.friendly.repositories.IUserDetailsRepository
 import com.friendly.repositories.StorageRepository
@@ -13,10 +15,12 @@ import com.friendly.session.ISessionManager
 import com.friendly.session.SessionManager
 import com.friendly.viewModels.FillUserDetailsViewModel
 import com.friendly.viewModels.DiscoverScreenViewModel
+import com.friendly.viewModels.EventDetailsScreenViewModel
 import com.friendly.viewModels.SignUpViewModel
 import com.friendly.viewModels.SignInViewModel
 import com.friendly.viewModels.MainLayoutViewModel
 import com.friendly.viewModels.UserProfileViewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -27,6 +31,7 @@ val appModule = module {
     single<IStorageRepository>{StorageRepository()}
     single<IUserDetailsRepository>{UserDetailsRepository()}
     single<ISessionManager>{SessionManager()}
+    single<IEventUserRepository>{EventUserRepository()}
     viewModelOf(::DiscoverScreenViewModel)
     viewModelOf(::SignInViewModel)
     viewModelOf(::SignUpViewModel)
@@ -34,4 +39,5 @@ val appModule = module {
     viewModelOf(::FillUserDetailsViewModel)
     viewModelOf(::RegisterEmailAndPasswordViewModel)
     viewModelOf(::UserProfileViewModel)
+    viewModel{(eventId: String)->EventDetailsScreenViewModel(eventId)}
 }

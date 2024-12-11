@@ -3,11 +3,13 @@ package com.friendly.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.navigation
+import androidx.navigation.navArgument
 import com.friendly.screens.CreateEventScreen
 import com.friendly.screens.DiscoverScreen
+import com.friendly.screens.EventDetailsScreen
 import com.friendly.screens.FillUserDetailsScreen
 import com.friendly.screens.MyEventsScreen
 import com.friendly.screens.RegisterEmailAndPasswordScreen
@@ -15,8 +17,6 @@ import com.friendly.screens.SignInScreen
 import com.friendly.screens.SignUpScreen
 import com.friendly.screens.UpcomingEventsScreen
 import com.friendly.screens.UserProfileScreen
-import com.friendly.viewModels.RegisterEmailAndPasswordViewModel
-import org.koin.compose.viewmodel.koinNavViewModel
 import org.koin.core.annotation.KoinExperimentalAPI
 
 @OptIn(KoinExperimentalAPI::class)
@@ -32,7 +32,7 @@ fun AppNavHost(
         modifier = modifier
     ) {
         composable(AppNavigation.Discover.route) {
-            DiscoverScreen()
+            DiscoverScreen(navController)
         }
         composable(AppNavigation.UpcomingEvents.route) {
             UpcomingEventsScreen()
@@ -57,6 +57,16 @@ fun AppNavHost(
         }
         composable(AppNavigation.UserProfile.route){
             UserProfileScreen(navController)
+        }
+        composable(AppNavigation.EventDetails.route, arguments = listOf(navArgument("eventId") { type = NavType.StringType })) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId")
+            if(eventId != null)
+            {
+                EventDetailsScreen(eventId, navController)
+            }
+            else{
+                //TODO()
+            }
         }
     }
 }

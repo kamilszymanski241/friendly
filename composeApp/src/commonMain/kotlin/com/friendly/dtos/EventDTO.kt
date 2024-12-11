@@ -1,4 +1,4 @@
-package com.friendly.DTOs
+package com.friendly.dtos
 
 import com.friendly.models.Event
 import kotlinx.serialization.SerialName
@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 data class EventDTO (
 
     @SerialName("id")
-    val eventId: Int,
+    val id: String,
 
     @SerialName("created_at")
     val createdAt: String,
@@ -44,7 +44,7 @@ data class EventDTO (
     fun asDomainModel(): Event {
         return Event(
 
-            eventId = this.eventId,
+            id = this.id,
 
             createdAt = this.createdAt,
 

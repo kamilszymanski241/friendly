@@ -1,8 +1,8 @@
 package com.friendly.repositories
 
-import com.friendly.DTOs.EventDTO
-import com.friendly.models.Event
+import com.friendly.dtos.EventDTO
 
 interface IEventRepository {
     suspend fun getEvents(): List<EventDTO>
+    suspend fun getEvent(eventId: String): EventDTO
 }

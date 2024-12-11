@@ -27,6 +27,5 @@ class MainLayoutViewModel: ViewModel(), KoinComponent {
     val userProfilePicture: StateFlow<ImageBitmap?> = sessionManager.userProfilePicture
     val sessionStatus: StateFlow<SessionStatus> = sessionManager.sessionStatus
     val userDetailsStatus: StateFlow<UserDetailsStatus> = sessionManager.userDetailsStatus
-
-
+    val userProfilePictureStatus: StateFlow<UserDetailsStatus> = sessionManager.userProfilePictureStatus
 }

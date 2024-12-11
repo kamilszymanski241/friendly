@@ -2,7 +2,7 @@ package com.friendly.models
 
 data class Event(
 
-    val eventId: Int,
+    val id: String,
 
     val createdAt: String,
 

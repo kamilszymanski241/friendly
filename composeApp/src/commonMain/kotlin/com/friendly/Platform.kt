@@ -13,3 +13,4 @@ expect fun getPlatform(): Platform
 expect fun httpClient(config: HttpClientConfig<*>.() -> Unit = {}): HttpClient
 
 expect fun decodeByteArrayToBitMap(byteArray: ByteArray): ImageBitmap?
+

@@ -48,7 +48,7 @@ class FillUserDetailsViewModel: ViewModel(), KoinComponent {
         viewModelScope.launch {
             try {
                 if (userDetailsRepository.createUserDetails(
-                        userId = sessionManager.currentUser.value!!.id,
+                        id = sessionManager.currentUser.value!!.id,
                         name = _name.value,
                         surname = _surname.value
                     )
@@ -61,8 +61,7 @@ class FillUserDetailsViewModel: ViewModel(), KoinComponent {
         }
         sessionManager.setUserDetails(
             UserDetails(
-                userDetailsId = "",
-                userId = "",
+                id = "",
                 joined = "",
                 name = _name.value,
                 surname = _surname.value

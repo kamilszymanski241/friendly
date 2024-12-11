@@ -12,6 +12,7 @@ interface ISessionManager {
     val currentUserDetails: StateFlow<UserDetails?>
     val userDetailsStatus: StateFlow<UserDetailsStatus>
     val userProfilePicture: StateFlow<ImageBitmap?>
+    val userProfilePictureStatus: StateFlow<UserDetailsStatus>
     fun setUserDetails(userDetails: UserDetails?)
     fun setUserDetailsStatus(userDetailsStatus: UserDetailsStatus)
     suspend fun fetchProfilePicture()

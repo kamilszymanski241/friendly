@@ -1,4 +1,4 @@
-package com.friendly.DTOs
+package com.friendly.dtos
 
 import com.friendly.models.UserDetails
 import kotlinx.serialization.SerialName
@@ -8,10 +8,7 @@ import kotlinx.serialization.Serializable
 data class UserDetailsDTO (
 
     @SerialName("id")
-    val userDetailsId: String ="",
-
-    @SerialName("userId")
-    val userId: String,
+    val id: String,
 
     @SerialName("created_at")
     val createdAt: String = "",
@@ -25,8 +22,7 @@ data class UserDetailsDTO (
     ) {
     fun asDomainModel(): UserDetails {
         return UserDetails(
-            userDetailsId = this.userDetailsId,
-            userId = this.userId,
+            id = this.id,
             joined = this.createdAt,
             name = this.name,
             surname = this.surname

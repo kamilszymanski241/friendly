@@ -1,6 +1,6 @@
 package com.friendly.repositories
 
-import com.friendly.DTOs.UserDetailsDTO
+import com.friendly.dtos.UserDetailsDTO
 import io.github.jan.supabase.postgrest.Postgrest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -12,13 +12,13 @@ class UserDetailsRepository: IUserDetailsRepository, KoinComponent {
 
     private val postgrest: Postgrest by inject()
 
-    override suspend fun getUserDetails(userId: String): UserDetailsDTO {
+    override suspend fun getUserDetails(id: String): UserDetailsDTO {
         return try {
             withContext(Dispatchers.IO) {
                 val result = postgrest.from("UserDetails")
                     .select() {
                         filter {
-                            eq("userId", userId)
+                            eq("id", id)
                         }
                     }.decodeSingle<UserDetailsDTO>()
                 result
@@ -28,11 +28,11 @@ class UserDetailsRepository: IUserDetailsRepository, KoinComponent {
         }
     }
 
-    override suspend fun createUserDetails(userId: String, name: String, surname: String): Boolean {
+    override suspend fun createUserDetails(id: String, name: String, surname: String): Boolean {
         return try {
             withContext(Dispatchers.IO) {
                 val userDetailsDTO = UserDetailsDTO(
-                    userId = userId,
+                    id = id,
                     name = name,
                     surname = surname
                 )

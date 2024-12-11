@@ -1,11 +1,11 @@
 package com.friendly.repositories
 
-import com.friendly.DTOs.UserDetailsDTO
+import com.friendly.dtos.UserDetailsDTO
 
 interface IUserDetailsRepository {
 
-    suspend fun getUserDetails(userId: String): UserDetailsDTO
+    suspend fun getUserDetails(id: String): UserDetailsDTO
 
-    suspend fun createUserDetails(userId: String, name: String, surname: String): Boolean
+    suspend fun createUserDetails(id: String, name: String, surname: String): Boolean
 
 }

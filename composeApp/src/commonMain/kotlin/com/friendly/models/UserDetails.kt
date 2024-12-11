@@ -2,9 +2,7 @@ package com.friendly.models
 
 data class UserDetails(
 
-    val userDetailsId : String,
-
-    val userId: String,
+    val id : String,
 
     val name : String,
 

@@ -59,7 +59,7 @@ class RegisterEmailAndPasswordViewModel: KoinComponent, ViewModel() {
                         ))
                     {
                         if(userDetailsRepository.createUserDetails(
-                               userId = sessionManager.currentUser.value!!.id,
+                               id = sessionManager.currentUser.value!!.id,
                                name = sessionManager.currentUserDetails.value!!.name,
                                surname = sessionManager.currentUserDetails.value!!.surname))
                         {

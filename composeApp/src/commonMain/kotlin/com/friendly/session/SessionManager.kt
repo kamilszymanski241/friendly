@@ -1,7 +1,6 @@
 package com.friendly.session
 
 import androidx.compose.ui.graphics.ImageBitmap
-import com.friendly.Platform
 import com.friendly.decodeByteArrayToBitMap
 import com.friendly.models.UserDetails
 import com.friendly.repositories.IStorageRepository
@@ -9,7 +8,6 @@ import com.friendly.repositories.IUserDetailsRepository
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.auth.user.UserInfo
-import io.ktor.util.PlatformUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -42,6 +40,9 @@ class SessionManager: KoinComponent, ISessionManager {
     private val _userProfilePicture = MutableStateFlow<ImageBitmap?>(null)
     override val userProfilePicture: StateFlow<ImageBitmap?> = _userProfilePicture.asStateFlow()
 
+    private val _userProfilePictureStatus = MutableStateFlow(UserDetailsStatus.Initializing)
+    override val userProfilePictureStatus: StateFlow<UserDetailsStatus> = _userProfilePictureStatus.asStateFlow()
+
     init {
         CoroutineScope(Dispatchers.IO).launch {
             auth.sessionStatus.collect {
@@ -58,6 +59,7 @@ class SessionManager: KoinComponent, ISessionManager {
                             _currentUserDetails.value = null
                             _userDetailsStatus.value = UserDetailsStatus.Initializing
                             _userProfilePicture.value = null
+                            _userProfilePictureStatus.value = UserDetailsStatus.Initializing
                         }
                     }
                     SessionStatus.Initializing -> {}
@@ -68,9 +70,7 @@ class SessionManager: KoinComponent, ISessionManager {
     }
     override suspend fun initUserDetails(){
         try {
-            _currentUserDetails.value =
-                userDetailsRepository.getUserDetails(_currentUser.value!!.id)
-                    .asDomainModel()
+            _currentUserDetails.value = userDetailsRepository.getUserDetails(_currentUser.value!!.id).asDomainModel()
             _userDetailsStatus.value = UserDetailsStatus.Success
         } catch (e: Exception) {
             _userDetailsStatus.value = UserDetailsStatus.Failed
@@ -86,14 +86,17 @@ class SessionManager: KoinComponent, ISessionManager {
     {
         _userDetailsStatus.value = userDetailsStatus
     }
+
     override suspend fun fetchProfilePicture(){
         try {
-            val data = storageRepository.fetchProfilePicture(currentUser.value!!.id)
-            _userProfilePicture.value = decodeByteArrayToBitMap(data)
+            _userProfilePicture.value = storageRepository.fetchProfilePicture(currentUser.value!!.id)
+            _userProfilePictureStatus.value = UserDetailsStatus.Success
         }
         catch(e: Exception)
         {
+            _userProfilePictureStatus.value = UserDetailsStatus.Failed
             println(e.message)
+            //TODO()
         }
     }
 }

@@ -1,10 +1,7 @@
 package com.friendly.repositories
 
-import com.friendly.DTOs.EventDTO
-import com.friendly.models.Event
-import io.github.jan.supabase.SupabaseClient
+import com.friendly.dtos.EventDTO
 import io.github.jan.supabase.postgrest.Postgrest
-import io.github.jan.supabase.postgrest.from
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -16,10 +13,34 @@ class EventRepository: IEventRepository, KoinComponent {
     private val postgrest: Postgrest by inject()
 
     override suspend fun getEvents(): List<EventDTO> {
-        return withContext(Dispatchers.IO){
+        return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
-                .select().decodeList<EventDTO>()
+                .select() {
+                }.decodeList<EventDTO>()
             result
         }
     }
+
+    override suspend fun getEvent(id: String): EventDTO {
+        return withContext(Dispatchers.IO) {
+            val result = postgrest.from("Events")
+                .select() {
+                    filter {
+                        eq("id", id)
+                    }
+                }.decodeSingle<EventDTO>()
+            result
+        }
+    }
+
+/*    suspend fun getEventsWithParticipants(eventId: Int): List<EventDTO> {
+        return withContext(Dispatchers.IO) {
+            val result = postgrest.from("Events")
+                .select(
+                    Columns.raw("")
+                ) {
+                }.decodeList<EventDTO>()
+            result
+        }
+    }*/
 }
