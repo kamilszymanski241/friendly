@@ -16,7 +16,7 @@ import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.DiscoverScreenViewModel
 
 @Composable
-fun DiscoverScreen(navController: NavController, viewModel: DiscoverScreenViewModel = viewModel()) {
+fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, viewModel: DiscoverScreenViewModel = viewModel()) {
     val events = viewModel.eventsList.collectAsState(null)
     FriendlyAppTheme {
         if (events.value == null) {

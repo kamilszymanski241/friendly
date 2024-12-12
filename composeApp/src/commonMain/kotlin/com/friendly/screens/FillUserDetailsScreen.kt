@@ -102,7 +102,7 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: FillUserDetai
                 onClick = {
                     localSoftwareKeyboardController?.hide()
                     viewModel.onContinue()
-                    navController.navigate(AppNavigation.RegisterEmailAndPassword.route)
+                    navController.navigate(AppNavigation.UploadProfilePicture.route)
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.tertiary,
@@ -110,7 +110,6 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: FillUserDetai
                 )) {
                 Text("Continue")
             }
-            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }

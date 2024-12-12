@@ -13,11 +13,7 @@ class StorageRepository: IStorageRepository, KoinComponent {
     private val storage: Storage by inject()
 
     override suspend fun createUserBucket(userId: String) {
-        if (userId != null) {
-            storage.createBucket(id = userId)
-        } else {
-            println("User is not signed in!")
-        }
+        storage.createBucket(id = userId)
     }
 
     override suspend fun uploadAProfilePicture(userId: String, picture: ByteArray) {

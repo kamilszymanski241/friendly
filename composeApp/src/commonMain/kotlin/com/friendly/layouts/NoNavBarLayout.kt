@@ -1,5 +1,6 @@
 package com.friendly.layouts
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -21,30 +22,34 @@ import com.friendly.navigation.AppNavigation
 @Composable
 fun NoNavBarLayout(navController: NavHostController)
 {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                colors = topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.secondary,
-                ),
-                title = {
-                    IconButton(
-                        onClick = {navController.popBackStack()},
-                    ) {
-                        Icon(
-                            Icons.AutoMirrored.Default.ArrowBack,
-                            contentDescription = null,
-                            tint = Color.White
-                        )
-                    }
-                })
-        },
-        containerColor = MaterialTheme.colorScheme.secondary
-    ) { innerPadding ->
-        AppNavHost(
-            Modifier.padding(innerPadding),
-            navController = navController,
-            startDestination = AppNavigation.Discover.route
-        )
+    Box(
+
+    ) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    colors = topAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.secondary,
+                    ),
+                    title = {
+                        IconButton(
+                            onClick = { navController.popBackStack() },
+                        ) {
+                            Icon(
+                                Icons.AutoMirrored.Default.ArrowBack,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                    })
+            },
+            containerColor = MaterialTheme.colorScheme.secondary
+        ) { innerPadding ->
+            AppNavHost(
+                Modifier.padding(innerPadding),
+                navController = navController,
+                startDestination = AppNavigation.Discover.route
+            )
+        }
     }
 }

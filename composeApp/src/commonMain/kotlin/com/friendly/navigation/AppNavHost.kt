@@ -7,6 +7,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.friendly.CapturePhoto
+import com.friendly.layouts.MainLayout
 import com.friendly.screens.CreateEventScreen
 import com.friendly.screens.DiscoverScreen
 import com.friendly.screens.EventDetailsScreen
@@ -16,6 +18,7 @@ import com.friendly.screens.RegisterEmailAndPasswordScreen
 import com.friendly.screens.SignInScreen
 import com.friendly.screens.SignUpScreen
 import com.friendly.screens.UpcomingEventsScreen
+import com.friendly.screens.UploadProfilePictureScreen
 import com.friendly.screens.UserProfileScreen
 import org.koin.core.annotation.KoinExperimentalAPI
 
@@ -55,18 +58,34 @@ fun AppNavHost(
         composable(AppNavigation.RegisterEmailAndPassword.route) {
             RegisterEmailAndPasswordScreen(navController)
         }
-        composable(AppNavigation.UserProfile.route){
+        composable(AppNavigation.UserProfile.route) {
             UserProfileScreen(navController)
         }
-        composable(AppNavigation.EventDetails.route, arguments = listOf(navArgument("eventId") { type = NavType.StringType })) { backStackEntry ->
+        composable(
+            AppNavigation.EventDetails.route,
+            arguments = listOf(navArgument("eventId") { type = NavType.StringType })
+        ) { backStackEntry ->
             val eventId = backStackEntry.arguments?.getString("eventId")
-            if(eventId != null)
-            {
+            if (eventId != null) {
                 EventDetailsScreen(eventId, navController)
-            }
-            else{
+            } else {
                 //TODO()
             }
+        }
+        composable(AppNavigation.UploadProfilePicture.route) {
+            UploadProfilePictureScreen(navController)
+        }
+        composable(AppNavigation.CapturePhoto.route + "/{callbackKey}") { backStackEntry ->
+            val callbackKey = backStackEntry.arguments?.getString("callbackKey")
+            CapturePhoto(
+                navController = navController,
+                onSelect = { base64Image ->
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(callbackKey ?: "capturedImage", base64Image)
+                    navController.popBackStack()
+                }
+            )
         }
     }
 }

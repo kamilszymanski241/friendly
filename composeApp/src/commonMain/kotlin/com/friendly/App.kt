@@ -7,8 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.friendly.di.initKoin
+import com.friendly.layouts.CameraLayout
 import com.friendly.layouts.NoNavBarLayout
 import com.friendly.layouts.MainLayout
+import com.friendly.navigation.AppNavHost
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -25,19 +27,22 @@ fun App() {
             val navController = rememberNavController()
             val currentRoute = navController.currentBackStackEntryAsState()?.value?.destination?.route
             println(currentRoute)
-            if (
-                currentRoute == AppNavigation.SignUp.route ||
-                currentRoute == AppNavigation.SignIn.route ||
-                currentRoute == AppNavigation.FillUserDetails.route ||
-                currentRoute == AppNavigation.UploadProfilePicture.route||
-                currentRoute == AppNavigation.RegisterEmailAndPassword.route||
-                currentRoute == AppNavigation.UserProfile.route||
-                currentRoute == AppNavigation.EventDetails.route
-                ) {
-                NoNavBarLayout(navController)
-            }
-            else{
-                MainLayout(navController)
+            when (currentRoute) {
+                AppNavigation.SignUp.route,
+                AppNavigation.SignIn.route,
+                AppNavigation.FillUserDetails.route,
+                AppNavigation.UploadProfilePicture.route,
+                AppNavigation.RegisterEmailAndPassword.route,
+                AppNavigation.UserProfile.route,
+                AppNavigation.EventDetails.route -> {
+                    NoNavBarLayout(navController)
+                }
+                AppNavigation.CapturePhoto.route+"/{callbackKey}" -> {
+                    CameraLayout(navController)
+                }
+                else -> {
+                    MainLayout(navController)
+                }
             }
         }
     }

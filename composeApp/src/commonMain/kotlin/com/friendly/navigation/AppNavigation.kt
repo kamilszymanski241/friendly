@@ -12,4 +12,5 @@ sealed class AppNavigation(val route: String, val label: String){
     object RegisterEmailAndPassword: AppNavigation(route = "registerEmailAndPassword", label = "Please provide email and password")
     object UserProfile: AppNavigation(route= "userProfile", label = "User Profile")
     object EventDetails: AppNavigation(route="eventDetails/{eventId}", label = "Event Details")
+    object CapturePhoto: AppNavigation(route= "capturePhoto/{callbackKey}", label = "Camera View")
 }
