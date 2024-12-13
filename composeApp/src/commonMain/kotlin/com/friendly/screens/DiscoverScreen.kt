@@ -17,6 +17,7 @@ import com.friendly.viewModels.DiscoverScreenViewModel
 
 @Composable
 fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, viewModel: DiscoverScreenViewModel = viewModel()) {
+    println(navController.currentBackStack.value)
     val events = viewModel.eventsList.collectAsState(null)
     FriendlyAppTheme {
         if (events.value == null) {
@@ -34,7 +35,7 @@ fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, 
             ) {
                 items(events.value!!) { event ->
                     EventSummaryCard(
-                        event = event!!,
+                        event = event,
                         modifier = Modifier,
                         navController = navController
                     )

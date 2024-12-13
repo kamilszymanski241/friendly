@@ -17,7 +17,7 @@ expect fun httpClient(config: HttpClientConfig<*>.() -> Unit = {}): HttpClient
 expect fun decodeByteArrayToBitMap(byteArray: ByteArray): ImageBitmap?
 
 @Composable
-expect fun CapturePhoto(navController: NavController, onSelect: (String) -> Unit)
+expect fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: ()-> Unit)
 
 expect fun convertBitMapToBase64(bitmap: ImageBitmap): String
 

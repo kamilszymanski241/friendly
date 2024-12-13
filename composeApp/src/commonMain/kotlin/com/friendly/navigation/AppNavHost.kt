@@ -7,8 +7,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.friendly.CapturePhoto
-import com.friendly.layouts.MainLayout
+import com.friendly.layouts.bars.BottomBarType
+import com.friendly.layouts.ILayoutManager
+import com.friendly.layouts.bars.TopBarType
 import com.friendly.screens.CreateEventScreen
 import com.friendly.screens.DiscoverScreen
 import com.friendly.screens.EventDetailsScreen
@@ -20,14 +21,14 @@ import com.friendly.screens.SignUpScreen
 import com.friendly.screens.UpcomingEventsScreen
 import com.friendly.screens.UploadProfilePictureScreen
 import com.friendly.screens.UserProfileScreen
-import org.koin.core.annotation.KoinExperimentalAPI
+import org.koin.compose.koinInject
 
-@OptIn(KoinExperimentalAPI::class)
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    startDestination: String
+    startDestination: String,
+    layoutManager: ILayoutManager = koinInject ()
 ) {
     NavHost(
         navController = navController,
@@ -35,21 +36,28 @@ fun AppNavHost(
         modifier = modifier
     ) {
         composable(AppNavigation.Discover.route) {
+            layoutManager.setTopBar(TopBarType.Main)
+            layoutManager.setBottomBar(BottomBarType.MainNavigation)
             DiscoverScreen(navController)
         }
         composable(AppNavigation.UpcomingEvents.route) {
+            layoutManager.setTopBar(TopBarType.Main)
+            layoutManager.setBottomBar(BottomBarType.MainNavigation)
             UpcomingEventsScreen()
         }
         composable(AppNavigation.MyEvents.route) {
+            layoutManager.setTopBar(TopBarType.Main)
+            layoutManager.setBottomBar(BottomBarType.MainNavigation)
             MyEventsScreen(navController)
         }
-        composable(AppNavigation.CreateEvent.route) {
-            CreateEventScreen(navController)
-        }
         composable(AppNavigation.SignIn.route) {
+            layoutManager.setTopBar(TopBarType.WithBackButton)
+            layoutManager.setBottomBar(BottomBarType.Empty)
             SignInScreen(navController)
         }
         composable(AppNavigation.SignUp.route) {
+            layoutManager.setTopBar(TopBarType.WithBackButton)
+            layoutManager.setBottomBar(BottomBarType.Empty)
             SignUpScreen(navController)
         }
         composable(AppNavigation.FillUserDetails.route) {
@@ -75,17 +83,8 @@ fun AppNavHost(
         composable(AppNavigation.UploadProfilePicture.route) {
             UploadProfilePictureScreen(navController)
         }
-        composable(AppNavigation.CapturePhoto.route + "/{callbackKey}") { backStackEntry ->
-            val callbackKey = backStackEntry.arguments?.getString("callbackKey")
-            CapturePhoto(
-                navController = navController,
-                onSelect = { base64Image ->
-                    navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set(callbackKey ?: "capturedImage", base64Image)
-                    navController.popBackStack()
-                }
-            )
+        composable(AppNavigation.CreateEvent.route) {
+            CreateEventScreen(navController)
         }
     }
 }

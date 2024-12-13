@@ -1,5 +1,6 @@
 package com.friendly.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -25,13 +26,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.friendly.layouts.bars.BottomBarType
+import com.friendly.layouts.ILayoutManager
+import com.friendly.layouts.bars.TopBarType
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.RegisterEmailAndPasswordViewModel
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: RegisterEmailAndPasswordViewModel = koinViewModel ())
+fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: RegisterEmailAndPasswordViewModel = koinViewModel (), layoutManager: ILayoutManager = koinInject ())
 {
     FriendlyAppTheme {
         val email = viewModel.email.collectAsState(initial = "")
@@ -44,87 +49,93 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Regi
                 navController.navigate(AppNavigation.Discover.route)
             }
         }
+        layoutManager.setTopBar(TopBarType.WithBackButton)
+        layoutManager.setBottomBar(BottomBarType.Empty)
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-
-            Text(
-                text = "Step 3/3:",
-                fontSize = 40.sp
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            errorMessage.value?.let { message ->
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(
-                    text = message,
-                    color = MaterialTheme.colorScheme.error,
+                    text = "Email, password",
+                    fontSize = 40.sp
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                errorMessage.value?.let { message ->
+                    Text(
+                        text = message,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+                TextField(
+                    modifier = Modifier,
+                    shape = RoundedCornerShape(16.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent
+                    ),
+                    value = email.value,
+                    onValueChange = {
+                        viewModel.onEmailChange(it)
+                    },
+                    label = {
+                        Text(
+                            text = "Email",
+                            color = Color.Black
+                        )
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                TextField(
+                    modifier = Modifier,
+                    shape = RoundedCornerShape(16.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent
+                    ),
+                    value = password.value,
+                    onValueChange = {
+                        viewModel.onPasswordChange(it)
+                    },
+                    label = {
+                        Text(
+                            text = "Password",
+                            color = Color.Black
+                        )
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                TextField(
+                    modifier = Modifier,
+                    shape = RoundedCornerShape(16.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent
+                    ),
+                    value = passwordRepeat.value,
+                    onValueChange = {
+                        viewModel.onPasswordRepeatChange(it)
+                    },
+                    label = {
+                        Text(
+                            text = "Repeat password",
+                            color = Color.Black
+                        )
+                    },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                 )
             }
-            TextField(
-                modifier = Modifier,
-                shape = RoundedCornerShape(16.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
-                ),
-                value = email.value,
-                onValueChange = {
-                    viewModel.onEmailChange(it)
-                },
-                label = {
-                    Text(
-                        text = "Email",
-                        color = Color.Black
-                    )
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            TextField(
-                modifier = Modifier,
-                shape = RoundedCornerShape(16.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
-                ),
-                value = password.value,
-                onValueChange = {
-                    viewModel.onPasswordChange(it)
-                },
-                label = {
-                    Text(
-                        text = "Password",
-                        color = Color.Black
-                    )
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            TextField(
-                modifier = Modifier,
-                shape = RoundedCornerShape(16.dp),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    disabledIndicatorColor = Color.Transparent
-                ),
-                value = passwordRepeat.value,
-                onValueChange = {
-                    viewModel.onPasswordRepeatChange(it)
-                },
-                label = {
-                    Text(
-                        text = "Repeat password",
-                        color = Color.Black
-                    )
-                },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
-            )
             Spacer(modifier = Modifier.height(20.dp))
             val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
             Button(

@@ -1,16 +1,22 @@
 package com.friendly.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,78 +28,88 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.friendly.CapturePhoto
-import com.friendly.convertBase64ToBitMap
-import com.friendly.decodeByteArrayToBitMap
 import com.friendly.generated.resources.Res
-import com.friendly.generated.resources.friendly_logo_black
-import com.friendly.generated.resources.friendly_logo_white
-import com.friendly.layouts.CameraLayout
+import com.friendly.generated.resources.default
+import com.friendly.layouts.bars.BottomBarType
+import com.friendly.layouts.ILayoutManager
+import com.friendly.layouts.bars.TopBarType
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.CollectPictureViewModel
-import io.ktor.util.decodeBase64Bytes
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun UploadProfilePictureScreen(navController: NavController, viewModel: CollectPictureViewModel = koinViewModel ()) {
+fun UploadProfilePictureScreen(navController: NavController, viewModel: CollectPictureViewModel = koinViewModel (), layoutManager: ILayoutManager = koinInject ()) {
+    layoutManager.setTopBar(TopBarType.WithBackButton)
+    layoutManager.setBottomBar(BottomBarType.Empty)
     FriendlyAppTheme {
-        LaunchedEffect(Unit) {
-            val base64Image = navController.currentBackStackEntry
-                ?.savedStateHandle
-                ?.get<String>("capturedImage")
-            base64Image?.let {
-                val imageBitmap = convertBase64ToBitMap(base64Image)
-                viewModel.setPicture(imageBitmap)
-                navController.currentBackStackEntry?.savedStateHandle?.remove<String>("capturedImage")
-            }
-        }
         val capturedPhoto = viewModel.userProfilePicture.collectAsState()
+        var showCamera by remember{ mutableStateOf(false) }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
                 .padding(20.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(
-                text = "Step 2/3:",
-                fontSize = 40.sp
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            if (capturedPhoto.value == null) {
-                Image(
-                    painter = painterResource(Res.drawable.friendly_logo_white),
-                    contentDescription = "logo",
-                    modifier = Modifier.size(100.dp)
-                )
-            } else {
-                Image(
-                    bitmap = capturedPhoto.value!!,
-                    null
-                )
-            }
-            Button(
-                onClick = {
-                    navController.navigate(AppNavigation.CapturePhoto.route + "/capturedImage")
-                    //isCameraOpen = true
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.tertiary,
-                    contentColor = Color.White
-                )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Upload")
+                Text(
+                    text = "Profile picture",
+                    fontSize = 30.sp
+                )
+                Spacer(modifier = Modifier.size(50.dp))
+                Box(
+                ) {
+                    if (capturedPhoto.value == null) {
+                        Image(
+                            painter = painterResource(Res.drawable.default),
+                            null,
+                            modifier = Modifier
+                                .size(250.dp)
+                                .clip(CircleShape)
+                        )
+                    } else {
+                        Image(
+                            bitmap = capturedPhoto.value!!,
+                            null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(250.dp)
+                                .clip(CircleShape)
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            showCamera = true
+                        },
+                        modifier = Modifier
+                            .size(50.dp)
+                            .align(Alignment.BottomEnd)
+                            .background(Color.White, shape = CircleShape)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.AddCircle,
+                            contentDescription = "Add",
+                            tint = MaterialTheme.colorScheme.tertiary,
+                            modifier = Modifier
+                                .size(50.dp)
+                        )
+                    }
+                }
             }
-            Spacer(modifier = Modifier.height(10.dp))
             Button(
                 onClick = {
                     viewModel.onContinue()
@@ -107,19 +123,21 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: CollectP
                 Text("Continue")
             }
         }
-        if (capturedPhoto.value == null) {
-            Image(
-                painter = painterResource(Res.drawable.friendly_logo_white),
-                contentDescription = "logo",
-                modifier = Modifier.size(100.dp)
-            )
-        } else {
-            Image(
-                bitmap = capturedPhoto.value!!,
-                null,
-                modifier = Modifier.fillMaxSize().rotate(90f),
-                contentScale = ContentScale.FillHeight
-            )
+        if(showCamera) {
+            LaunchedEffect(Unit){
+                delay(100)
+            }
+            layoutManager.setTopBar(TopBarType.Empty)
+            CapturePhoto(onSelect = { picture ->
+                viewModel.setPicture(picture)
+                showCamera = false
+                layoutManager.setTopBar(TopBarType.WithBackButton)
+            },
+                onClose = {
+                    println("ON CLOSE SIE ZADZIALO LOLOLOLLOL")
+                    showCamera = false
+                    layoutManager.setTopBar(TopBarType.WithBackButton)
+                })
         }
     }
 }
