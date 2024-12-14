@@ -16,11 +16,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.friendly.layouts.ILayoutManager
+import com.friendly.layouts.bars.BottomBarType
+import com.friendly.layouts.bars.TopBarType
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
+import org.koin.compose.koinInject
 
 @Composable
-fun MyEventsScreen(navController: NavController) {
+fun MyEventsScreen(navController: NavController, layoutManager: ILayoutManager = koinInject()) {
+    layoutManager.setTopBar(TopBarType.Main)
+    layoutManager.setBottomBar(BottomBarType.MainNavigation)
     FriendlyAppTheme {
         Column(
             modifier = Modifier.fillMaxWidth(),

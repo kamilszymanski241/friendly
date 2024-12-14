@@ -21,7 +21,19 @@ class EventRepository: IEventRepository, KoinComponent {
         }
     }
 
-    override suspend fun getEvent(id: String): EventDTO {
+    override suspend fun getEvent(eventId: String): EventDTO {
+        return withContext(Dispatchers.IO) {
+            val result = postgrest.from("Events")
+                .select() {
+                    filter {
+                        eq("id", eventId)
+                    }
+                }.decodeSingle<EventDTO>()
+            result
+        }
+    }
+
+/*    override suspend fun getUpcomingEvents(userId: String): EventDTO {
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
                 .select() {
@@ -31,7 +43,7 @@ class EventRepository: IEventRepository, KoinComponent {
                 }.decodeSingle<EventDTO>()
             result
         }
-    }
+    }*/
 
 /*    suspend fun getEventsWithParticipants(eventId: Int): List<EventDTO> {
         return withContext(Dispatchers.IO) {

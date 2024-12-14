@@ -3,6 +3,7 @@ package com.friendly.viewModels
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.friendly.compressBitmapToDesiredSize
 import com.friendly.models.Event
 import com.friendly.repositories.IEventRepository
 import com.friendly.repositories.IEventUserRepository

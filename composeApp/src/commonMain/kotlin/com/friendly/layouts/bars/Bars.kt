@@ -2,6 +2,7 @@ package com.friendly.layouts.bars
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -12,7 +13,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -95,29 +98,28 @@ fun MainTopBar(navController: NavController, viewModel: MainTopBarViewModel = ko
                         color = Color.White
                     )
                 } else {
-                    if (userDetailsStatus == UserDetailsStatus.Success && userDetailsStatus == UserDetailsStatus.Success) {
-                        TextButton(
-                            onClick = {
-                                navController.navigate(AppNavigation.UserProfile.route)
-                            }
-                        ) {
+                    TextButton(
+                        onClick = {
+                            navController.navigate(AppNavigation.UserProfile.route)
+                        }
+                    ) {
+                        if (userDetailsStatus == UserDetailsStatus.Success && userDetailsStatus == UserDetailsStatus.Success) {
                             Image(
                                 bitmap = userProfilePicture!!,
                                 contentDescription = null,
                                 modifier = Modifier
                                     .clip(CircleShape)
                             )
+                        } else {//TODO()
+                            Text(
+                                text = "ERROR",
+                                color = Color.Red
+                            )
                         }
-                    } else {//TODO()
-                        Text(
-                            text = "ERROR",
-                            color = Color.Red
-                        )
                     }
                 }
             }
-        }
-    )
+        })
 }
 
 @Composable
@@ -244,4 +246,56 @@ fun TopBarWithBackButton(navController: NavController) {
                 )
             }
         })
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun TopBarWithBackEditAndSettingsButton(navController: NavController,editRoute: AppNavigation, settingsRoute: AppNavigation) {
+    TopAppBar(
+        colors = topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.secondary,
+        ),
+        title = {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                ) {
+                    IconButton(
+                        onClick = { navController.popBackStack() },
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    }
+                }
+                Column(
+                ) {
+                    Row() {
+                        IconButton(
+                            onClick = { navController.navigate(editRoute.route) },
+                        ) {
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                        IconButton(
+                            onClick = { navController.navigate(settingsRoute.route) },
+                        ) {
+                            Icon(
+                                Icons.Default.Settings,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    )
 }

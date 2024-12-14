@@ -1,5 +1,6 @@
 package com.friendly.viewModels
 
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.friendly.models.UserDetails
@@ -14,22 +15,14 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class UserProfileViewModel: ViewModel(), KoinComponent {
-    private val authRepository: IAuthRepository by inject()
+
     private val sessionManager: ISessionManager by inject()
 
     val user: StateFlow<UserInfo?> = sessionManager.currentUser
     val userDetails: StateFlow<UserDetails?> = sessionManager.currentUserDetails
     val sessionStatus: StateFlow<SessionStatus> = sessionManager.sessionStatus
     val userDetailsStatus: StateFlow<UserDetailsStatus> = sessionManager.userDetailsStatus
+    val userProfilePicture: StateFlow<ImageBitmap?> = sessionManager.userProfilePicture
 
-    fun onSignOut(){
-        viewModelScope.launch {
-            try {
-                authRepository.signOut()
-            }
-            catch (e: Exception) {
-                println(e.message)
-            }
-        }
-    }
+
 }

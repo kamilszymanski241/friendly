@@ -59,13 +59,14 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: FillUserDetai
                     text = "Your details",
                     fontSize = 40.sp
                 )
-                Spacer(modifier = Modifier.size(50.dp))
+                Spacer(modifier = Modifier.size(30.dp))
                 errorMessage.value?.let { message ->
                     Text(
                         text = message,
                         color = MaterialTheme.colorScheme.error,
                     )
                 }
+                Spacer(modifier = Modifier.size(20.dp))
                 TextField(
                     modifier = Modifier,
                     shape = RoundedCornerShape(16.dp),
@@ -112,8 +113,9 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: FillUserDetai
             Button(
                 onClick = {
                     localSoftwareKeyboardController?.hide()
-                    viewModel.onContinue()
-                    navController.navigate(AppNavigation.UploadProfilePicture.route)
+                    if(viewModel.onContinue()) {
+                        navController.navigate(AppNavigation.UploadProfilePicture.route)
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.tertiary,

@@ -13,6 +13,7 @@ import com.friendly.layouts.bars.MainNavBar
 import com.friendly.layouts.bars.MainTopBar
 import com.friendly.layouts.bars.TopBarType
 import com.friendly.layouts.bars.TopBarWithBackButton
+import com.friendly.layouts.bars.TopBarWithBackEditAndSettingsButton
 import com.friendly.navigation.AppNavHost
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
@@ -34,6 +35,9 @@ fun MainLayout(navController: NavHostController, layoutManager: ILayoutManager =
                         TopBarWithBackButton(navController)
                     }
 
+                    TopBarType.UserProfile->{
+                        TopBarWithBackEditAndSettingsButton(navController, AppNavigation.Discover, AppNavigation.AppSettings)
+                    }
                     TopBarType.Empty -> {}
                 }
             },

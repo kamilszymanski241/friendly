@@ -78,14 +78,6 @@ class SessionManager: KoinComponent, ISessionManager {
             //TODO()
         }
     }
-    override fun setUserDetails(userDetails: UserDetails?)
-    {
-        _currentUserDetails.value = userDetails
-    }
-    override fun setUserDetailsStatus(userDetailsStatus: UserDetailsStatus)
-    {
-        _userDetailsStatus.value = userDetailsStatus
-    }
 
     override suspend fun fetchProfilePicture(){
         try {
@@ -98,5 +90,18 @@ class SessionManager: KoinComponent, ISessionManager {
             println(e.message)
             //TODO()
         }
+    }
+
+    override fun setUserDetails(userDetails: UserDetails?)
+    {
+        _currentUserDetails.value = userDetails
+    }
+    override fun setUserDetailsStatus(userDetailsStatus: UserDetailsStatus)
+    {
+        _userDetailsStatus.value = userDetailsStatus
+    }
+    override fun setUserProfilePicture(profilePicture: ImageBitmap)
+    {
+        _userProfilePicture.value = profilePicture
     }
 }

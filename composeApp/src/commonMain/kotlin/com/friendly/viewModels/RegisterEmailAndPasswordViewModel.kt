@@ -3,6 +3,7 @@ package com.friendly.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.friendly.repositories.IAuthRepository
+import com.friendly.repositories.IStorageRepository
 import com.friendly.repositories.IUserDetailsRepository
 import com.friendly.session.ISessionManager
 import com.friendly.session.UserDetailsStatus
@@ -19,6 +20,7 @@ class RegisterEmailAndPasswordViewModel: KoinComponent, ViewModel() {
 
     private val authRepository: IAuthRepository by inject()
     private val userDetailsRepository: IUserDetailsRepository by inject()
+    private val storageRepository: IStorageRepository by inject()
     private val sessionManager: ISessionManager by inject()
 
     private val _email = MutableStateFlow("")
@@ -64,12 +66,20 @@ class RegisterEmailAndPasswordViewModel: KoinComponent, ViewModel() {
                                surname = sessionManager.currentUserDetails.value!!.surname))
                         {
                             sessionManager.initUserDetails()
-                            _success.value = true
+                            if(storageRepository.uploadAProfilePicture(
+                                sessionManager.currentUser.value!!.id,
+                                sessionManager.userProfilePicture.value!!
+                            ))
+                            {
+                                sessionManager.fetchProfilePicture()
+                                _success.value = true
+                            }
                         }
                     }
                 }
                 catch (e: Exception)
                 {
+                    println(e.message)
                     _errorMessage.value = e.message
                 }
             }

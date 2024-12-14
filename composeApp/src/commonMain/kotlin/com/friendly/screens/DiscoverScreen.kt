@@ -12,12 +12,17 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.friendly.components.EventSummaryCard
+import com.friendly.layouts.ILayoutManager
+import com.friendly.layouts.bars.BottomBarType
+import com.friendly.layouts.bars.TopBarType
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.DiscoverScreenViewModel
+import org.koin.compose.koinInject
 
 @Composable
-fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, viewModel: DiscoverScreenViewModel = viewModel()) {
-    println(navController.currentBackStack.value)
+fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, viewModel: DiscoverScreenViewModel = viewModel(), layoutManager: ILayoutManager = koinInject()) {
+    layoutManager.setTopBar(TopBarType.Main)
+    layoutManager.setBottomBar(BottomBarType.MainNavigation)
     val events = viewModel.eventsList.collectAsState(null)
     FriendlyAppTheme {
         if (events.value == null) {

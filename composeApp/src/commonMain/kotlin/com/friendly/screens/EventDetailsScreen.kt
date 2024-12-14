@@ -2,36 +2,37 @@ package com.friendly.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.friendly.models.Event
+import com.friendly.layouts.ILayoutManager
+import com.friendly.layouts.bars.BottomBarType
+import com.friendly.layouts.bars.TopBarType
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.EventDetailsScreenViewModel
+import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun EventDetailsScreen(eventId: String, navController: NavController) {
-
+fun EventDetailsScreen(eventId: String, navController: NavController, layoutManager: ILayoutManager = koinInject ()) {
+    layoutManager.setTopBar(TopBarType.WithBackButton)
+    layoutManager.setBottomBar(BottomBarType.Empty)
     val viewModel: EventDetailsScreenViewModel =
         koinViewModel(parameters = { parametersOf(eventId) })
 

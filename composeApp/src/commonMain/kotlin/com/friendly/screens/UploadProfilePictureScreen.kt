@@ -42,19 +42,20 @@ import com.friendly.layouts.ILayoutManager
 import com.friendly.layouts.bars.TopBarType
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
-import com.friendly.viewModels.CollectPictureViewModel
+import com.friendly.viewModels.UploadProfilePictureViewModel
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun UploadProfilePictureScreen(navController: NavController, viewModel: CollectPictureViewModel = koinViewModel (), layoutManager: ILayoutManager = koinInject ()) {
+fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadProfilePictureViewModel = koinViewModel (), layoutManager: ILayoutManager = koinInject ()) {
     layoutManager.setTopBar(TopBarType.WithBackButton)
     layoutManager.setBottomBar(BottomBarType.Empty)
     FriendlyAppTheme {
         val capturedPhoto = viewModel.userProfilePicture.collectAsState()
         var showCamera by remember{ mutableStateOf(false) }
+        val errorMessage = viewModel.errorMessage.collectAsState()
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -68,9 +69,16 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: CollectP
             ) {
                 Text(
                     text = "Profile picture",
-                    fontSize = 30.sp
+                    fontSize = 40.sp
                 )
-                Spacer(modifier = Modifier.size(50.dp))
+                Spacer(modifier = Modifier.size(30.dp))
+                errorMessage.value?.let { message ->
+                    Text(
+                        text = message,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+                Spacer(modifier = Modifier.size(20.dp))
                 Box(
                 ) {
                     if (capturedPhoto.value == null) {
@@ -112,8 +120,9 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: CollectP
             }
             Button(
                 onClick = {
-                    viewModel.onContinue()
-                    navController.navigate(AppNavigation.RegisterEmailAndPassword.route)
+                    if(viewModel.onContinue()) {
+                        navController.navigate(AppNavigation.RegisterEmailAndPassword.route)
+                    }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.tertiary,
@@ -132,9 +141,9 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: CollectP
                 viewModel.setPicture(picture)
                 showCamera = false
                 layoutManager.setTopBar(TopBarType.WithBackButton)
+                viewModel.setErrorMessage("")
             },
                 onClose = {
-                    println("ON CLOSE SIE ZADZIALO LOLOLOLLOL")
                     showCamera = false
                     layoutManager.setTopBar(TopBarType.WithBackButton)
                 })

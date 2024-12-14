@@ -18,8 +18,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -44,6 +46,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
@@ -92,6 +95,24 @@ actual fun httpClient(config: HttpClientConfig<*>.() -> Unit) = HttpClient(OkHtt
     }
 }
 
+fun Bitmap.rotate(degrees: Float): Bitmap {
+    val matrix = Matrix().apply { postRotate(degrees) }
+    return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
+}
+actual fun decodeBitMapToBase64(bitmap: ImageBitmap): String {
+    val androidBitmap = bitmap.asAndroidBitmap()
+    val outputStream = ByteArrayOutputStream()
+    androidBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+    val byteArray = outputStream.toByteArray()
+    return Base64.encodeToString(byteArray, Base64.DEFAULT)
+}
+
+actual fun decodeBase64ToBitMap(base64: String): ImageBitmap {
+    val decodedBytes = Base64.decode(base64, Base64.DEFAULT)
+    val bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
+    return bitmap.asImageBitmap()
+}
+
 actual fun decodeByteArrayToBitMap(byteArray: ByteArray): ImageBitmap?{
     return try{
         BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size).asImageBitmap()
@@ -99,6 +120,62 @@ actual fun decodeByteArrayToBitMap(byteArray: ByteArray): ImageBitmap?{
     {
         null
     }
+}
+
+actual fun decodeBitMapToByteArray(bitmap: ImageBitmap): ByteArray {
+    return try {
+        val androidBitmap = bitmap.asAndroidBitmap()
+        val outputStream = ByteArrayOutputStream()
+        androidBitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+        outputStream.toByteArray()
+    } catch (e: Exception) {
+        throw e
+    }
+}
+
+actual fun cropBitmapToSquare(original: ImageBitmap): ImageBitmap {
+    val width = original.width
+    val height = original.height
+    val size = minOf(width, height)
+    val x = (width - size) / 2
+    val y = (height - size) / 2
+    val new = Bitmap.createBitmap(original.asAndroidBitmap(), x, y, size, size)
+    return new.asImageBitmap()
+}
+
+actual fun compressBitmapToDesiredSize(original: ImageBitmap, maxSizeInKB: Int): ImageBitmap {
+    val bitmap = original.asAndroidBitmap()
+    var quality = 100
+    var compressedBitmap: Bitmap? = null
+
+    do {
+        println(quality)
+        val outputStream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
+        val compressedData = outputStream.toByteArray()
+
+        if (compressedData.size <= (maxSizeInKB*1024)) {
+            compressedBitmap = BitmapFactory.decodeByteArray(compressedData, 0, compressedData.size)
+            break
+        }
+
+        quality -= 5
+    } while (quality > 0)
+
+    return compressedBitmap?.asImageBitmap() ?: original
+}
+
+actual fun resizeImageBitmapWithAspectRatio(original: ImageBitmap, maxDimension: Int): ImageBitmap {
+    val bitmap = original.asAndroidBitmap()
+    val width = bitmap.width
+    val height = bitmap.height
+
+    val scale = if (width > height) maxDimension / width.toFloat() else maxDimension / height.toFloat()
+    val targetWidth = (width * scale).toInt()
+    val targetHeight = (height * scale).toInt()
+
+    val scaledBitmap = Bitmap.createScaledBitmap(bitmap, targetWidth, targetHeight, true)
+    return scaledBitmap.asImageBitmap()
 }
 
 @Composable
@@ -155,12 +232,14 @@ actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
     }
 
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize().background(Color.Black)
     ) {
         if (capturedBitmap.value == null) {
             AndroidView(
                 factory = { previewView },
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center),
                 update = {
                     cameraProviderFuture.addListener({
                         try {
@@ -213,7 +292,6 @@ actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
                     .size(80.dp)
                     .background(Color.White, shape = CircleShape)
             ) {
-                Text("Snap")
             }
             IconButton(
                 onClick = { onClose() },
@@ -234,12 +312,13 @@ actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
                     modifier = Modifier
                         .fillMaxSize()
                         .align(Alignment.Center)
-                        .background(Color.Gray)
+                        .background(Color.Black)
                 ) {
                     Image(
                         bitmap = capturedBitmap.value!!,
                         contentDescription = "Captured Photo",
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .align(Alignment.Center),
                         contentScale = ContentScale.Crop
                     )
                 }
@@ -265,7 +344,7 @@ actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
                         )
                     }
                     IconButton(
-                        onClick = { onSelect(capturedBitmap.value!!) },
+                        onClick = { onSelect(cropBitmapToSquare( capturedBitmap.value!!)) },
                         modifier = Modifier
                             .size(80.dp)
                             .background(MaterialTheme.colorScheme.tertiary, shape = CircleShape)
@@ -282,23 +361,4 @@ actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
             }
         }
     }
-}
-
-
-fun Bitmap.rotate(degrees: Float): Bitmap {
-    val matrix = Matrix().apply { postRotate(degrees) }
-    return Bitmap.createBitmap(this, 0, 0, width, height, matrix, true)
-}
-
-actual fun convertBitMapToBase64(bitmap: ImageBitmap): String {
-    val androidBitmap = bitmap.asAndroidBitmap()
-    val outputStream = ByteArrayOutputStream()
-    androidBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-    val byteArray = outputStream.toByteArray()
-    return Base64.encodeToString(byteArray, Base64.DEFAULT)
-}
-actual fun convertBase64ToBitMap(base64: String): ImageBitmap {
-    val decodedBytes = Base64.decode(base64, Base64.DEFAULT)
-    val bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-    return bitmap.asImageBitmap()
 }

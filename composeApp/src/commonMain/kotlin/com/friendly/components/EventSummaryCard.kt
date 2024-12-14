@@ -5,12 +5,18 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -22,14 +28,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.friendly.App
+import com.friendly.generated.resources.Res
+import com.friendly.generated.resources.sampleEventPhoto
 import com.friendly.models.Event
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -38,7 +50,8 @@ fun EventSummaryCard(event: Pair<Event, List<ImageBitmap>>, navController: NavCo
         Card(
             modifier = modifier
                 .padding(10.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .height(200.dp),
             colors = CardDefaults.cardColors(
                 containerColor = Color.White,
                 contentColor = Color.Black
@@ -49,77 +62,108 @@ fun EventSummaryCard(event: Pair<Event, List<ImageBitmap>>, navController: NavCo
                 navController.navigate("eventDetails/${event.first.id}")
             }
         ) {
-            Column {
-                Row(
-                    modifier = Modifier
-                        .padding(10.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+            Row() {
+                Column(
+                    modifier = Modifier.weight(2 / 5f, true)
                 ) {
-                    Column(
-                        modifier = Modifier.weight(3 / 5f, true)
+                    Image(
+                        painter = painterResource(Res.drawable.sampleEventPhoto),
+                        null,
+                        contentScale = ContentScale.Crop,
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .weight(3 / 5f, true)
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .fillMaxWidth()
+                            .weight(3/5f, true),
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
-                        Text(
-                            text = event.first.title,
-                            fontSize = 25.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
-                    Column(
-                        modifier = Modifier.weight(2 / 5f, false)
-                    ) {
-                        val max = event.first.maxParticipants.toString()
-                        val current = event.second?.size ?: 0
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
+                        Column(
+                            modifier = Modifier.fillMaxSize(),
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = "personIcon"
-                            )
-                            Text(
-                                text = "$current/$max",
-                                fontSize = 25.sp
-                            )
-                        }
-                    }
-                }
-                Row {
-                    Text(
-                        modifier = Modifier.padding(start = 10.dp, end = 10.dp),
-                        text = event.first.date,
-                        fontSize = 15.sp,
+                            Row() {
+                                Text(
+                                    text = event.first.title,
+                                    fontSize = 22.sp,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column() {
+                                    Row() {
+                                        Text(
+                                            text = event.first.date,
+                                            fontSize = 15.sp,
+                                        )
+                                        Spacer(modifier = Modifier.size(5.dp))
+                                        Text(
+                                            text = event.first.time,
+                                            fontSize = 15.sp,
+                                        )
+                                    }
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = event.first.address + "," + event.first.city + "," + event.first.country,
+                                            fontSize = 15.sp,
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+                                }
+                            }
 
-                        )
-                }
-                Row {
-                    Text(
-                        modifier = Modifier.padding(start = 10.dp, end = 10.dp, bottom = 10.dp),
-                        text = event.first.address,
-                        fontSize = 15.sp,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-                if(event.second.isNotEmpty())
-                {
-                    Row {
-                        for (userImage in event.second!!) {
-                            Image(
-                                bitmap = userImage,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .clip(CircleShape)
-                                    .size(50.dp)
-                            )
                         }
                     }
-                }
-                else{
-                    Text(
-                        text = "Be the first one to join!"
-                    )
+                    Row(
+                        modifier = Modifier
+                            .padding(10.dp)
+                            .fillMaxWidth()
+                            .weight(2/5f, true),
+                    ) {
+                        Column() {
+                            val spotsLeft = event.first.maxParticipants!! - event.second.size
+                            Row(){
+                                Text(
+                                    text = spotsLeft.toString(),
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 15.sp
+                                )
+                                Text(
+                                    text = " spots left!",
+                                    fontSize = 15.sp
+                                )
+                            }
+                            Row() {
+                                if (event.second.isNotEmpty()) {
+                                    for (userImage in event.second) {
+                                        Image(
+                                            bitmap = userImage,
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .clip(CircleShape)
+                                                .size(30.dp)
+                                        )
+                                    }
+                                } else {
+                                    Text(
+                                        text = "Be the first one to join!"
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

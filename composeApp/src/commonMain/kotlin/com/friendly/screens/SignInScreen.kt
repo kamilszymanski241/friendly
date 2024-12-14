@@ -31,6 +31,8 @@ import androidx.navigation.NavController
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.friendly_logo_white
 import com.friendly.layouts.ILayoutManager
+import com.friendly.layouts.bars.BottomBarType
+import com.friendly.layouts.bars.TopBarType
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.SignInViewModel
@@ -41,6 +43,8 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SignInScreen(navController: NavController, viewModel: SignInViewModel = koinViewModel (), layoutManager: ILayoutManager = koinInject()) {
     FriendlyAppTheme {
+        layoutManager.setTopBar(TopBarType.WithBackButton)
+        layoutManager.setBottomBar(BottomBarType.Empty)
         val email = viewModel.email.collectAsState(initial = "")
         val password = viewModel.password.collectAsState()
         val errorMessage = viewModel.errorMessage.collectAsState()
@@ -50,8 +54,6 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = koin
                 navController.navigate(AppNavigation.Discover.route)
             }
         }
-/*        layoutManager.setTopBar { TopBarWithBackButton(navController) }
-        layoutManager.setBottomBar {  }*/
         Column(
             modifier = Modifier
                 .fillMaxWidth()

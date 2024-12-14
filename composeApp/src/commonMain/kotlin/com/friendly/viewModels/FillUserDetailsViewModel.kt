@@ -44,28 +44,34 @@ class FillUserDetailsViewModel: ViewModel(), KoinComponent {
         _surname.value = surname
     }
 
-    fun onContinue() {
-        viewModelScope.launch {
-            try {
-                if (userDetailsRepository.createUserDetails(
-                        id = sessionManager.currentUser.value!!.id,
-                        name = _name.value,
-                        surname = _surname.value
-                    )
-                ) {
-                    _success.value = true
+    fun onContinue(): Boolean {
+        if (_name.value == "" || _surname.value == "") {
+            _errorMessage.value = "All fields must be filled"
+            return false
+        } else {
+            viewModelScope.launch {
+                try {
+                    if (userDetailsRepository.createUserDetails(
+                            id = sessionManager.currentUser.value!!.id,
+                            name = _name.value,
+                            surname = _surname.value
+                        )
+                    ) {
+                        _success.value = true
+                    }
+                } catch (e: Exception) {
+                    _errorMessage.value = e.message
                 }
-            } catch (e: Exception) {
-                _errorMessage.value = e.message
             }
-        }
-        sessionManager.setUserDetails(
-            UserDetails(
-                id = "",
-                joined = "",
-                name = _name.value,
-                surname = _surname.value
+            sessionManager.setUserDetails(
+                UserDetails(
+                    id = "",
+                    joined = "",
+                    name = _name.value,
+                    surname = _surname.value
+                )
             )
-        )
+            return true
+        }
     }
 }

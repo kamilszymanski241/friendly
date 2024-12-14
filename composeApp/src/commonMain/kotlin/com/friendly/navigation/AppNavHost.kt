@@ -7,9 +7,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.friendly.layouts.bars.BottomBarType
 import com.friendly.layouts.ILayoutManager
-import com.friendly.layouts.bars.TopBarType
+import com.friendly.screens.AppSettingsScreen
 import com.friendly.screens.CreateEventScreen
 import com.friendly.screens.DiscoverScreen
 import com.friendly.screens.EventDetailsScreen
@@ -36,28 +35,18 @@ fun AppNavHost(
         modifier = modifier
     ) {
         composable(AppNavigation.Discover.route) {
-            layoutManager.setTopBar(TopBarType.Main)
-            layoutManager.setBottomBar(BottomBarType.MainNavigation)
             DiscoverScreen(navController)
         }
         composable(AppNavigation.UpcomingEvents.route) {
-            layoutManager.setTopBar(TopBarType.Main)
-            layoutManager.setBottomBar(BottomBarType.MainNavigation)
             UpcomingEventsScreen()
         }
         composable(AppNavigation.MyEvents.route) {
-            layoutManager.setTopBar(TopBarType.Main)
-            layoutManager.setBottomBar(BottomBarType.MainNavigation)
             MyEventsScreen(navController)
         }
         composable(AppNavigation.SignIn.route) {
-            layoutManager.setTopBar(TopBarType.WithBackButton)
-            layoutManager.setBottomBar(BottomBarType.Empty)
             SignInScreen(navController)
         }
         composable(AppNavigation.SignUp.route) {
-            layoutManager.setTopBar(TopBarType.WithBackButton)
-            layoutManager.setBottomBar(BottomBarType.Empty)
             SignUpScreen(navController)
         }
         composable(AppNavigation.FillUserDetails.route) {
@@ -85,6 +74,9 @@ fun AppNavHost(
         }
         composable(AppNavigation.CreateEvent.route) {
             CreateEventScreen(navController)
+        }
+        composable(AppNavigation.AppSettings.route) {
+            AppSettingsScreen(navController)
         }
     }
 }
