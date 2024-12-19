@@ -4,6 +4,7 @@ import com.friendly.layouts.bars.BottomBarType
 import com.friendly.layouts.bars.TopBarType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class LayoutManager: ILayoutManager {
 
@@ -13,13 +14,18 @@ class LayoutManager: ILayoutManager {
     private val _currentBottomBar = MutableStateFlow<BottomBarType>(BottomBarType.MainNavigation)
     override val currentBottomBar: Flow<BottomBarType> = _currentBottomBar
 
+    private val _areBarsReady = MutableStateFlow(true)
+    override val areBarsReady: StateFlow<Boolean> = _areBarsReady
 
-    override fun setTopBar(content: TopBarType) {
-        _currentTopBar.value = content
+    override suspend fun setBars(topBar: TopBarType, bottomBar: BottomBarType) {
+        changeTopBarSetStatus(false)
+        _currentTopBar.emit(topBar)
+        _currentBottomBar.emit(bottomBar)
+        changeTopBarSetStatus(true)
     }
 
-    override fun setBottomBar(content: BottomBarType) {
-        _currentBottomBar.value = content
+    override fun changeTopBarSetStatus(isSet: Boolean)
+    {
+        _areBarsReady.value = isSet
     }
-
 }

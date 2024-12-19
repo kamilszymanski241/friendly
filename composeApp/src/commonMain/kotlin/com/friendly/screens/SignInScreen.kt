@@ -43,12 +43,13 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun SignInScreen(navController: NavController, viewModel: SignInViewModel = koinViewModel (), layoutManager: ILayoutManager = koinInject()) {
     FriendlyAppTheme {
-        layoutManager.setTopBar(TopBarType.WithBackButton)
-        layoutManager.setBottomBar(BottomBarType.Empty)
         val email = viewModel.email.collectAsState(initial = "")
         val password = viewModel.password.collectAsState()
         val errorMessage = viewModel.errorMessage.collectAsState()
         val successState = viewModel.success.collectAsState()
+        LaunchedEffect(Unit){
+            layoutManager.setBars(TopBarType.WithBackButton, BottomBarType.Empty)
+        }
         LaunchedEffect(successState.value) {
             if (successState.value) {
                 navController.navigate(AppNavigation.Discover.route)

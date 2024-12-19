@@ -49,8 +49,9 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Regi
                 navController.navigate(AppNavigation.Discover.route)
             }
         }
-        layoutManager.setTopBar(TopBarType.WithBackButton)
-        layoutManager.setBottomBar(BottomBarType.Empty)
+        LaunchedEffect(Unit){
+            layoutManager.setBars(TopBarType.WithBackButton, BottomBarType.Empty)
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()

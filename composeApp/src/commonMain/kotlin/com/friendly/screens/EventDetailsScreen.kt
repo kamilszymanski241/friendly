@@ -31,8 +31,11 @@ import org.koin.core.parameter.parametersOf
 
 @Composable
 fun EventDetailsScreen(eventId: String, navController: NavController, layoutManager: ILayoutManager = koinInject ()) {
-    layoutManager.setTopBar(TopBarType.WithBackButton)
-    layoutManager.setBottomBar(BottomBarType.Empty)
+
+    LaunchedEffect(Unit){
+        layoutManager.setBars(TopBarType.WithBackButton,BottomBarType.Empty)
+    }
+
     val viewModel: EventDetailsScreenViewModel =
         koinViewModel(parameters = { parametersOf(eventId) })
 

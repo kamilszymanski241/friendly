@@ -50,8 +50,9 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadProfilePictureViewModel = koinViewModel (), layoutManager: ILayoutManager = koinInject ()) {
-    layoutManager.setTopBar(TopBarType.WithBackButton)
-    layoutManager.setBottomBar(BottomBarType.Empty)
+    LaunchedEffect(Unit){
+        layoutManager.setBars(TopBarType.WithBackButton, BottomBarType.Empty)
+    }
     FriendlyAppTheme {
         val capturedPhoto = viewModel.userProfilePicture.collectAsState()
         var showCamera by remember{ mutableStateOf(false) }
@@ -136,16 +137,16 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadPr
             LaunchedEffect(Unit){
                 delay(100)
             }
-            layoutManager.setTopBar(TopBarType.Empty)
+           // layoutManager.setTopBar(TopBarType.Empty)
             CapturePhoto(onSelect = { picture ->
                 viewModel.setPicture(picture)
                 showCamera = false
-                layoutManager.setTopBar(TopBarType.WithBackButton)
+                //layoutManager.setTopBar(TopBarType.WithBackButton)
                 viewModel.setErrorMessage("")
             },
                 onClose = {
                     showCamera = false
-                    layoutManager.setTopBar(TopBarType.WithBackButton)
+                    //layoutManager.setTopBar(TopBarType.WithBackButton)
                 })
         }
     }

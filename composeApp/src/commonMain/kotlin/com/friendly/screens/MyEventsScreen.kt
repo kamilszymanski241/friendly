@@ -11,6 +11,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,8 +26,9 @@ import org.koin.compose.koinInject
 
 @Composable
 fun MyEventsScreen(navController: NavController, layoutManager: ILayoutManager = koinInject()) {
-    layoutManager.setTopBar(TopBarType.Main)
-    layoutManager.setBottomBar(BottomBarType.MainNavigation)
+    LaunchedEffect(Unit){
+        layoutManager.setBars(TopBarType.WithBackButton, BottomBarType.Empty)
+    }
     FriendlyAppTheme {
         Column(
             modifier = Modifier.fillMaxWidth(),

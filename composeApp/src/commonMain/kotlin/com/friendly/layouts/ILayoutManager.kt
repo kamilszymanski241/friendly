@@ -3,6 +3,7 @@ package com.friendly.layouts
 import com.friendly.layouts.bars.BottomBarType
 import com.friendly.layouts.bars.TopBarType
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 interface ILayoutManager {
 
@@ -10,8 +11,11 @@ interface ILayoutManager {
 
     val currentBottomBar: Flow<BottomBarType>
 
-    fun setTopBar(content: TopBarType)
+    val areBarsReady: StateFlow<Boolean>
 
-    fun setBottomBar(content: BottomBarType)
+    suspend fun setBars(topBar: TopBarType, bottomBar: BottomBarType)
+
+    fun changeTopBarSetStatus(isSet: Boolean)
+
 
 }
