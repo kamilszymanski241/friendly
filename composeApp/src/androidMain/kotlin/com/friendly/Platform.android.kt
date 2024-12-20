@@ -261,11 +261,24 @@ actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
                     }
                     bindCameraUseCases()
                 },
-                modifier = Modifier.align(Alignment.TopCenter)
+                modifier = Modifier
+                    .align(Alignment.TopCenter)
+                    .padding(top = 30.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = "Switch Camera"
+                )
+            }
+            IconButton(
+                onClick = { onClose() },
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 30.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Close"
                 )
             }
             Button(
@@ -292,15 +305,6 @@ actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
                     .size(80.dp)
                     .background(Color.White, shape = CircleShape)
             ) {
-            }
-            IconButton(
-                onClick = { onClose() },
-                modifier = Modifier.align(Alignment.TopEnd)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Close"
-                )
             }
         } else {
             Box(

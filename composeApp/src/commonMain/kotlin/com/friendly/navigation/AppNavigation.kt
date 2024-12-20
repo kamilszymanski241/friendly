@@ -1,16 +1,19 @@
 package com.friendly.navigation
 
 sealed class AppNavigation(val route: String, val label: String){
-    object CreateEvent : AppNavigation("createEvent", "Create New Event")
-    object SignIn: AppNavigation("signIn", "Sign In")
-    object SignUp: AppNavigation("signUp", "Sign Up")
-    object Discover: AppNavigation (route = "discover", label = "Discover")
-    object UpcomingEvents: AppNavigation (route = "upcomingEvents", label = "Upcoming Events")
-    object MyEvents: AppNavigation (route = "myEvents", label = "My Events")
-    object FillUserDetails: AppNavigation(route = "fillUserDetails", label = "Fill User Details")
-    object UploadProfilePicture: AppNavigation(route = "uploadAProfilePicture", label = "Upload A Profile Picture")
-    object RegisterEmailAndPassword: AppNavigation(route = "registerEmailAndPassword", label = "Please provide email and password")
-    object UserProfile: AppNavigation(route= "userProfile", label = "User Profile")
-    object EventDetails: AppNavigation(route="eventDetails/{eventId}", label = "Event Details")
-    object AppSettings: AppNavigation(route="appSetings", label = "App settings")
+    data object Discover: AppNavigation (route = "discover", label = "Discover")
+    data object UpcomingEvents: AppNavigation (route = "upcomingEvents", label = "Upcoming Events")
+    data object MyEvents: AppNavigation (route = "myEvents", label = "My Events")
+
+    data object ChooseSignUpMethod: AppNavigation("chooseSignUpMethod", "Sign Up")
+    data object FillUserDetails: AppNavigation(route = "fillUserDetails", label = "Fill User Details")
+    data object UploadProfilePicture: AppNavigation(route = "uploadAProfilePicture", label = "Upload A Profile Picture")
+    data object RegisterEmailAndPassword: AppNavigation(route = "registerEmailAndPassword", label = "Please provide email and password")
+
+    data object SignIn: AppNavigation("signIn", "Sign In")
+    data object CreateEvent : AppNavigation("createEvent", "Create New Event")
+    data object UserProfile: AppNavigation(route= "userProfile", label = "User Profile")
+    data object EventDetails: AppNavigation(route="eventDetails/{eventId}", label = "Event Details")
+    data object AppSettings: AppNavigation(route="appSetings", label = "App settings")
+    data object HomeScreen: AppNavigation(route="homeScreen", label = "Home Screen")
 }

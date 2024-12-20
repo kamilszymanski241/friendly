@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -51,9 +54,8 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainTopBar(navController: NavController, viewModel: MainTopBarViewModel = koinViewModel (), auth: Auth = koinInject()) {
+fun HomeScreenTopBar(navController: NavController, viewModel: MainTopBarViewModel = koinViewModel (), auth: Auth = koinInject()) {
     val user by viewModel.user.collectAsState()
-    val userDetails by viewModel.userDetails.collectAsState()
     val userProfilePicture by viewModel.userProfilePicture.collectAsState()
     val sessionStatus by viewModel.sessionStatus.collectAsState()
     val userDetailsStatus by viewModel.userDetailsStatus.collectAsState()
@@ -74,28 +76,46 @@ fun MainTopBar(navController: NavController, viewModel: MainTopBarViewModel = ko
                     modifier = Modifier.size(100.dp)
                 )
                 if (user == null) {
-                    TextButton(
-                        onClick = {
-                            navController.navigate(AppNavigation.SignIn.route) {
-                                launchSingleTop = true
-                                restoreState = true
-                                popUpTo(navController.graph.startDestinationId) {
-                                    saveState = true
+                    Row {
+                        TextButton(
+                            onClick = {
+                                navController.navigate(AppNavigation.SignIn.route) {
+                                    launchSingleTop = true
+                                    restoreState = true
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
                                 }
                             }
+                        ) {
+                            Text(
+                                text = AppNavigation.SignIn.label,
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
                         }
-                    ) {
-                        Text(
-                            text = AppNavigation.SignIn.label,
-                            fontSize = 16.sp,
-                            color = Color.White
-                        )
+                        OutlinedButton(
+                            onClick = {
+                                navController.navigate(AppNavigation.ChooseSignUpMethod.route) {
+                                    launchSingleTop = true
+                                    restoreState = true
+                                    popUpTo(navController.graph.startDestinationId) {
+                                        saveState = true
+                                    }
+                                }
+                            }
+                        ) {
+                            Text(
+                                text = AppNavigation.ChooseSignUpMethod.label,
+                                fontSize = 16.sp,
+                                color = Color.White
+                            )
+                        }
                     }
                 } else if (sessionStatus == SessionStatus.Initializing || userDetailsStatus == UserDetailsStatus.Initializing || userProfilePictureStatus == UserDetailsStatus.Initializing) {
-                    Text(
-                        text = "...",
-                        fontSize = 16.sp,
-                        color = Color.White
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .padding(end = 12.dp)
                     )
                 } else {
                     TextButton(
@@ -123,7 +143,7 @@ fun MainTopBar(navController: NavController, viewModel: MainTopBarViewModel = ko
 }
 
 @Composable
-fun MainNavBar(navController: NavController) {
+fun HomeScreenNavBar(navController: NavController) {
     NavigationBar(
         modifier = Modifier
             .fillMaxWidth()
@@ -237,7 +257,9 @@ fun TopBarWithBackButton(navController: NavController) {
         ),
         title = {
             IconButton(
-                onClick = { navController.popBackStack() },
+                onClick = {
+                    navController.popBackStack()
+                },
             ) {
                 Icon(
                     Icons.AutoMirrored.Default.ArrowBack,

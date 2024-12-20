@@ -1,7 +1,5 @@
 package com.friendly.di
 
-import com.friendly.layouts.ILayoutManager
-import com.friendly.layouts.LayoutManager
 import com.friendly.repositories.AuthRepository
 import com.friendly.repositories.EventRepository
 import com.friendly.repositories.EventUserRepository
@@ -36,7 +34,6 @@ val appModule = module {
     single<IUserDetailsRepository>{UserDetailsRepository()}
     single<ISessionManager>{SessionManager()}
     single<IEventUserRepository>{EventUserRepository()}
-    single<ILayoutManager>{LayoutManager()}
     viewModelOf(::DiscoverScreenViewModel)
     viewModelOf(::SignInViewModel)
     viewModelOf(::SignUpViewModel)

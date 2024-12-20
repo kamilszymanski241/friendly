@@ -45,7 +45,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun EventSummaryCard(event: Pair<Event, List<ImageBitmap>>, navController: NavController, modifier: Modifier = Modifier) {
+fun EventSummaryCard(event: Pair<Event, List<ImageBitmap>>, navController: NavController, appNavController: NavController, modifier: Modifier = Modifier) {
     FriendlyAppTheme {
         Card(
             modifier = modifier
@@ -59,7 +59,7 @@ fun EventSummaryCard(event: Pair<Event, List<ImageBitmap>>, navController: NavCo
             elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
             shape = MaterialTheme.shapes.large,
             onClick = {
-                navController.navigate("eventDetails/${event.first.id}")
+                appNavController.navigate("eventDetails/${event.first.id}")
             }
         ) {
             Row() {
