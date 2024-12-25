@@ -1,11 +1,17 @@
 package com.friendly
 
+import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.net.Uri
 import android.os.Build
 import android.util.Base64
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
@@ -18,54 +24,53 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.navigation.NavController
-import com.friendly.navigation.AppNavigation
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.serialization.json.Json
 import java.io.ByteArrayOutputStream
+
 
 class AndroidPlatform : Platform {
     override val name: String = "Android ${Build.VERSION.SDK_INT}"
@@ -178,6 +183,7 @@ actual fun resizeImageBitmapWithAspectRatio(original: ImageBitmap, maxDimension:
     return scaledBitmap.asImageBitmap()
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
     val context = LocalContext.current
@@ -189,6 +195,9 @@ actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
     val capturedBitmap = remember { mutableStateOf<ImageBitmap?>(null) }
     val lensFacing = rememberSaveable { mutableStateOf(CameraSelector.LENS_FACING_BACK) }
     val cameraProvider = remember { mutableStateOf<ProcessCameraProvider?>(null) }
+    val showRationale = remember { mutableStateOf(false) }
+
+    val cameraPermissionState = rememberPermissionState(android.Manifest.permission.CAMERA)
 
     BackHandler {
         if (capturedBitmap.value != null) {
@@ -197,6 +206,31 @@ actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
             onClose()
         }
     }
+
+    val requestPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            // Permission granted
+            println("PERMISSION GRANTED")
+        } else {
+            // Handle permission denial
+            println("PERMISSION DENIED")
+            onClose()
+            //TODO()
+        }
+    }
+
+    LaunchedEffect(cameraPermissionState) {
+        if (!cameraPermissionState.status.isGranted && cameraPermissionState.status.shouldShowRationale) {
+            // Show rationale- alert dialog
+            showRationale.value = true
+        } else {
+            // Request permission
+            requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+        }
+    }
+
 
     fun bindCameraUseCases() {
         cameraProvider.value?.let { provider ->
@@ -234,6 +268,34 @@ actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize().background(Color.Black)
     ) {
+        if(showRationale.value)
+        {
+            AlertDialog(
+                onDismissRequest = { showRationale.value = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+                        showRationale.value = false
+                    }) {
+                        Text(
+                            "Ok",
+                            color = Color.Black
+                        )
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = { onClose() }
+                    )
+                    {
+                        Text(
+                            "Cancel",
+                            color = Color.Black)
+                    }
+                },
+                text = { Text("You need to allow the needed permissions") }
+            )
+        }
         if (capturedBitmap.value == null) {
             AndroidView(
                 factory = { previewView },
@@ -348,7 +410,7 @@ actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
                         )
                     }
                     IconButton(
-                        onClick = { onSelect(cropBitmapToSquare( capturedBitmap.value!!)) },
+                        onClick = { onSelect(cropBitmapToSquare(capturedBitmap.value!!)) },
                         modifier = Modifier
                             .size(80.dp)
                             .background(MaterialTheme.colorScheme.tertiary, shape = CircleShape)
@@ -364,5 +426,36 @@ actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
                 }
             }
         }
+    }
+}
+
+@Composable
+actual fun PickPhoto(
+    onSelect: (ImageBitmap) -> Unit,
+    onClose: () -> Unit
+) {
+    val context = LocalContext.current
+    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+        if (uri != null) {
+            onSelect(cropBitmapToSquare(uriToImageBitmap(context, uri)!!))
+        } else {
+            onClose()
+        }
+    }
+    LaunchedEffect(Unit) {
+        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+    }
+}
+
+fun uriToImageBitmap(context: Context, uri: Uri): ImageBitmap? {
+    return try {
+        val resolver = context.contentResolver
+        val inputStream = resolver.openInputStream(uri)
+        val bitmap = BitmapFactory.decodeStream(inputStream)
+        inputStream?.close()
+        bitmap?.asImageBitmap()
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
     }
 }

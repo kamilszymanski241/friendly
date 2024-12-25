@@ -29,3 +29,6 @@ expect fun resizeImageBitmapWithAspectRatio(original: ImageBitmap, maxDimension:
 
 @Composable
 expect fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: ()-> Unit)
+
+@Composable
+expect fun PickPhoto(onSelect: (ImageBitmap) ->Unit, onClose: ()->Unit)

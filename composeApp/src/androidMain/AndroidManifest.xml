@@ -8,6 +8,9 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -26,6 +29,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="android.content.PermissionsPolicy"
+            android:value="allowAll" />
+        <meta-data
+            android:name="android.permission-group.STORAGE"
+            android:value="Aplikacja wymaga dostępu do zdjęć, aby użytkownik mógł przesyłać pliki." />
     </application>
 
 </manifest>

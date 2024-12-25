@@ -39,3 +39,10 @@ actual fun resizeImageBitmapWithAspectRatio(
 ): ImageBitmap {
     TODO("Not yet implemented")
 }
+
+@Composable
+actual fun PickPhoto(
+    onSelect: (ImageBitmap) -> Unit,
+    onClose: () -> Unit
+) {
+}

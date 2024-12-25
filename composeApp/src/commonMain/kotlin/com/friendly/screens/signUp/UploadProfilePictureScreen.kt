@@ -13,8 +13,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.friendly.CapturePhoto
+import com.friendly.PickPhoto
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.default
 import com.friendly.layouts.bars.TopBarWithBackButton
@@ -50,17 +54,18 @@ import org.koin.compose.viewmodel.koinViewModel
 fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadProfilePictureViewModel = koinViewModel ()) {
     val capturedPhoto = viewModel.userProfilePicture.collectAsState()
     var showCamera by remember { mutableStateOf(false) }
+    var showPhotoPicker by remember { mutableStateOf(false) }
     val errorMessage = viewModel.errorMessage.collectAsState()
     FriendlyAppTheme {
         Scaffold(
             topBar = {
-                if(showCamera.not()) {
+                if (showCamera.not()) {
                     TopBarWithBackButton(navController)
                 }
             },
             bottomBar = {},
             containerColor = MaterialTheme.colorScheme.secondary
-        ) { innerPadding->
+        ) { innerPadding ->
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -84,8 +89,7 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadPr
                         )
                     }
                     Spacer(modifier = Modifier.size(20.dp))
-                    Box(
-                    ) {
+                    Box() {
                         if (capturedPhoto.value == null) {
                             Image(
                                 painter = painterResource(Res.drawable.default),
@@ -104,22 +108,48 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadPr
                                     .clip(CircleShape)
                             )
                         }
-                        IconButton(
-                            onClick = {
-                                showCamera = true
-                            },
+                        var showDropDownMenu by remember { mutableStateOf(false) }
+                        Box(
                             modifier = Modifier
-                                .size(50.dp)
                                 .align(Alignment.BottomEnd)
-                                .background(Color.White, shape = CircleShape)
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.AddCircle,
-                                contentDescription = "Add",
-                                tint = MaterialTheme.colorScheme.tertiary,
+                            IconButton(
+                                onClick = {
+                                    showDropDownMenu = !showDropDownMenu
+                                },
                                 modifier = Modifier
                                     .size(50.dp)
-                            )
+                                    .background(Color.White, shape = CircleShape)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.AddCircle,
+                                    contentDescription = "Add",
+                                    tint = MaterialTheme.colorScheme.tertiary,
+                                    modifier = Modifier
+                                        .size(50.dp)
+                                )
+                            }
+                            DropdownMenu(
+                                expanded = showDropDownMenu,
+                                onDismissRequest = { showDropDownMenu = false },
+                                modifier = Modifier
+                                    .align(Alignment.BottomEnd)
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("Choose from gallery") },
+                                    onClick = {
+                                        showPhotoPicker = true
+                                        showDropDownMenu = false
+                                    }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("Take new photo") },
+                                    onClick = {
+                                        showCamera = true
+                                        showDropDownMenu = false
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -148,6 +178,19 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadPr
                 },
                     onClose = {
                         showCamera = false
+                    })
+            }
+            if (showPhotoPicker) {
+                LaunchedEffect(Unit) {
+                    delay(100)
+                }
+                PickPhoto(onSelect = { picture ->
+                    viewModel.setPicture(picture)
+                    showPhotoPicker = false
+                    viewModel.setErrorMessage("")
+                },
+                    onClose = {
+                        showPhotoPicker = false
                     })
             }
         }

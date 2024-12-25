@@ -67,7 +67,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = koin
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(innerPadding),
-                verticalArrangement = Arrangement.Center,
+                verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Image(
