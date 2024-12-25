@@ -11,17 +11,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.friendly.layouts.bars.HomeScreenNavBar
 import com.friendly.layouts.bars.HomeScreenTopBar
 import com.friendly.themes.FriendlyAppTheme
 import org.koin.compose.koinInject
 
 @Composable
-fun UpcomingEventsScreen(navController: NavController){
+fun UpcomingEventsScreen(navController: NavController, modifier: Modifier = Modifier){
     FriendlyAppTheme {
         Row(
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()
+            modifier = modifier
         ){
             Text(
                 text = "TODO- Upcoming Events"

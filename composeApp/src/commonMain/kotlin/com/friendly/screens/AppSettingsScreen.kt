@@ -41,20 +41,20 @@ fun AppSettingsScreen(navController: NavController, viewModel: AppSettingsScreen
                 OutlinedButton(
                     onClick = {
                         viewModel.onSignOut()
-                        navController.navigate(AppNavigation.Discover.route)
+                        navController.navigate(AppNavigation.HomeScreen.route)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(20.dp)
                         .align(Alignment.BottomCenter),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.White,
+                        containerColor = Color.Red,
                         contentColor = Color.Red
                     )
                 ) {
                     Text(
                         text = "Sign Out",
-                        color = Color.Red,
+                        color = Color.White,
                         fontSize = 15.sp
                     )
                 }

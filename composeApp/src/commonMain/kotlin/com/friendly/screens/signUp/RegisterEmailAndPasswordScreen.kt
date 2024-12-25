@@ -44,7 +44,7 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Regi
     FriendlyAppTheme {
         LaunchedEffect(successState.value) {
             if (successState.value) {
-                navController.navigate(AppNavigation.Discover.route)
+                navController.navigate(AppNavigation.HomeScreen.route)
             }
         }
         Scaffold(
