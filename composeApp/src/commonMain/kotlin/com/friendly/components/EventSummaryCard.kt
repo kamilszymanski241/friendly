@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil3.compose.AsyncImage
 import com.friendly.App
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.sampleEventPhoto
@@ -45,7 +46,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun EventSummaryCard(event: Pair<Event, List<ImageBitmap>>, navController: NavController, modifier: Modifier = Modifier) {
+fun EventSummaryCard(event: Event, navController: NavController, modifier: Modifier = Modifier) {
     FriendlyAppTheme {
         Card(
             modifier = modifier
@@ -59,7 +60,7 @@ fun EventSummaryCard(event: Pair<Event, List<ImageBitmap>>, navController: NavCo
             elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
             shape = MaterialTheme.shapes.large,
             onClick = {
-                navController.navigate("eventDetails/${event.first.id}")
+                navController.navigate("eventDetails/${event.id}")
             }
         ) {
             Row() {
@@ -90,7 +91,7 @@ fun EventSummaryCard(event: Pair<Event, List<ImageBitmap>>, navController: NavCo
                         ) {
                             Row() {
                                 Text(
-                                    text = event.first.title,
+                                    text = event.title,
                                     fontSize = 22.sp,
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis
@@ -102,12 +103,12 @@ fun EventSummaryCard(event: Pair<Event, List<ImageBitmap>>, navController: NavCo
                                 Column() {
                                     Row() {
                                         Text(
-                                            text = event.first.date,
+                                            text = event.date,
                                             fontSize = 15.sp,
                                         )
                                         Spacer(modifier = Modifier.size(5.dp))
                                         Text(
-                                            text = event.first.time,
+                                            text = event.time,
                                             fontSize = 15.sp,
                                         )
                                     }
@@ -115,7 +116,7 @@ fun EventSummaryCard(event: Pair<Event, List<ImageBitmap>>, navController: NavCo
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Text(
-                                            text = event.first.address + "," + event.first.city + "," + event.first.country,
+                                            text = event.address + "," + event.city + "," + event.country,
                                             fontSize = 15.sp,
                                             maxLines = 2,
                                             overflow = TextOverflow.Ellipsis
@@ -133,7 +134,7 @@ fun EventSummaryCard(event: Pair<Event, List<ImageBitmap>>, navController: NavCo
                             .weight(2/5f, true),
                     ) {
                         Column() {
-                            val spotsLeft = event.first.maxParticipants!! - event.second.size
+                            val spotsLeft = event.maxParticipants!! - (event.participants?.size ?: 0)
                             Row(){
                                 Text(
                                     text = spotsLeft.toString(),
@@ -146,10 +147,10 @@ fun EventSummaryCard(event: Pair<Event, List<ImageBitmap>>, navController: NavCo
                                 )
                             }
                             Row() {
-                                if (event.second.isNotEmpty()) {
-                                    for (userImage in event.second) {
-                                        Image(
-                                            bitmap = userImage,
+                                if (event.participants!!.isNotEmpty()) {
+                                    for (participant in event.participants) {
+                                        AsyncImage(
+                                            model = participant.profilePictureUrl,
                                             contentDescription = null,
                                             modifier = Modifier
                                                 .clip(CircleShape)

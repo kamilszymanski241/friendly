@@ -1,6 +1,7 @@
 package com.friendly.dtos
 
 import com.friendly.models.Event
+import com.friendly.models.UserDetails
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -38,7 +39,10 @@ data class EventDTO (
     val date: String,
 
     @SerialName("time")
-    val time: String
+    val time: String,
+
+    @SerialName("UserDetails")
+    val participants: List<UserDetailsDTO>? = null
 
 ) {
     fun asDomainModel(): Event {
@@ -64,8 +68,9 @@ data class EventDTO (
 
             date = this.date,
 
-            time = this.time
+            time = this.time,
 
+            participants = this.participants?.map { it.asDomainModel() }
         )
     }
 }

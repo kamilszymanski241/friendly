@@ -1,4 +1,4 @@
-package com.friendly.layouts.bars
+package com.friendly.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -7,24 +7,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -40,12 +32,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
+import coil3.compose.AsyncImage
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.friendly_logo_white
 import com.friendly.navigation.AppNavigation
-import com.friendly.session.UserDetailsStatus
-import com.friendly.viewModels.MainTopBarViewModel
+import com.friendly.managers.UserDetailsStatus
+import com.friendly.viewModels.HomeScreenTopBarViewModel
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.status.SessionStatus
 import org.jetbrains.compose.resources.painterResource
@@ -54,12 +46,13 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenTopBar(navController: NavController, viewModel: MainTopBarViewModel = koinViewModel (), auth: Auth = koinInject()) {
+fun HomeScreenTopBar(navController: NavController, viewModel: HomeScreenTopBarViewModel = koinViewModel (), auth: Auth = koinInject()) {
     val user by viewModel.user.collectAsState()
-    val userProfilePicture by viewModel.userProfilePicture.collectAsState()
+   // val userProfilePicture by viewModel.userProfilePicture.collectAsState()
+    val userDetails by viewModel.userDetails.collectAsState()
     val sessionStatus by viewModel.sessionStatus.collectAsState()
     val userDetailsStatus by viewModel.userDetailsStatus.collectAsState()
-    val userProfilePictureStatus by viewModel.userProfilePictureStatus.collectAsState()
+   // val userProfilePictureStatus by viewModel.userProfilePictureStatus.collectAsState()
     TopAppBar(
         colors = topAppBarColors(
             containerColor = MaterialTheme.colorScheme.tertiary,
@@ -112,7 +105,7 @@ fun HomeScreenTopBar(navController: NavController, viewModel: MainTopBarViewMode
                             )
                         }
                     }
-                } else if (sessionStatus == SessionStatus.Initializing || userDetailsStatus == UserDetailsStatus.Initializing || userProfilePictureStatus == UserDetailsStatus.Initializing) {
+                } else if (sessionStatus == SessionStatus.Initializing || userDetailsStatus == UserDetailsStatus.Initializing) {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .padding(end = 12.dp)
@@ -123,10 +116,10 @@ fun HomeScreenTopBar(navController: NavController, viewModel: MainTopBarViewMode
                             navController.navigate(AppNavigation.UserProfile.route)
                         }
                     ) {
-                        if (userDetailsStatus == UserDetailsStatus.Success && userDetailsStatus == UserDetailsStatus.Success) {
-                            Image(
-                                bitmap = userProfilePicture!!,
-                                contentDescription = null,
+                        if (userDetailsStatus == UserDetailsStatus.Success) {
+                            AsyncImage(
+                                model = userDetails?.profilePictureUrl,
+                                contentDescription = "User Profile Picture",
                                 modifier = Modifier
                                     .clip(CircleShape)
                             )

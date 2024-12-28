@@ -16,7 +16,7 @@ class StorageRepository: IStorageRepository, KoinComponent {
         storage.createBucket(id = userId)
     }
 
-    override suspend fun uploadAProfilePicture(userId: String, picture: ImageBitmap):Boolean {
+    override suspend fun uploadAProfilePicture(userId: String, picture: ImageBitmap): Boolean {
         val bucket = storage.from("profilePictures")
         return try {
             val resizedPicture = resizeImageBitmapWithAspectRatio(picture, 1000)
@@ -28,9 +28,9 @@ class StorageRepository: IStorageRepository, KoinComponent {
         }
     }
 
-    override suspend fun fetchProfilePicture(userId: String): ImageBitmap {
+/*    override suspend fun fetchProfilePicture(userId: String): String {
         val bucket = storage.from("profilePictures")
-        return try {
+        *//*        return try {
             decodeByteArrayToBitMap(bucket.downloadPublic("$userId.jpg"))!!
         } catch (e: Exception) {
             return try {
@@ -38,6 +38,15 @@ class StorageRepository: IStorageRepository, KoinComponent {
             } catch (e: Exception) {
                 throw e
             }
+        }*//*
+        return try {
+            bucket.publicUrl("$userId.jpg")
+        } catch (e: Exception) {
+            return try {
+                bucket.publicUrl("default.jpg")
+            } catch (e: Exception) {
+                throw e
+            }
         }
-    }
+    }*/
 }

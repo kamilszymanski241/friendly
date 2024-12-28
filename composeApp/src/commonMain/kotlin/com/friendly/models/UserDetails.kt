@@ -8,5 +8,9 @@ data class UserDetails(
 
     val surname : String,
 
-    val joined: String
+    val joined: String,
+
+    val profilePictureUrl: String,
+
+    val events: List<Event>? = null
 )

@@ -5,5 +5,5 @@ import androidx.compose.ui.graphics.ImageBitmap
 interface IStorageRepository {
     suspend fun createUserBucket(userId: String)
     suspend fun uploadAProfilePicture(userId: String, picture: ImageBitmap):Boolean
-    suspend fun fetchProfilePicture(userId: String): ImageBitmap
+   // suspend fun fetchProfilePicture(userId: String): String
 }

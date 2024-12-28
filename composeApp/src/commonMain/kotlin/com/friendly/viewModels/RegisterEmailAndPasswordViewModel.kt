@@ -2,12 +2,10 @@ package com.friendly.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.friendly.managers.IRegistrationManager
 import com.friendly.repositories.IAuthRepository
 import com.friendly.repositories.IStorageRepository
-import com.friendly.repositories.IUserDetailsRepository
-import com.friendly.session.ISessionManager
-import com.friendly.session.UserDetailsStatus
-import io.github.jan.supabase.auth.status.SessionStatus
+import com.friendly.managers.ISessionManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,13 +16,10 @@ import org.koin.core.component.inject
 
 class RegisterEmailAndPasswordViewModel: KoinComponent, ViewModel() {
 
-    private val authRepository: IAuthRepository by inject()
-    private val userDetailsRepository: IUserDetailsRepository by inject()
-    private val storageRepository: IStorageRepository by inject()
-    private val sessionManager: ISessionManager by inject()
+    private val registrationManager: IRegistrationManager by inject()
 
     private val _email = MutableStateFlow("")
-    val email: Flow<String> = _email
+    val email: StateFlow<String> = _email
 
     private val _password = MutableStateFlow("")
     val password = _password
@@ -54,28 +49,11 @@ class RegisterEmailAndPasswordViewModel: KoinComponent, ViewModel() {
         viewModelScope.launch {
             if(password.value == passwordRepeat.value)
             {
+                registrationManager.updateEmail(_email.value)
+                registrationManager.updatePassword(_password.value)
                 try {
-                    if(authRepository.signUp(
-                            email = _email.value,
-                            password = _password.value
-                        ))
-                    {
-                        if(userDetailsRepository.createUserDetails(
-                               id = sessionManager.currentUser.value!!.id,
-                               name = sessionManager.currentUserDetails.value!!.name,
-                               surname = sessionManager.currentUserDetails.value!!.surname))
-                        {
-                            sessionManager.initUserDetails()
-                            if(storageRepository.uploadAProfilePicture(
-                                sessionManager.currentUser.value!!.id,
-                                sessionManager.userProfilePicture.value!!
-                            ))
-                            {
-                                sessionManager.fetchProfilePicture()
-                                _success.value = true
-                            }
-                        }
-                    }
+                    registrationManager.registerUser()
+                    success.value = true
                 }
                 catch (e: Exception)
                 {

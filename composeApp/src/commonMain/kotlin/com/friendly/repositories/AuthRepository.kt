@@ -1,6 +1,5 @@
 package com.friendly.repositories
 
-import com.friendly.session.ISessionManager
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.providers.builtin.Email
 import org.koin.core.component.KoinComponent

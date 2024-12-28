@@ -22,6 +22,8 @@ data class Event(
 
     val date: String,
 
-    val time: String
+    val time: String,
+
+    val participants: List<UserDetails>? = null
 
 )

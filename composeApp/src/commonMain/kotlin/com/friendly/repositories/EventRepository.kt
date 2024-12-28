@@ -2,6 +2,7 @@ package com.friendly.repositories
 
 import com.friendly.dtos.EventDTO
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -12,19 +13,23 @@ class EventRepository: IEventRepository, KoinComponent {
 
     private val postgrest: Postgrest by inject()
 
-    override suspend fun getEvents(): List<EventDTO> {
+    override suspend fun getEventsWithParticipants(): List<EventDTO> {
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
-                .select() {
+                .select(
+                    Columns.raw("id, created_at, title, country, city, postal_code, address, description, max_participants, date, time, UserDetails(id, created_at, name, surname)")
+                ) {
                 }.decodeList<EventDTO>()
             result
         }
     }
 
-    override suspend fun getEvent(eventId: String): EventDTO {
+    override suspend fun getEventWithParticipants(eventId: String): EventDTO {
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
-                .select() {
+                .select(
+                    Columns.raw("id, created_at, title, country, city, postal_code, address, description, max_participants, date, time, UserDetails(id, created_at, name, surname)")
+                ) {
                     filter {
                         eq("id", eventId)
                     }
@@ -33,17 +38,17 @@ class EventRepository: IEventRepository, KoinComponent {
         }
     }
 
-/*    override suspend fun getUpcomingEvents(userId: String): EventDTO {
+    override suspend fun getEventsByUserId(userId: String): List<EventDTO> {
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
                 .select() {
                     filter {
-                        eq("id", id)
+                        eq("id", userId)
                     }
-                }.decodeSingle<EventDTO>()
+                }.decodeList<EventDTO>()
             result
         }
-    }*/
+    }
 
 /*    suspend fun getEventsWithParticipants(eventId: Int): List<EventDTO> {
         return withContext(Dispatchers.IO) {

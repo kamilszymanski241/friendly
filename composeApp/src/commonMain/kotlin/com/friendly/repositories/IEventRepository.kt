@@ -3,6 +3,7 @@ package com.friendly.repositories
 import com.friendly.dtos.EventDTO
 
 interface IEventRepository {
-    suspend fun getEvents(): List<EventDTO>
-    suspend fun getEvent(eventId: String): EventDTO
+    suspend fun getEventsWithParticipants(): List<EventDTO>
+    suspend fun getEventWithParticipants(eventId: String): EventDTO
+    suspend fun getEventsByUserId(userId: String): List<EventDTO>
 }

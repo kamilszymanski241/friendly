@@ -9,14 +9,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil3.compose.AsyncImage
 import com.friendly.components.EventSummaryCard
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.DiscoverScreenViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, viewModel: DiscoverScreenViewModel = viewModel()) {
+fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, viewModel: DiscoverScreenViewModel = koinViewModel()) {
     val events = viewModel.eventsList.collectAsState(null)
     FriendlyAppTheme {
         if (events.value == null) {

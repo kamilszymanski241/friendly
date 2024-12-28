@@ -6,7 +6,7 @@ import com.friendly.dtos.EventUserDTO
 import com.friendly.models.Event
 import com.friendly.repositories.IEventRepository
 import com.friendly.repositories.IEventUserRepository
-import com.friendly.session.ISessionManager
+import com.friendly.managers.ISessionManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -24,7 +24,7 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
 
     suspend fun loadEvent() {
         viewModelScope.launch {
-            _eventDetails.value = eventRepository.getEvent(eventId).asDomainModel()
+            _eventDetails.value = eventRepository.getEventWithParticipants(eventId).asDomainModel()
         }
     }
         fun onJoin() {

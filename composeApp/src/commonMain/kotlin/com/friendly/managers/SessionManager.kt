@@ -1,9 +1,8 @@
-package com.friendly.session
+package com.friendly.managers
 
 import androidx.compose.ui.graphics.ImageBitmap
-import com.friendly.decodeByteArrayToBitMap
+import com.friendly.dtos.UserDetailsDTO
 import com.friendly.models.UserDetails
-import com.friendly.repositories.IStorageRepository
 import com.friendly.repositories.IUserDetailsRepository
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.status.SessionStatus
@@ -23,7 +22,6 @@ class SessionManager: KoinComponent, ISessionManager {
     private val auth: Auth by inject()
 
     private val userDetailsRepository: IUserDetailsRepository by inject()
-    private val storageRepository: IStorageRepository by inject()
 
     private val _sessionStatus = MutableStateFlow<SessionStatus>(SessionStatus.Initializing)
     override val sessionStatus: StateFlow<SessionStatus> = _sessionStatus.asStateFlow()
@@ -37,12 +35,6 @@ class SessionManager: KoinComponent, ISessionManager {
     private val _userDetailsStatus = MutableStateFlow(UserDetailsStatus.Initializing)
     override val userDetailsStatus: StateFlow<UserDetailsStatus> = _userDetailsStatus.asStateFlow()
 
-    private val _userProfilePicture = MutableStateFlow<ImageBitmap?>(null)
-    override val userProfilePicture: StateFlow<ImageBitmap?> = _userProfilePicture.asStateFlow()
-
-    private val _userProfilePictureStatus = MutableStateFlow(UserDetailsStatus.Initializing)
-    override val userProfilePictureStatus: StateFlow<UserDetailsStatus> = _userProfilePictureStatus.asStateFlow()
-
     init {
         CoroutineScope(Dispatchers.IO).launch {
             auth.sessionStatus.collect {
@@ -51,15 +43,12 @@ class SessionManager: KoinComponent, ISessionManager {
                     is SessionStatus.Authenticated -> {
                         _currentUser.value = it.session.user
                         initUserDetails()
-                        fetchProfilePicture()
                     }
                     is SessionStatus.NotAuthenticated -> {
                         _currentUser.value = null
                         if(it.isSignOut){
                             _currentUserDetails.value = null
                             _userDetailsStatus.value = UserDetailsStatus.Initializing
-                            _userProfilePicture.value = null
-                            _userProfilePictureStatus.value = UserDetailsStatus.Initializing
                         }
                     }
                     SessionStatus.Initializing -> {}
@@ -70,38 +59,12 @@ class SessionManager: KoinComponent, ISessionManager {
     }
     override suspend fun initUserDetails(){
         try {
-            _currentUserDetails.value = userDetailsRepository.getUserDetails(_currentUser.value!!.id).asDomainModel()
+            _currentUserDetails.value = userDetailsRepository.getUserDetails(currentUser.value!!.id).asDomainModel()
             _userDetailsStatus.value = UserDetailsStatus.Success
         } catch (e: Exception) {
             _userDetailsStatus.value = UserDetailsStatus.Failed
             println(e.message)
             //TODO()
         }
-    }
-
-    override suspend fun fetchProfilePicture(){
-        try {
-            _userProfilePicture.value = storageRepository.fetchProfilePicture(currentUser.value!!.id)
-            _userProfilePictureStatus.value = UserDetailsStatus.Success
-        }
-        catch(e: Exception)
-        {
-            _userProfilePictureStatus.value = UserDetailsStatus.Failed
-            println(e.message)
-            //TODO()
-        }
-    }
-
-    override fun setUserDetails(userDetails: UserDetails?)
-    {
-        _currentUserDetails.value = userDetails
-    }
-    override fun setUserDetailsStatus(userDetailsStatus: UserDetailsStatus)
-    {
-        _userDetailsStatus.value = userDetailsStatus
-    }
-    override fun setUserProfilePicture(profilePicture: ImageBitmap)
-    {
-        _userProfilePicture.value = profilePicture
     }
 }

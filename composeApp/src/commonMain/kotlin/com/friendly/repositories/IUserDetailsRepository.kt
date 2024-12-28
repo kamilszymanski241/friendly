@@ -6,6 +6,6 @@ interface IUserDetailsRepository {
 
     suspend fun getUserDetails(id: String): UserDetailsDTO
 
-    suspend fun createUserDetails(id: String, name: String, surname: String): Boolean
+    suspend fun createUserDetails(userDetailsDTO: UserDetailsDTO): Boolean
 
 }

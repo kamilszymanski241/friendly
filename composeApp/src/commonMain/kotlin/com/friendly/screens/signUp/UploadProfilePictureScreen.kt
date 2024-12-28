@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -42,7 +41,7 @@ import com.friendly.CapturePhoto
 import com.friendly.PickPhoto
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.default
-import com.friendly.layouts.bars.TopBarWithBackButton
+import com.friendly.components.TopBarWithBackButton
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.UploadProfilePictureViewModel

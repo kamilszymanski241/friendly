@@ -1,4 +1,4 @@
-package com.friendly.session
+package com.friendly.managers
 
 enum class UserDetailsStatus {
     Initializing,

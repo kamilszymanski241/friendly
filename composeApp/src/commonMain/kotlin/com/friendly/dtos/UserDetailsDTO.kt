@@ -1,5 +1,7 @@
 package com.friendly.dtos
 
+import Friendly.composeApp.BuildConfig
+import com.friendly.models.Event
 import com.friendly.models.UserDetails
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
@@ -17,7 +19,10 @@ data class UserDetailsDTO (
     val name: String,
 
     @SerialName("surname")
-    val surname: String
+    val surname: String,
+
+    @SerialName("events")
+    val events: List<EventDTO>? = null
 
     ) {
     fun asDomainModel(): UserDetails {
@@ -25,7 +30,9 @@ data class UserDetailsDTO (
             id = this.id,
             joined = this.createdAt,
             name = this.name,
-            surname = this.surname
+            surname = this.surname,
+            profilePictureUrl = BuildConfig.SUPABASE_URL+BuildConfig.PROFILE_PICTURES_STORAGE_URL + "${this.id}.jpg",
+            events =  this.events?.map {  it.asDomainModel() }
         )
     }
 }

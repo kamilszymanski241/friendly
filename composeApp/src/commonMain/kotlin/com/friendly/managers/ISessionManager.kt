@@ -1,6 +1,7 @@
-package com.friendly.session
+package com.friendly.managers
 
 import androidx.compose.ui.graphics.ImageBitmap
+import com.friendly.dtos.UserDetailsDTO
 import com.friendly.models.UserDetails
 import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.auth.user.UserInfo
@@ -11,11 +12,5 @@ interface ISessionManager {
     val currentUser: StateFlow<UserInfo?>
     val currentUserDetails: StateFlow<UserDetails?>
     val userDetailsStatus: StateFlow<UserDetailsStatus>
-    val userProfilePicture: StateFlow<ImageBitmap?>
-    val userProfilePictureStatus: StateFlow<UserDetailsStatus>
-    fun setUserDetails(userDetails: UserDetails?)
-    fun setUserDetailsStatus(userDetailsStatus: UserDetailsStatus)
-    fun setUserProfilePicture(profilePicture: ImageBitmap)
-    suspend fun fetchProfilePicture()
     suspend fun initUserDetails()
 }

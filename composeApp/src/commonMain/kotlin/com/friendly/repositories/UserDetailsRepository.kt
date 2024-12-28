@@ -28,16 +28,10 @@ class UserDetailsRepository: IUserDetailsRepository, KoinComponent {
         }
     }
 
-    override suspend fun createUserDetails(id: String, name: String, surname: String): Boolean {
+    override suspend fun createUserDetails(userDetailsDTO: UserDetailsDTO): Boolean {
         return try {
             withContext(Dispatchers.IO) {
-                val userDetailsDTO = UserDetailsDTO(
-                    id = id,
-                    name = name,
-                    surname = surname
-                )
                 postgrest.from("UserDetails").insert(userDetailsDTO)
-                true
             }
             true
         } catch (e: Exception) {

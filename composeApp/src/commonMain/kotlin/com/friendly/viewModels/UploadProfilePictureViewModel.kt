@@ -2,8 +2,8 @@ package com.friendly.viewModels
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
-import com.friendly.resizeImageBitmapWithAspectRatio
-import com.friendly.session.ISessionManager
+import com.friendly.managers.IRegistrationManager
+import com.friendly.managers.ISessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -12,7 +12,7 @@ import org.koin.core.component.inject
 
 class UploadProfilePictureViewModel: ViewModel(), KoinComponent {
 
-    private val sessionManager: ISessionManager by inject()
+    private val registrationManager: IRegistrationManager by inject()
 
     private val _userProfilePicture = MutableStateFlow<ImageBitmap?>(null)
     val userProfilePicture: StateFlow<ImageBitmap?> = _userProfilePicture.asStateFlow()
@@ -30,7 +30,7 @@ class UploadProfilePictureViewModel: ViewModel(), KoinComponent {
 
     fun onContinue(): Boolean {
         (if (_userProfilePicture.value != null) {
-            sessionManager.setUserProfilePicture(_userProfilePicture.value!!)
+            registrationManager.updateProfilePicture(_userProfilePicture.value)
             _errorMessage.value = ""
             return true
         } else {

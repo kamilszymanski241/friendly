@@ -1,5 +1,6 @@
 package com.friendly.di
 
+import com.friendly.managers.IRegistrationManager
 import com.friendly.repositories.AuthRepository
 import com.friendly.repositories.EventRepository
 import com.friendly.repositories.EventUserRepository
@@ -10,17 +11,19 @@ import com.friendly.repositories.IStorageRepository
 import com.friendly.repositories.IUserDetailsRepository
 import com.friendly.repositories.StorageRepository
 import com.friendly.repositories.UserDetailsRepository
-import com.friendly.viewModels.RegisterEmailAndPasswordViewModel
-import com.friendly.session.ISessionManager
-import com.friendly.session.SessionManager
-import com.friendly.viewModels.FillUserDetailsViewModel
+import com.friendly.managers.ISessionManager
+import com.friendly.managers.RegistrationManager
+import com.friendly.managers.SessionManager
+import com.friendly.viewModels.AppSettingsScreenViewModel
 import com.friendly.viewModels.DiscoverScreenViewModel
 import com.friendly.viewModels.EventDetailsScreenViewModel
-import com.friendly.viewModels.SignUpViewModel
+import com.friendly.viewModels.FillUserDetailsViewModel
+import com.friendly.viewModels.HomeScreenTopBarViewModel
+import com.friendly.viewModels.RegisterEmailAndPasswordViewModel
 import com.friendly.viewModels.SignInViewModel
-import com.friendly.viewModels.MainTopBarViewModel
+import com.friendly.viewModels.SignUpViewModel
+import com.friendly.viewModels.UpcomingEventsScreenViewModel
 import com.friendly.viewModels.UploadProfilePictureViewModel
-import com.friendly.viewModels.AppSettingsScreenViewModel
 import com.friendly.viewModels.UserProfileViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -32,12 +35,16 @@ val appModule = module {
     single<IAuthRepository> {AuthRepository()}
     single<IStorageRepository>{StorageRepository()}
     single<IUserDetailsRepository>{UserDetailsRepository()}
-    single<ISessionManager>{SessionManager()}
     single<IEventUserRepository>{EventUserRepository()}
+
+    single<ISessionManager>{SessionManager()}
+    single<IRegistrationManager>{ RegistrationManager() }
+
     viewModelOf(::DiscoverScreenViewModel)
+    viewModelOf(::UpcomingEventsScreenViewModel)
     viewModelOf(::SignInViewModel)
     viewModelOf(::SignUpViewModel)
-    viewModelOf(::MainTopBarViewModel)
+    viewModelOf(::HomeScreenTopBarViewModel)
     viewModelOf(::FillUserDetailsViewModel)
     viewModelOf(::UploadProfilePictureViewModel)
     viewModelOf(::RegisterEmailAndPasswordViewModel)

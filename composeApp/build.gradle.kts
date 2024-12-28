@@ -24,6 +24,7 @@ buildConfig{
     buildConfigField("String", "SUPABASE_ANON_KEY", "\"${getLocalProperty("SUPABASE_ANON_KEY")}\"")
     buildConfigField("String", "SECRET", "\"${getLocalProperty("SECRET")}\"")
     buildConfigField("String", "SUPABASE_URL", "\"${getLocalProperty("SUPABASE_URL")}\"")
+    buildConfigField("String", "PROFILE_PICTURES_STORAGE_URL", "\"${getLocalProperty("PROFILE_PICTURES_STORAGE_URL")}\"")
 }
 
 kotlin {
@@ -81,6 +82,11 @@ kotlin {
             implementation(libs.supabase.postgrest)
             implementation(libs.supabase.storage)
             implementation(libs.supabase.auth)
+
+            implementation(libs.coil.compose.core)
+            implementation(libs.coil.compose)
+            implementation(libs.coil.mp)
+            implementation(libs.coil.network.ktor)
         }
         iosMain.dependencies {
             implementation((libs.ktor.client.darwin))
