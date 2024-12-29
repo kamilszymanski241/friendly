@@ -3,6 +3,7 @@ package com.friendly.repositories
 import com.friendly.dtos.EventDTO
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.filter.FilterOperator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -17,7 +18,7 @@ class EventRepository: IEventRepository, KoinComponent {
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
                 .select(
-                    Columns.raw("id, created_at, title, country, city, postal_code, address, description, max_participants, date, time, UserDetails(id, created_at, name, surname)")
+                    Columns.raw("id, created_at, title, country, city, postal_code, address, description, max_participants, date, time, organizer, UserDetails(id, created_at, name, surname)")
                 ) {
                 }.decodeList<EventDTO>()
             result
@@ -28,7 +29,7 @@ class EventRepository: IEventRepository, KoinComponent {
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
                 .select(
-                    Columns.raw("id, created_at, title, country, city, postal_code, address, description, max_participants, date, time, UserDetails(id, created_at, name, surname)")
+                    Columns.raw("id, created_at, title, country, city, postal_code, address, description, max_participants, date, time, organizer, UserDetails(id, created_at, name, surname)")
                 ) {
                     filter {
                         eq("id", eventId)
@@ -38,26 +39,32 @@ class EventRepository: IEventRepository, KoinComponent {
         }
     }
 
-    override suspend fun getEventsByUserId(userId: String): List<EventDTO> {
+    override suspend fun getMultipleEvents(eventIds: List<String>): List<EventDTO> {
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
-                .select() {
+                .select(
+                    Columns.raw("id, created_at, title, country, city, postal_code, address, description, max_participants, date, time, organizer, UserDetails(id, created_at, name, surname)")
+                ) {
                     filter {
-                        eq("id", userId)
+                        isIn("id", eventIds)
                     }
                 }.decodeList<EventDTO>()
             result
         }
     }
 
-/*    suspend fun getEventsWithParticipants(eventId: Int): List<EventDTO> {
+    override suspend fun getEventsByOrganizer(userId: String): List<EventDTO>{
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
                 .select(
-                    Columns.raw("")
+                    Columns.raw("id, created_at, title, country, city, postal_code, address, description, max_participants, date, time, organizer, UserDetails(id, created_at, name, surname)")
                 ) {
+                    filter {
+                        eq("organizer", userId)
+                    }
                 }.decodeList<EventDTO>()
             result
         }
-    }*/
+    }
+
 }

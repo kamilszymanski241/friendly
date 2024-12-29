@@ -1,4 +1,4 @@
-package com.friendly.screens.signUp
+package com.friendly.screens.signInSignUp
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -30,7 +30,7 @@ import androidx.navigation.NavController
 import com.friendly.components.TopBarWithBackButton
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
-import com.friendly.viewModels.FillUserDetailsViewModel
+import com.friendly.viewModels.signInSignUp.FillUserDetailsViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

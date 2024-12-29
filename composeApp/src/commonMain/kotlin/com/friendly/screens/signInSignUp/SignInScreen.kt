@@ -1,4 +1,4 @@
-package com.friendly.screens
+package com.friendly.screens.signInSignUp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -34,7 +34,7 @@ import com.friendly.generated.resources.friendly_logo_white
 import com.friendly.components.TopBarWithBackButton
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
-import com.friendly.viewModels.SignInViewModel
+import com.friendly.viewModels.signInSignUp.SignInViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 

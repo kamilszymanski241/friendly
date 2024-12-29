@@ -10,10 +10,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import coil3.compose.AsyncImage
 import com.friendly.components.EventSummaryCard
 import com.friendly.themes.FriendlyAppTheme
-import com.friendly.viewModels.DiscoverScreenViewModel
+import com.friendly.viewModels.home.DiscoverScreenViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable

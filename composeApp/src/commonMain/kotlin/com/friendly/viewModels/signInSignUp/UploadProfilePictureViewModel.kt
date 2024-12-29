@@ -1,9 +1,8 @@
-package com.friendly.viewModels
+package com.friendly.viewModels.signInSignUp
 
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import com.friendly.managers.IRegistrationManager
-import com.friendly.managers.ISessionManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

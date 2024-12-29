@@ -24,6 +24,10 @@ data class Event(
 
     val time: String,
 
+    val eventPictureUrl: String,
+
+    val organizer: String,
+
     val participants: List<UserDetails>? = null
 
 )

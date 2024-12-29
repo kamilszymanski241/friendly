@@ -1,12 +1,8 @@
-package com.friendly.viewModels
+package com.friendly.viewModels.signInSignUp
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.friendly.managers.IRegistrationManager
-import com.friendly.repositories.IAuthRepository
-import com.friendly.repositories.IStorageRepository
-import com.friendly.managers.ISessionManager
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

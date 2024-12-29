@@ -1,5 +1,6 @@
 package com.friendly.dtos
 
+import Friendly.composeApp.BuildConfig
 import com.friendly.models.Event
 import com.friendly.models.UserDetails
 import kotlinx.serialization.SerialName
@@ -41,6 +42,9 @@ data class EventDTO (
     @SerialName("time")
     val time: String,
 
+    @SerialName("organizer")
+    val organizer: String,
+
     @SerialName("UserDetails")
     val participants: List<UserDetailsDTO>? = null
 
@@ -69,6 +73,10 @@ data class EventDTO (
             date = this.date,
 
             time = this.time,
+
+            organizer = this.organizer,
+
+            eventPictureUrl = BuildConfig.SUPABASE_URL + BuildConfig.EVENT_PICTURES_STORAGE_URL + "${this.id}.jpg",
 
             participants = this.participants?.map { it.asDomainModel() }
         )

@@ -1,7 +1,6 @@
 package com.friendly.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import Friendly.composeApp.BuildConfig
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,24 +10,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -36,17 +32,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import com.friendly.App
-import com.friendly.generated.resources.Res
-import com.friendly.generated.resources.sampleEventPhoto
 import com.friendly.models.Event
-import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun EventSummaryCard(event: Event, navController: NavController, modifier: Modifier = Modifier) {
+    var showDefaultPhoto by rememberSaveable() { mutableStateOf(false) }
     FriendlyAppTheme {
         Card(
             modifier = modifier
@@ -63,15 +54,28 @@ fun EventSummaryCard(event: Event, navController: NavController, modifier: Modif
                 navController.navigate("eventDetails/${event.id}")
             }
         ) {
-            Row() {
+            Row {
                 Column(
                     modifier = Modifier.weight(2 / 5f, true)
                 ) {
-                    Image(
-                        painter = painterResource(Res.drawable.sampleEventPhoto),
-                        null,
-                        contentScale = ContentScale.Crop,
-                    )
+                    if(showDefaultPhoto)
+                    {
+                        AsyncImage(
+                            model = BuildConfig.SUPABASE_URL+BuildConfig.EVENT_PICTURES_STORAGE_URL + "default.jpg",
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+                    else {
+                        AsyncImage(
+                            model = event.eventPictureUrl,
+                            contentDescription = "Event Picture",
+                            onError = {showDefaultPhoto = true},
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
                 }
                 Column(
                     modifier = Modifier

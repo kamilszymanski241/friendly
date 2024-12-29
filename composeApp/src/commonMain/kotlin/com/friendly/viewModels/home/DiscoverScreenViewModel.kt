@@ -1,11 +1,9 @@
-package com.friendly.viewModels
+package com.friendly.viewModels.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.friendly.models.Event
 import com.friendly.repositories.IEventRepository
-import com.friendly.repositories.IEventUserRepository
-import com.friendly.repositories.IStorageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -15,10 +13,6 @@ import org.koin.core.component.inject
 class DiscoverScreenViewModel: ViewModel(), KoinComponent {
 
     private val eventRepository: IEventRepository by inject()
-
-    private val eventUserRepository: IEventUserRepository by inject()
-
-    private val storageRepository: IStorageRepository by inject()
 
     private val _eventsList = MutableStateFlow<List<Event>?>(null)
     val eventsList: Flow<List<Event>?> = _eventsList
@@ -44,5 +38,4 @@ class DiscoverScreenViewModel: ViewModel(), KoinComponent {
             }
         }
     }
-
 }

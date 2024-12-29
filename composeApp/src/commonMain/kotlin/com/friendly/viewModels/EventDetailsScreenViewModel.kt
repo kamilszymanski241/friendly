@@ -7,6 +7,7 @@ import com.friendly.models.Event
 import com.friendly.repositories.IEventRepository
 import com.friendly.repositories.IEventUserRepository
 import com.friendly.managers.ISessionManager
+import io.github.jan.supabase.auth.status.SessionStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
@@ -19,24 +20,72 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
     private val eventUserDetailsRepository: IEventUserRepository by inject()
     private val sessionManager: ISessionManager by inject()
 
+    enum class EventDetailsButtonType {
+        PleaseSignIn,
+        Join,
+        QuitAndChat
+    }
+
     private val _eventDetails = MutableStateFlow<Event?>(null)
     val eventDetails: Flow<Event?> = _eventDetails
 
-    suspend fun loadEvent() {
+    private val _buttonType = MutableStateFlow(EventDetailsButtonType.PleaseSignIn)
+    val buttonType: Flow<EventDetailsButtonType> = _buttonType
+
+    init {
+        viewModelScope.launch {
+            loadEvent()
+            if (sessionManager.sessionStatus.value == SessionStatus.NotAuthenticated(false) ||
+                sessionManager.sessionStatus.value == SessionStatus.NotAuthenticated(true)) {
+                _buttonType.value = EventDetailsButtonType.PleaseSignIn
+            }
+            else{
+                if(eventId in eventUserDetailsRepository.getAllUserEvents(sessionManager.currentUser.value!!.id))
+                {
+                    _buttonType.value = EventDetailsButtonType.QuitAndChat
+                }
+                else{
+                    _buttonType.value= EventDetailsButtonType.Join
+                }
+            }
+        }
+    }
+
+    fun loadEvent() {
         viewModelScope.launch {
             _eventDetails.value = eventRepository.getEventWithParticipants(eventId).asDomainModel()
         }
     }
-        fun onJoin() {
-            viewModelScope.launch {
-                if (sessionManager.currentUser.value != null) {
-                    val eventUser =
-                        EventUserDTO(
-                            _eventDetails.value!!.id,
-                            sessionManager.currentUser.value!!.id
-                        )
-                    eventUserDetailsRepository.addUserToEvent(eventUser)
-                }
+
+    fun onJoin() {
+        viewModelScope.launch {
+            try {
+                val eventUser =
+                    EventUserDTO(
+                        _eventDetails.value!!.id,
+                        sessionManager.currentUser.value!!.id
+                    )
+                eventUserDetailsRepository.addUserToEvent(eventUser)
+            }
+            catch (e: Exception)
+            {
+                println(e.message)
             }
         }
+    }
+
+    fun onQuit(){
+        viewModelScope.launch {
+            try {
+                eventUserDetailsRepository.removeUserFromEvent(
+                    sessionManager.currentUser.value!!.id,
+                    eventId
+                )
+            }
+            catch (e: Exception)
+            {
+                println(e.message)
+            }
+        }
+    }
 }

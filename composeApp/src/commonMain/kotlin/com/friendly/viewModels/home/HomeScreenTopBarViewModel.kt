@@ -1,4 +1,4 @@
-package com.friendly.viewModels
+package com.friendly.viewModels.home
 
 import androidx.lifecycle.ViewModel
 import com.friendly.models.UserDetails

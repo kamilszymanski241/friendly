@@ -25,6 +25,7 @@ buildConfig{
     buildConfigField("String", "SECRET", "\"${getLocalProperty("SECRET")}\"")
     buildConfigField("String", "SUPABASE_URL", "\"${getLocalProperty("SUPABASE_URL")}\"")
     buildConfigField("String", "PROFILE_PICTURES_STORAGE_URL", "\"${getLocalProperty("PROFILE_PICTURES_STORAGE_URL")}\"")
+    buildConfigField("String", "EVENT_PICTURES_STORAGE_URL", "\"${getLocalProperty("EVENT_PICTURES_STORAGE_URL")}\"")
 }
 
 kotlin {

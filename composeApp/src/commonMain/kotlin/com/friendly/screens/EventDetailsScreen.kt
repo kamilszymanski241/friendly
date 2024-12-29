@@ -2,8 +2,10 @@ package com.friendly.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -33,10 +35,8 @@ import org.koin.core.parameter.parametersOf
 fun EventDetailsScreen(eventId: String, navController: NavController) {
     val viewModel: EventDetailsScreenViewModel =
         koinViewModel(parameters = { parametersOf(eventId) })
+    val buttonType = viewModel.buttonType.collectAsState(EventDetailsScreenViewModel.EventDetailsButtonType.PleaseSignIn)
     val eventDetails = viewModel.eventDetails.collectAsState(null)
-    LaunchedEffect(Unit) {
-        viewModel.loadEvent()
-    }
     FriendlyAppTheme {
         Scaffold(
             topBar = { TopBarWithBackButton(navController) },
@@ -74,21 +74,88 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                             fontSize = 15.sp
                         )
                     }
-                    Button(
-                        modifier = Modifier
-                            .width(300.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.tertiary,
-                            contentColor = Color.White
-                        ),
-                        onClick = {
-                            viewModel.onJoin()
-                            navController.navigate(AppNavigation.HomeScreen.route)
+                    if(buttonType.value == EventDetailsScreenViewModel.EventDetailsButtonType.PleaseSignIn) {
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                contentColor = Color.White
+                            ),
+                            onClick = {
+                                navController.navigate(AppNavigation.SignIn.route)
+                            }
+                        ) {
+                            Text(
+                                text = "Sign in to join!"
+                            )
                         }
-                    ) {
-                        Text(
-                            text = "Join!"
-                        )
+                    }else if(buttonType.value == EventDetailsScreenViewModel.EventDetailsButtonType.Join)
+                    {
+                        Button(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(20.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                contentColor = Color.White
+                            ),
+                            onClick = {
+                                viewModel.onJoin()
+                                navController.navigate(AppNavigation.HomeScreen.route)
+                            }
+                        ) {
+                            Text(
+                                text = "Join!"
+                            )
+                        }
+                    }
+                    else if(buttonType.value == EventDetailsScreenViewModel.EventDetailsButtonType.QuitAndChat) {
+                        Row() {
+                            Column(
+                                modifier = Modifier.weight(1/2f)
+                            ) {
+                                Button(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(20.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color.Red,
+                                        contentColor = Color.White
+                                    ),
+                                    onClick = {
+                                        viewModel.onQuit()
+                                        navController.navigate(AppNavigation.HomeScreen.route)
+                                    }
+                                ) {
+                                    Text(
+                                        text = "Quit!"
+                                    )
+                                }
+                            }
+                            Column(
+                                modifier = Modifier.weight(1/2f)
+                            ) {
+                                Button(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(20.dp),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.tertiary,
+                                        contentColor = Color.White
+                                    ),
+                                    onClick = {
+                                        navController.navigate(AppNavigation.HomeScreen.route)
+                                        //TODO()
+                                    }
+                                ) {
+                                    Text(
+                                        text = "Chat-TODO"
+                                    )
+                                }
+                            }
+                        }
                     }
                 } else {
                     CircularProgressIndicator()

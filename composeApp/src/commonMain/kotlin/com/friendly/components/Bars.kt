@@ -37,7 +37,7 @@ import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.friendly_logo_white
 import com.friendly.navigation.AppNavigation
 import com.friendly.managers.UserDetailsStatus
-import com.friendly.viewModels.HomeScreenTopBarViewModel
+import com.friendly.viewModels.home.HomeScreenTopBarViewModel
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.status.SessionStatus
 import org.jetbrains.compose.resources.painterResource
@@ -46,13 +46,11 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenTopBar(navController: NavController, viewModel: HomeScreenTopBarViewModel = koinViewModel (), auth: Auth = koinInject()) {
+fun HomeScreenTopBar(navController: NavController, viewModel: HomeScreenTopBarViewModel = koinViewModel ()) {
     val user by viewModel.user.collectAsState()
-   // val userProfilePicture by viewModel.userProfilePicture.collectAsState()
     val userDetails by viewModel.userDetails.collectAsState()
     val sessionStatus by viewModel.sessionStatus.collectAsState()
     val userDetailsStatus by viewModel.userDetailsStatus.collectAsState()
-   // val userProfilePictureStatus by viewModel.userProfilePictureStatus.collectAsState()
     TopAppBar(
         colors = topAppBarColors(
             containerColor = MaterialTheme.colorScheme.tertiary,

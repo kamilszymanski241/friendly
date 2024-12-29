@@ -7,9 +7,13 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -19,19 +23,41 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import com.friendly.components.HomeScreenTopBar
+import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 
 @Composable
 fun HomeScreen(navController: NavController) {
 
-    val selectedView = remember {mutableStateOf(0)}
-
+    val selectedView = rememberSaveable {mutableStateOf(0)}
     FriendlyAppTheme {
         Scaffold (
+            floatingActionButton = {
+                if (selectedView.value == 2) {
+                    Button(
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+                            contentColor = Color.White
+                        ),
+                        onClick = {
+                            navController.navigate(AppNavigation.CreateEvent.route) {
+                                launchSingleTop = true
+                                restoreState = true
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                            }
+                        }
+                    ) {
+                        Text("Create!")
+                    }
+                }
+            },
             topBar = { HomeScreenTopBar(navController) },
             bottomBar = {
                 NavigationBar(
@@ -93,7 +119,7 @@ fun HomeScreen(navController: NavController) {
                         },
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.AccountBox,
+                                imageVector = Icons.Default.Add,
                                 contentDescription = null,
                                 tint = Color.White
                             )

@@ -1,4 +1,4 @@
-package com.friendly.screens.signUp
+package com.friendly.screens.signInSignUp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -44,7 +44,7 @@ import com.friendly.generated.resources.default
 import com.friendly.components.TopBarWithBackButton
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
-import com.friendly.viewModels.UploadProfilePictureViewModel
+import com.friendly.viewModels.signInSignUp.UploadProfilePictureViewModel
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel

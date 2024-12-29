@@ -9,17 +9,54 @@ class EventUserRepository: IEventUserRepository, KoinComponent {
 
     private val postgrest: Postgrest by inject()
 
-    override suspend fun getEventUsers(id: String): List<String> {
+    override suspend fun getEventParticipants(eventId: String): List<String> {
         return try {
-            postgrest.from("EventsUsers").select(){
+            postgrest.from("EventsUsers").select {
                 filter {
-                    eq("eventId", id)
-                }}.decodeList<EventUserDTO>().map { it.userId }
-        }catch(e: Exception){
+                    eq("eventId", eventId)
+                }
+            }.decodeList<EventUserDTO>().map { it.userId }
+        } catch (e: Exception) {
             throw e
         }
     }
-    override suspend fun addUserToEvent(eventUserDTO: EventUserDTO){
-        postgrest.from("EventsUsers").insert(eventUserDTO)
+
+    override suspend fun getAllUserEvents(userId: String): List<String> {
+        return try {
+            postgrest.from("EventsUsers").select {
+                filter{
+                    eq("userId", userId)
+                }
+            }.decodeList<EventUserDTO>().map { it.eventId }
+        }catch(e: Exception)
+        {
+            throw e
+        }
+    }
+
+    override suspend fun addUserToEvent(eventUserDTO: EventUserDTO) {
+        try{
+            postgrest.from("EventsUsers").insert(eventUserDTO)
+        }
+        catch(e: Exception)
+        {
+            throw e
+        }
+    }
+
+    override suspend fun removeUserFromEvent(userId: String, eventId: String){
+        try {
+            postgrest.from("EventsUsers").delete {
+                filter {
+                    and{
+                        eq("userId",userId)
+                        eq("eventId", eventId)
+                    }
+                }
+            }
+        }catch(e: Exception)
+        {
+            throw e
+        }
     }
 }

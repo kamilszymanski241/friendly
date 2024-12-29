@@ -9,14 +9,14 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.friendly.screens.AppSettingsScreen
 import com.friendly.screens.EventDetailsScreen
-import com.friendly.screens.SignInScreen
+import com.friendly.screens.signInSignUp.SignInScreen
 import com.friendly.screens.UserProfileScreen
 import com.friendly.screens.home.CreateEventScreen
 import com.friendly.screens.home.HomeScreen
-import com.friendly.screens.signUp.ChooseSignUpMethod
-import com.friendly.screens.signUp.FillUserDetailsScreen
-import com.friendly.screens.signUp.RegisterEmailAndPasswordScreen
-import com.friendly.screens.signUp.UploadProfilePictureScreen
+import com.friendly.screens.signInSignUp.ChooseSignUpMethod
+import com.friendly.screens.signInSignUp.FillUserDetailsScreen
+import com.friendly.screens.signInSignUp.RegisterEmailAndPasswordScreen
+import com.friendly.screens.signInSignUp.UploadProfilePictureScreen
 
 @Composable
 fun AppNavHost(
