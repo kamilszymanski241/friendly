@@ -1,9 +1,14 @@
 package com.friendly.screens
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -12,21 +17,28 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
-import com.friendly.components.TopBarWithBackButton
+import com.friendly.components.TopBarWithBackButtonAndTitle
+import com.friendly.generated.resources.Res
+import com.friendly.generated.resources.defaultEventPicture
+import com.friendly.generated.resources.defaultUserPicture
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.AppSettingsScreenViewModel
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun AppSettingsScreen(navController: NavController, viewModel: AppSettingsScreenViewModel = koinViewModel ()) {
     FriendlyAppTheme {
         Scaffold(
-            topBar = { TopBarWithBackButton(navController) },
+            topBar = { TopBarWithBackButtonAndTitle(navController, "Settings") },
             bottomBar = {},
             containerColor = MaterialTheme.colorScheme.secondary
         ) { innerPadding ->
@@ -55,7 +67,38 @@ fun AppSettingsScreen(navController: NavController, viewModel: AppSettingsScreen
                         fontSize = 15.sp
                     )
                 }
+                show()
             }
         }
+    }
+}
+@Composable
+fun show() {
+    Box(
+        modifier = Modifier
+            .height(360.dp)
+            .width(360.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        mirror(4)
+    }
+}
+
+@Composable
+fun mirror(i: Int) {
+    if (i > 0) {
+        Box(
+            modifier = Modifier
+                .size(360.dp / i)
+                .zIndex(i.toFloat())
+        ) {
+            Image(
+                painter = painterResource(Res.drawable.defaultEventPicture),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+            )
+        }
+        mirror(i - 1)
     }
 }

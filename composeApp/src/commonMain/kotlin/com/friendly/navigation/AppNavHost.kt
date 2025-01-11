@@ -7,11 +7,14 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navigation
 import com.friendly.screens.AppSettingsScreen
 import com.friendly.screens.EventDetailsScreen
 import com.friendly.screens.signInSignUp.SignInScreen
 import com.friendly.screens.UserProfileScreen
-import com.friendly.screens.home.CreateEventScreen
+import com.friendly.screens.createEvent.FillBasicEventDetailsScreen
+import com.friendly.screens.createEvent.SelectDateTimeScreen
+import com.friendly.screens.createEvent.SelectEventLocalizationScreen
 import com.friendly.screens.home.HomeScreen
 import com.friendly.screens.signInSignUp.ChooseSignUpMethod
 import com.friendly.screens.signInSignUp.FillUserDetailsScreen
@@ -62,27 +65,22 @@ fun AppNavHost(
                 //TODO()
             }
         }
-        composable(AppNavigation.CreateEvent.route) {
-            CreateEventScreen(navController)
+        navigation(
+            startDestination = AppNavigation.FillBasicEventDetails.route,
+            route = AppNavigation.CreateEvent.route
+        ){
+            composable(AppNavigation.FillBasicEventDetails.route) {
+                FillBasicEventDetailsScreen(navController)
+            }
+            composable(AppNavigation.SelectEventDateTime.route) {
+                SelectDateTimeScreen(navController)
+            }
+            composable(AppNavigation.SelectEventLocalization.route) {
+                SelectEventLocalizationScreen(navController)
+            }
         }
         composable(AppNavigation.AppSettings.route) {
             AppSettingsScreen(navController)
         }
     }
 }
-/*
-fun NavGraphBuilder.HomeScreenNav(
-    navController: NavHostController
-){
-    navigation(startDestination = AppNavigation.Discover.route, route = AppNavigation.HomeScreen.route) {
-        composable(AppNavigation.Discover.route) {
-            HomeScreen(navController){ DiscoverScreen(navController) }
-        }
-        composable(AppNavigation.UpcomingEvents.route) {
-            UpcomingEventsScreen()
-        }
-        composable(AppNavigation.MyEvents.route) {
-            MyEventsScreen(navController)
-        }
-    }
-}*/

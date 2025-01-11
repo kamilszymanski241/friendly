@@ -27,7 +27,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.friendly.components.TopBarWithBackButton
+import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.signInSignUp.FillUserDetailsViewModel
@@ -40,7 +40,7 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: FillUserDetai
         val surname = viewModel.surname.collectAsState(initial = "")
         val errorMessage = viewModel.errorMessage.collectAsState()
         Scaffold(
-            topBar = { TopBarWithBackButton(navController) },
+            topBar = { TopBarWithBackButtonAndTitle(navController, "Enter your details") },
             bottomBar = {},
             containerColor = MaterialTheme.colorScheme.secondary
         ) {innerPadding ->
@@ -55,10 +55,6 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: FillUserDetai
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        text = "Your details",
-                        fontSize = 40.sp
-                    )
                     Spacer(modifier = Modifier.size(30.dp))
                     errorMessage.value?.let { message ->
                         Text(

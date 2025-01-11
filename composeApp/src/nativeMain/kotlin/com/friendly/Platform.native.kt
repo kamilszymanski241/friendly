@@ -1,7 +1,7 @@
 package com.friendly
 
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.navigation.NavController
+import org.koin.core.module.Module
 
 
 actual fun decodeBitMapToBase64(bitmap: ImageBitmap): String {
@@ -46,3 +46,13 @@ actual fun PickPhoto(
     onClose: () -> Unit
 ) {
 }
+
+@Composable
+actual fun MapComponent(
+    onSelect: (Pair<Double, Double>) -> Unit,
+    onCancel: () -> Unit
+) {
+}
+
+actual val nativeModule: Module
+    get() = TODO("Not yet implemented")

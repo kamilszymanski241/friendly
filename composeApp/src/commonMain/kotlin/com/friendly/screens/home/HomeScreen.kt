@@ -21,6 +21,7 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -30,15 +31,19 @@ import androidx.navigation.NavController
 import com.friendly.components.HomeScreenTopBar
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
+import com.friendly.viewModels.home.HomeScreenViewModel
+import io.github.jan.supabase.auth.status.SessionStatus
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(navController: NavController, viewModel: HomeScreenViewModel = koinViewModel()) {
 
     val selectedView = rememberSaveable {mutableStateOf(0)}
+    val sessionStatus = viewModel.sessionStatus.collectAsState()
     FriendlyAppTheme {
         Scaffold (
             floatingActionButton = {
-                if (selectedView.value == 2) {
+                if (selectedView.value == 2 && sessionStatus.value != SessionStatus.NotAuthenticated(true) && sessionStatus.value != SessionStatus.NotAuthenticated(false)) {
                     Button(
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.tertiary,

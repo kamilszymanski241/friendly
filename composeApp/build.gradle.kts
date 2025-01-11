@@ -26,6 +26,7 @@ buildConfig{
     buildConfigField("String", "SUPABASE_URL", "\"${getLocalProperty("SUPABASE_URL")}\"")
     buildConfigField("String", "PROFILE_PICTURES_STORAGE_URL", "\"${getLocalProperty("PROFILE_PICTURES_STORAGE_URL")}\"")
     buildConfigField("String", "EVENT_PICTURES_STORAGE_URL", "\"${getLocalProperty("EVENT_PICTURES_STORAGE_URL")}\"")
+    buildConfigField("String", "GOOGLE_MAPS_ANDROID_API_KEY", "\"${getLocalProperty("GOOGLE_MAPS_ANDROID_API_KEY")}\"")
 }
 
 kotlin {
@@ -55,11 +56,14 @@ kotlin {
 
             implementation(libs.ktor.client.okhttp)
             implementation(libs.accompanist.permissions)
+
+            implementation(libs.android.google.maps.compose)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
+            implementation(libs.compose.material3.icons)
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
@@ -88,6 +92,8 @@ kotlin {
             implementation(libs.coil.compose)
             implementation(libs.coil.mp)
             implementation(libs.coil.network.ktor)
+
+            implementation(libs.kotlinx.datetime)
         }
         iosMain.dependencies {
             implementation((libs.ktor.client.darwin))
@@ -105,6 +111,7 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+        manifestPlaceholders["MAPS_API_KEY"] = getLocalProperty("GOOGLE_MAPS_ANDROID_API_KEY")
     }
     packaging {
         resources {
@@ -134,5 +141,7 @@ dependencies {
     implementation(libs.androidx.camera.core)
     implementation(libs.androidx.camera.camera2)
     implementation(libs.androidx.camera.extensions)
+    implementation(libs.play.services.location)
+    implementation(libs.google.places)
     debugImplementation(compose.uiTooling)
 }

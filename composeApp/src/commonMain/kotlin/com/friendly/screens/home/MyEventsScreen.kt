@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
@@ -50,7 +51,7 @@ fun MyEventsScreen(navController: NavController, viewModel: MyEventsScreenViewMo
                 }
                 Row(){
                     Text(
-                        text = "Sign in to see your upcoming events",
+                        text = "Sign in to create new events",
                         fontSize = 15.sp
                     )
                 }
@@ -74,7 +75,7 @@ fun MyEventsScreen(navController: NavController, viewModel: MyEventsScreenViewMo
                     Row()
                     {
                         Icon(
-                            imageVector = Icons.Default.Search,
+                            imageVector = Icons.Default.Add,
                             contentDescription = "",
                             modifier = Modifier
                                 .size(100.dp)
@@ -82,7 +83,7 @@ fun MyEventsScreen(navController: NavController, viewModel: MyEventsScreenViewMo
                     }
                     Row(){
                         Text(
-                            text = "Find interesting events on discover page!",
+                            text = "Add new events by clicking Create!",
                             fontSize = 15.sp
                         )
                     }

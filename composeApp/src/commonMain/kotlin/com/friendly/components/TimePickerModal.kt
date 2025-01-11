@@ -1,0 +1,52 @@
+package com.friendly.components
+
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TimeInput
+import androidx.compose.material3.TimePicker
+import androidx.compose.material3.TimePickerDefaults
+import androidx.compose.material3.rememberTimePickerState
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.window.Dialog
+import kotlinx.datetime.LocalTime
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun TimePickerModal(
+    onDateSelected: (LocalTime?) -> Unit,
+    onDismiss: () -> Unit,
+) {
+    val timePickerState = rememberTimePickerState(is24Hour = true)
+
+    AlertDialog(
+        onDismissRequest = { onDismiss() },
+        confirmButton = {
+            TextButton(onClick = {
+                    onDateSelected(LocalTime(hour = timePickerState.hour, minute = timePickerState.minute))
+                    onDismiss()
+            }) {
+                Text(
+                    text = "OK",
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = { onDismiss() }) {
+                Text(
+                    text = "Cancel",
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+            }
+        },
+        text = { TimeInput(
+            state = timePickerState,
+            colors = TimePickerDefaults.colors(
+                timeSelectorSelectedContainerColor = MaterialTheme.colorScheme.primary
+            )
+        ) })
+}

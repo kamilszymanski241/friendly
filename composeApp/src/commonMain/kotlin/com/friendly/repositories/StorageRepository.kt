@@ -34,7 +34,7 @@ class StorageRepository: IStorageRepository, KoinComponent {
             decodeByteArrayToBitMap(bucket.downloadPublic("$userId.jpg"))!!
         } catch (e: Exception) {
             return try {
-                decodeByteArrayToBitMap(bucket.downloadPublic("default.jpg"))!!
+                decodeByteArrayToBitMap(bucket.downloadPublic("defaultUserPicture.jpg"))!!
             } catch (e: Exception) {
                 throw e
             }
@@ -43,7 +43,7 @@ class StorageRepository: IStorageRepository, KoinComponent {
             bucket.publicUrl("$userId.jpg")
         } catch (e: Exception) {
             return try {
-                bucket.publicUrl("default.jpg")
+                bucket.publicUrl("defaultUserPicture.jpg")
             } catch (e: Exception) {
                 throw e
             }

@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.friendly_logo_white
-import com.friendly.components.TopBarWithBackButton
+import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.signInSignUp.SignUpViewModel
@@ -34,7 +34,7 @@ import org.koin.compose.koinInject
 fun ChooseSignUpMethod(navController: NavController, viewModel: SignUpViewModel = koinInject ()) {
     FriendlyAppTheme {
         Scaffold(
-            topBar = { TopBarWithBackButton(navController) },
+            topBar = { TopBarWithBackButtonAndTitle(navController, "") },
             bottomBar = {},
             containerColor = MaterialTheme.colorScheme.secondary
         ) {innerPadding->

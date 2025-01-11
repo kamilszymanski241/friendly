@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.ImageBitmap
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
+import org.koin.core.module.Module
 
 interface Platform {
     val name: String
@@ -32,3 +33,8 @@ expect fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: ()-> Unit)
 
 @Composable
 expect fun PickPhoto(onSelect: (ImageBitmap) ->Unit, onClose: ()->Unit)
+
+@Composable
+expect fun MapComponent(onSelect: (Pair<Double,Double>)->Unit, onCancel: ()->Unit)
+
+expect val nativeModule: Module

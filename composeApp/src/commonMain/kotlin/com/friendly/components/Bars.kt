@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -29,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -38,10 +40,8 @@ import com.friendly.generated.resources.friendly_logo_white
 import com.friendly.navigation.AppNavigation
 import com.friendly.managers.UserDetailsStatus
 import com.friendly.viewModels.home.HomeScreenTopBarViewModel
-import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.status.SessionStatus
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -135,21 +135,32 @@ fun HomeScreenTopBar(navController: NavController, viewModel: HomeScreenTopBarVi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBarWithBackButton(navController: NavController) {
+fun TopBarWithBackButtonAndTitle(navController: NavController, title: String) {
     TopAppBar(
         colors = topAppBarColors(
             containerColor = MaterialTheme.colorScheme.secondary,
         ),
         title = {
-            IconButton(
-                onClick = {
-                    navController.popBackStack()
-                },
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start,
+                modifier = Modifier.fillMaxSize()
             ) {
-                Icon(
-                    Icons.AutoMirrored.Default.ArrowBack,
-                    contentDescription = null,
-                    tint = Color.White
+                IconButton(
+                    onClick = {
+                        navController.popBackStack()
+                    },
+                ) {
+                    Icon(
+                        Icons.AutoMirrored.Default.ArrowBack,
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                }
+                Text(
+                    text = title,
+                    textAlign = TextAlign.Center,
+                    color = Color.White
                 )
             }
         })

@@ -17,6 +17,7 @@ import com.friendly.managers.SessionManager
 import com.friendly.viewModels.AppSettingsScreenViewModel
 import com.friendly.viewModels.home.DiscoverScreenViewModel
 import com.friendly.viewModels.home.MyEventsScreenViewModel
+import com.friendly.viewModels.home.HomeScreenViewModel
 import com.friendly.viewModels.EventDetailsScreenViewModel
 import com.friendly.viewModels.signInSignUp.FillUserDetailsViewModel
 import com.friendly.viewModels.home.HomeScreenTopBarViewModel
@@ -26,6 +27,9 @@ import com.friendly.viewModels.signInSignUp.SignUpViewModel
 import com.friendly.viewModels.home.UpcomingEventsScreenViewModel
 import com.friendly.viewModels.signInSignUp.UploadProfilePictureViewModel
 import com.friendly.viewModels.UserProfileViewModel
+import com.friendly.viewModels.createEvent.FillBasicEventDetailsScreenViewModel
+import com.friendly.viewModels.createEvent.SelectEventLocalizationScreenViewModel
+import com.friendly.viewModels.createEvent.SelectDateTimeScreenViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -41,9 +45,15 @@ val appModule = module {
     single<ISessionManager>{SessionManager()}
     single<IRegistrationManager>{ RegistrationManager() }
 
+    viewModelOf(::HomeScreenViewModel)
     viewModelOf(::DiscoverScreenViewModel)
     viewModelOf(::UpcomingEventsScreenViewModel)
     viewModelOf(::MyEventsScreenViewModel)
+
+    viewModelOf(::SelectEventLocalizationScreenViewModel)
+    viewModelOf(::FillBasicEventDetailsScreenViewModel)
+    viewModelOf(::SelectDateTimeScreenViewModel)
+
     viewModelOf(::SignInViewModel)
     viewModelOf(::SignUpViewModel)
     viewModelOf(::HomeScreenTopBarViewModel)

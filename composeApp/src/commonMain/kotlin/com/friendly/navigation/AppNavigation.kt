@@ -1,9 +1,6 @@
 package com.friendly.navigation
 
 sealed class AppNavigation(val route: String, val label: String){
-   // data object Discover: AppNavigation (route = "discover", label = "Discover")
-   // data object UpcomingEvents: AppNavigation (route = "upcomingEvents", label = "Upcoming Events")
-   // data object MyEvents: AppNavigation (route = "myEvents", label = "My Events")
 
     data object ChooseSignUpMethod: AppNavigation("chooseSignUpMethod", "Sign Up")
     data object FillUserDetails: AppNavigation(route = "fillUserDetails", label = "Fill User Details")
@@ -16,4 +13,9 @@ sealed class AppNavigation(val route: String, val label: String){
     data object EventDetails: AppNavigation(route="eventDetails/{eventId}", label = "Event Details")
     data object AppSettings: AppNavigation(route="appSetings", label = "App settings")
     data object HomeScreen: AppNavigation(route="homeScreen", label = "Home Screen")
+
+    data object CreateNewEvent: AppNavigation(route = "createNewEvent", label = "Create New Event")
+    data object FillBasicEventDetails: AppNavigation(route="fillBasicEventDetails", label = "Fill Basic EventDetails")
+    data object SelectEventDateTime: AppNavigation(route="selectEventDateTime", label = "Select Event Date and Time")
+    data object SelectEventLocalization: AppNavigation(route="selectEventLocalization", label = "Select Event Localization")
 }

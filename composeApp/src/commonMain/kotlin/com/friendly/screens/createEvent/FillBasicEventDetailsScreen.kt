@@ -1,4 +1,4 @@
-package com.friendly.screens.signInSignUp
+package com.friendly.screens.createEvent
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material3.Button
@@ -23,6 +25,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -35,64 +39,63 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.friendly.CapturePhoto
 import com.friendly.PickPhoto
-import com.friendly.generated.resources.Res
-import com.friendly.generated.resources.defaultUserPicture
 import com.friendly.components.TopBarWithBackButtonAndTitle
+import com.friendly.generated.resources.Res
+import com.friendly.generated.resources.defaultEventPicture
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
-import com.friendly.viewModels.signInSignUp.UploadProfilePictureViewModel
+import com.friendly.viewModels.createEvent.FillBasicEventDetailsScreenViewModel
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadProfilePictureViewModel = koinViewModel ()) {
-    val capturedPhoto = viewModel.userProfilePicture.collectAsState()
+fun FillBasicEventDetailsScreen(navController: NavController, viewModel: FillBasicEventDetailsScreenViewModel = koinViewModel ()) {
+    val title = viewModel.title.collectAsState(initial = "")
+    val description = viewModel.description.collectAsState(initial = "")
+    val capturedPhoto = viewModel.eventPicture.collectAsState()
     var showCamera by remember { mutableStateOf(false) }
     var showPhotoPicker by remember { mutableStateOf(false) }
-    val errorMessage = viewModel.errorMessage.collectAsState()
+    val errorMessage = viewModel.errorMessage.collectAsState("")
     FriendlyAppTheme {
         Scaffold(
             topBar = {
                 if (showCamera.not()) {
-                    TopBarWithBackButtonAndTitle(navController, "Upload your profile picture")
-                }
-            },
+                TopBarWithBackButtonAndTitle(navController, "Event details")
+            } },
             bottomBar = {},
             containerColor = MaterialTheme.colorScheme.secondary
         ) { innerPadding ->
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxHeight()
+                    .fillMaxSize()
                     .padding(innerPadding),
+                verticalArrangement = Arrangement.SpaceBetween,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
+            )
+            {
                 Column(
+                    modifier = Modifier,
+                    verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.size(30.dp))
-                    errorMessage.value?.let { message ->
-                        Text(
-                            text = message,
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                    }
-                    Spacer(modifier = Modifier.size(20.dp))
-                    Box() {
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Box(
+                        modifier = Modifier.size(220.dp)
+                    ) {
                         if (capturedPhoto.value == null) {
                             Image(
-                                painter = painterResource(Res.drawable.defaultUserPicture),
+                                painter = painterResource(Res.drawable.defaultEventPicture),
                                 null,
                                 modifier = Modifier
-                                    .size(250.dp)
-                                    .clip(CircleShape)
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(16.dp))
                             )
                         } else {
                             Image(
@@ -100,14 +103,15 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadPr
                                 null,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
-                                    .size(250.dp)
-                                    .clip(CircleShape)
+                                    .fillMaxSize()
+                                    .clip(RoundedCornerShape(16.dp))
                             )
                         }
                         var showDropDownMenu by remember { mutableStateOf(false) }
                         Box(
                             modifier = Modifier
                                 .align(Alignment.BottomEnd)
+                                .padding(10.dp)
                         ) {
                             IconButton(
                                 onClick = {
@@ -148,18 +152,79 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadPr
                             }
                         }
                     }
+                    Spacer(modifier = Modifier.size(20.dp))
+                    TextField(
+                        modifier = Modifier
+                            .padding(start = 30.dp, end = 30.dp)
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(16.dp),
+                        singleLine = true,
+                        colors = TextFieldDefaults.colors(
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White
+                        ),
+                        value = title.value,
+                        onValueChange = {
+                            viewModel.onTitleChange(it)
+                        },
+                        label = {
+                            Text(
+                                text = "Title",
+                                color = Color.Black
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                    )
+                    Spacer(modifier = Modifier.size(20.dp))
+                    TextField(
+                        modifier = Modifier
+                            .padding(start = 30.dp, end = 30.dp)
+                            .fillMaxWidth()
+                            .height(200.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedIndicatorColor = Color.Transparent,
+                            unfocusedIndicatorColor = Color.Transparent,
+                            disabledIndicatorColor = Color.Transparent,
+                            focusedContainerColor = Color.White,
+                            unfocusedContainerColor = Color.White
+                        ),
+                        value = description.value,
+                        onValueChange = {
+                            viewModel.onDescriptionChange(it)
+                        },
+                        label = {
+                            Text(
+                                text = "Description",
+                                color = Color.Black
+                            )
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                    )
                 }
+                //ContinueButton
+                errorMessage.value?.let { message ->
+                    Text(
+                        text = message,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+                Spacer(modifier = Modifier.size(20.dp))
                 Button(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth(),
                     onClick = {
-                        if (viewModel.onContinue()) {
-                            navController.navigate(AppNavigation.RegisterEmailAndPassword.route)
-                        }
+                        navController.navigate(AppNavigation.SelectEventDateTime.route)
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.tertiary,
                         contentColor = Color.White
                     ),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = MaterialTheme.shapes.medium,
                 ) {
                     Text("Continue")
                 }
@@ -171,7 +236,7 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadPr
                 CapturePhoto(onSelect = { picture ->
                     viewModel.setPicture(picture)
                     showCamera = false
-                    viewModel.setErrorMessage("")
+                    // viewModel.setErrorMessage("")
                 },
                     onClose = {
                         showCamera = false
@@ -184,7 +249,7 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadPr
                 PickPhoto(onSelect = { picture ->
                     viewModel.setPicture(picture)
                     showPhotoPicker = false
-                    viewModel.setErrorMessage("")
+                    //viewModel.setErrorMessage("")
                 },
                     onClose = {
                         showPhotoPicker = false
@@ -193,3 +258,5 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadPr
         }
     }
 }
+
+

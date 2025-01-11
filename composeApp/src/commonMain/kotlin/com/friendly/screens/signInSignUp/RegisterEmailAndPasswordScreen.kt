@@ -27,7 +27,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.friendly.components.TopBarWithBackButton
+import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.signInSignUp.RegisterEmailAndPasswordViewModel
@@ -47,7 +47,7 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Regi
             }
         }
         Scaffold(
-            topBar = { TopBarWithBackButton(navController) },
+            topBar = { TopBarWithBackButtonAndTitle(navController, "Email and password") },
             bottomBar = {},
             containerColor = MaterialTheme.colorScheme.secondary
         ) {innerPadding->
@@ -62,10 +62,6 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Regi
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
-                        text = "Email, password",
-                        fontSize = 40.sp
-                    )
                     Spacer(modifier = Modifier.height(10.dp))
                     errorMessage.value?.let { message ->
                         Text(
