@@ -17,6 +17,12 @@ class DiscoverScreenViewModel: ViewModel(), KoinComponent {
     private val _eventsList = MutableStateFlow<List<Event>?>(null)
     val eventsList: Flow<List<Event>?> = _eventsList
 
+    private val _distance = MutableStateFlow(15)
+    val distance: Flow<Int> = _distance
+
+    private val _tags = MutableStateFlow<List<Int>>(emptyList())
+    val tags: Flow<List<Int>> = _tags
+
 
     init{
         if(_eventsList.value == null)
@@ -30,12 +36,20 @@ class DiscoverScreenViewModel: ViewModel(), KoinComponent {
     private fun getEvents() {
         viewModelScope.launch {
             try {
-                val events = eventRepository.getEventsWithParticipants().map { it.asDomainModel() }
+                val events = eventRepository.getEventsWithFilters().map { it.asDomainModel() }
                 _eventsList.emit(events)
 
             } catch (e: Exception) {
                 println("Error loading events: ${e.message}")
             }
+        }
+    }
+
+    fun getTagsString(): String{
+        return if(_tags.value.isNotEmpty()) {
+            _tags.value.joinToString { ", " }
+        } else{
+            "-"
         }
     }
 }

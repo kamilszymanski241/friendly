@@ -67,38 +67,7 @@ fun AppSettingsScreen(navController: NavController, viewModel: AppSettingsScreen
                         fontSize = 15.sp
                     )
                 }
-                show()
             }
         }
-    }
-}
-@Composable
-fun show() {
-    Box(
-        modifier = Modifier
-            .height(360.dp)
-            .width(360.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        mirror(4)
-    }
-}
-
-@Composable
-fun mirror(i: Int) {
-    if (i > 0) {
-        Box(
-            modifier = Modifier
-                .size(360.dp / i)
-                .zIndex(i.toFloat())
-        ) {
-            Image(
-                painter = painterResource(Res.drawable.defaultEventPicture),
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-            )
-        }
-        mirror(i - 1)
     }
 }

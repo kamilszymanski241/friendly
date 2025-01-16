@@ -15,7 +15,7 @@ class EventRepository: IEventRepository, KoinComponent {
 
     private val postgrest: Postgrest by inject()
 
-    override suspend fun getEventsWithParticipants(): List<EventDTO> {
+    override suspend fun getEventsWithFilters(): List<EventDTO> {
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
                 .select(

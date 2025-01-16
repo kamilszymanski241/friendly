@@ -1,6 +1,6 @@
 package com.friendly
 
-import com.friendly.mapsAndPlaces.components.SearchViewModel
+import com.friendly.mapsAndPlaces.components.SearchComponentViewModel
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -83,7 +83,7 @@ actual fun getPlatform(): Platform = AndroidPlatform()
 
 actual val nativeModule = module{
     single<IPlacesClientProvider>{ PlacesClientProvider() }
-    viewModelOf(::SearchViewModel)
+    viewModelOf(::SearchComponentViewModel)
     viewModelOf(::SelectLocationViewModel)
 }
 actual fun httpClient(config: HttpClientConfig<*>.() -> Unit) = HttpClient(OkHttp) {

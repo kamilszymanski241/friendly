@@ -27,7 +27,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.friendly.mapsAndPlaces.LocationAndGeocodingHelper
-import com.friendly.mapsAndPlaces.components.SearchComponent
+import com.friendly.mapsAndPlaces.components.SearchLocationComponent
 import com.friendly.mapsAndPlaces.components.StaticMapComponent
 import com.google.android.gms.maps.model.LatLng
 
@@ -107,7 +107,7 @@ actual fun SelectLocation(
                 }
             }
         }
-        SearchComponent(
+        SearchLocationComponent(
             modifier = Modifier.align(Alignment.TopCenter),
             onLocationSelected = { selectedPlace ->
                 LocationAndGeocodingHelper.getLatLngFromPlace(selectedPlace, context, onLatLngFetched = {coordinates.value = it})

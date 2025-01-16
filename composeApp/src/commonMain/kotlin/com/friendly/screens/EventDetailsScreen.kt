@@ -1,7 +1,5 @@
 package com.friendly.screens
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -32,12 +30,9 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.friendly.ShowStaticMap
 import com.friendly.components.TopBarWithBackButtonAndTitle
-import com.friendly.generated.resources.Res
-import com.friendly.generated.resources.defaultEventPicture
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.EventDetailsScreenViewModel
-import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
