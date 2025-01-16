@@ -1,4 +1,4 @@
-package com.friendly
+package com.friendly.mapsAndPlaces
 
 import android.content.Context
 import com.google.android.libraries.places.api.net.PlacesClient

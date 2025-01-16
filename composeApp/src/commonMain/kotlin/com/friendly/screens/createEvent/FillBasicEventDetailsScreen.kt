@@ -41,7 +41,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.friendly.CapturePhoto
 import com.friendly.PickPhoto
@@ -50,13 +49,12 @@ import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.defaultEventPicture
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
-import com.friendly.viewModels.createEvent.FillBasicEventDetailsScreenViewModel
+import com.friendly.viewModels.createEvent.CreateEventViewModel
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun FillBasicEventDetailsScreen(navController: NavController, viewModel: FillBasicEventDetailsScreenViewModel = koinViewModel ()) {
+fun FillBasicEventDetailsScreen(navController: NavController, viewModel: CreateEventViewModel) {
     val title = viewModel.title.collectAsState(initial = "")
     val description = viewModel.description.collectAsState(initial = "")
     val capturedPhoto = viewModel.eventPicture.collectAsState()
@@ -205,7 +203,6 @@ fun FillBasicEventDetailsScreen(navController: NavController, viewModel: FillBas
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                     )
                 }
-                //ContinueButton
                 errorMessage.value?.let { message ->
                     Text(
                         text = message,
@@ -234,7 +231,7 @@ fun FillBasicEventDetailsScreen(navController: NavController, viewModel: FillBas
                     delay(100)
                 }
                 CapturePhoto(onSelect = { picture ->
-                    viewModel.setPicture(picture)
+                    viewModel.onPictureChange(picture)
                     showCamera = false
                     // viewModel.setErrorMessage("")
                 },
@@ -247,7 +244,7 @@ fun FillBasicEventDetailsScreen(navController: NavController, viewModel: FillBas
                     delay(100)
                 }
                 PickPhoto(onSelect = { picture ->
-                    viewModel.setPicture(picture)
+                    viewModel.onPictureChange(picture)
                     showPhotoPicker = false
                     //viewModel.setErrorMessage("")
                 },

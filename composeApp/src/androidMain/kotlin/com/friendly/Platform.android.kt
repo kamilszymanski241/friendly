@@ -1,7 +1,7 @@
 package com.friendly
 
+import com.friendly.mapsAndPlaces.components.SearchViewModel
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
@@ -55,9 +55,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import com.friendly.mapsAndPlaces.IPlacesClientProvider
+import com.friendly.mapsAndPlaces.PlacesClientProvider
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -69,6 +70,7 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import java.io.ByteArrayOutputStream
 
@@ -80,7 +82,9 @@ class AndroidPlatform : Platform {
 actual fun getPlatform(): Platform = AndroidPlatform()
 
 actual val nativeModule = module{
-    single<IPlacesClientProvider>{PlacesClientProvider()}
+    single<IPlacesClientProvider>{ PlacesClientProvider() }
+    viewModelOf(::SearchViewModel)
+    viewModelOf(::SelectLocationViewModel)
 }
 actual fun httpClient(config: HttpClientConfig<*>.() -> Unit) = HttpClient(OkHttp) {
     config(this)
@@ -215,10 +219,8 @@ actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            // Permission granted
             println("PERMISSION GRANTED")
         } else {
-            // Handle permission denial
             println("PERMISSION DENIED")
             onClose()
             //TODO()
@@ -227,10 +229,8 @@ actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
 
     LaunchedEffect(cameraPermissionState) {
         if (!cameraPermissionState.status.isGranted && cameraPermissionState.status.shouldShowRationale) {
-            // Show rationale- alert dialog
             showRationale.value = true
         } else {
-            // Request permission
             requestPermissionLauncher.launch(android.Manifest.permission.CAMERA)
         }
     }

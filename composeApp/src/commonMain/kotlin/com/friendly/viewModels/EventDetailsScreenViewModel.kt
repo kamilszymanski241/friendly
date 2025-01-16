@@ -53,7 +53,7 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
 
     fun loadEvent() {
         viewModelScope.launch {
-            _eventDetails.value = eventRepository.getEventWithParticipants(eventId).asDomainModel()
+            _eventDetails.value = eventRepository.getSingleEventWithParticipants(eventId).asDomainModel()
         }
     }
 

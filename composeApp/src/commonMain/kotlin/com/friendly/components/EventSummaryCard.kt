@@ -11,14 +11,18 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -105,22 +109,41 @@ fun EventSummaryCard(event: Event, navController: NavController, modifier: Modif
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Column() {
-                                    Row() {
-                                        Text(
-                                            text = event.date,
-                                            fontSize = 15.sp,
-                                        )
-                                        Spacer(modifier = Modifier.size(5.dp))
-                                        Text(
-                                            text = event.time,
-                                            fontSize = 15.sp,
-                                        )
-                                    }
+                                    Spacer(modifier = Modifier.size(5.dp))
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
+                                        Icon(
+                                            Icons.Filled.Event,
+                                            "",
+                                            modifier.size(15.dp)
+                                        )
                                         Text(
-                                            text = event.address + "," + event.city + "," + event.country,
+                                            text = event.startDate,
+                                            fontSize = 15.sp,
+                                        )
+                                        Spacer(modifier = Modifier.size(5.dp))
+                                        Icon(
+                                            Icons.Filled.Schedule,
+                                            "",
+                                            modifier.size(15.dp)
+                                        )
+                                        Text(
+                                            text = event.startTime,
+                                            fontSize = 15.sp,
+                                        )
+                                    }
+                                    Spacer(modifier = Modifier.size(5.dp))
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            Icons.Default.LocationOn,
+                                            "",
+                                            modifier.size(15.dp)
+                                        )
+                                        Text(
+                                            text = event.locationText,
                                             fontSize = 15.sp,
                                             maxLines = 2,
                                             overflow = TextOverflow.Ellipsis
@@ -140,15 +163,25 @@ fun EventSummaryCard(event: Event, navController: NavController, modifier: Modif
                         Column() {
                             val spotsLeft = event.maxParticipants!! - (event.participants?.size ?: 0)
                             Row(){
-                                Text(
-                                    text = spotsLeft.toString(),
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 15.sp
-                                )
-                                Text(
-                                    text = " spots left!",
-                                    fontSize = 15.sp
-                                )
+                                if(spotsLeft > 0) {
+                                    Text(
+                                        text = spotsLeft.toString(),
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 15.sp
+                                    )
+                                    Text(
+                                        text = " spots left!",
+                                        fontSize = 15.sp
+                                    )
+                                }
+                                else{
+                                    Text(
+                                        text = "This event is full!",
+                                        fontSize = 15.sp,
+                                        color = Color.Red
+                                    )
+                                }
+
                             }
                             Row() {
                                 if (event.participants!!.isNotEmpty()) {

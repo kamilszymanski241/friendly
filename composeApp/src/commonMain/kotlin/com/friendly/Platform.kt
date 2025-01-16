@@ -1,6 +1,7 @@
 package com.friendly
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
@@ -35,6 +36,13 @@ expect fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: ()-> Unit)
 expect fun PickPhoto(onSelect: (ImageBitmap) ->Unit, onClose: ()->Unit)
 
 @Composable
-expect fun MapComponent(onSelect: (Pair<Double,Double>)->Unit, onCancel: ()->Unit)
+expect fun SelectLocation(
+    onSelect: (Pair<Double, Double>, String) -> Unit,
+    onCancel: () -> Unit,
+    modifier: Modifier = Modifier
+)
+
+@Composable
+expect fun ShowStaticMap(modifier: Modifier = Modifier, coordinates: Pair<Double,Double>, zoom: Float)
 
 expect val nativeModule: Module

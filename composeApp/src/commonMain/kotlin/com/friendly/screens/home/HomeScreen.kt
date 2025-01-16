@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Celebration
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
@@ -80,7 +81,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeScreenViewModel = ko
                         },
                         icon = {
                             Icon(
-                                imageVector = Icons.Default.Search,
+                                imageVector = Icons.Default.Celebration,
                                 contentDescription = null,
                                 tint = Color.White
                             )

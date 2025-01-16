@@ -1,9 +1,10 @@
 package com.friendly.repositories
 
 import com.friendly.dtos.EventDTO
+import com.friendly.helpers.DateTimeHelper
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Columns
-import io.github.jan.supabase.postgrest.query.filter.FilterOperator
+import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -18,18 +19,19 @@ class EventRepository: IEventRepository, KoinComponent {
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
                 .select(
-                    Columns.raw("id, created_at, title, country, city, postal_code, address, description, max_participants, date, time, organizer, UserDetails(id, created_at, name, surname)")
+                    Columns.raw("id, created_at, title, description, location_lat, location_long, location_text, max_participants, start_date_time, end_date_time, organizer, UserDetails(id, created_at, name, surname)")
                 ) {
+
                 }.decodeList<EventDTO>()
             result
         }
     }
 
-    override suspend fun getEventWithParticipants(eventId: String): EventDTO {
+    override suspend fun getSingleEventWithParticipants(eventId: String): EventDTO {
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
                 .select(
-                    Columns.raw("id, created_at, title, country, city, postal_code, address, description, max_participants, date, time, organizer, UserDetails(id, created_at, name, surname)")
+                    Columns.raw("id, created_at, title, description, location_lat, location_long, location_text, max_participants, start_date_time, end_date_time, organizer, UserDetails(id, created_at, name, surname)")
                 ) {
                     filter {
                         eq("id", eventId)
@@ -39,15 +41,21 @@ class EventRepository: IEventRepository, KoinComponent {
         }
     }
 
-    override suspend fun getMultipleEvents(eventIds: List<String>): List<EventDTO> {
+    override suspend fun getMultipleEventsByIDs(eventIds: List<String>): List<EventDTO> {
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
                 .select(
-                    Columns.raw("id, created_at, title, country, city, postal_code, address, description, max_participants, date, time, organizer, UserDetails(id, created_at, name, surname)")
+                    Columns.raw(
+                        "id, created_at, title, description, location_lat, location_long, location_text, max_participants, start_date_time, end_date_time, organizer, UserDetails( id, created_at, name, surname)"
+                    )
                 ) {
                     filter {
-                        isIn("id", eventIds)
+                        and {
+                            isIn("id", eventIds)
+                            gte("start_date_time", DateTimeHelper.convertDateAndTimeToSupabaseTimestamptz(DateTimeHelper.getCurrentDate(), DateTimeHelper.getCurrentTime()))
+                        }
                     }
+                    order(column = "start_date_time", order = Order.ASCENDING)
                 }.decodeList<EventDTO>()
             result
         }
@@ -57,7 +65,7 @@ class EventRepository: IEventRepository, KoinComponent {
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
                 .select(
-                    Columns.raw("id, created_at, title, country, city, postal_code, address, description, max_participants, date, time, organizer, UserDetails(id, created_at, name, surname)")
+                    Columns.raw("id, created_at, title, description, location_lat, location_long, location_text, max_participants, start_date_time, end_date_time, organizer, UserDetails(id, created_at, name, surname)")
                 ) {
                     filter {
                         eq("organizer", userId)
@@ -67,4 +75,16 @@ class EventRepository: IEventRepository, KoinComponent {
         }
     }
 
+    override suspend fun postEvent(eventDTO: EventDTO): EventDTO{
+        try {
+            val eventId = withContext(Dispatchers.IO) {
+                postgrest.from("Events").insert(eventDTO) {
+                    select()
+                }.decodeSingle<EventDTO>()
+            }
+            return eventId
+        } catch (e: Exception) {
+            throw e
+        }
+    }
 }

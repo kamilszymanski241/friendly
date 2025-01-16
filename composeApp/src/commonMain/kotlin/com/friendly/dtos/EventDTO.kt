@@ -1,8 +1,8 @@
 package com.friendly.dtos
 
 import Friendly.composeApp.BuildConfig
+import com.friendly.helpers.DateTimeHelper
 import com.friendly.models.Event
-import com.friendly.models.UserDetails
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -10,37 +10,37 @@ import kotlinx.serialization.Serializable
 data class EventDTO (
 
     @SerialName("id")
-    val id: String,
+    val id: String? = null,
 
     @SerialName("created_at")
-    val createdAt: String,
+    val createdAt: String? = null,
 
     @SerialName("title")
     val title: String,
 
-    @SerialName("country")
-    val country: String,
+    @SerialName("location_WKB")
+    val locationWKB: String? = null,
 
-    @SerialName("city")
-    val city: String,
+    @SerialName("location_lat")
+    val locationLatitude: Double? = null,
 
-    @SerialName("postal_code")
-    val postalCode: String,
+    @SerialName("location_long")
+    val locationLongitude: Double? = null,
 
-    @SerialName("address")
-    val address: String,
+    @SerialName("location_text")
+    val locationText: String,
 
     @SerialName("description")
     val description: String?,
 
     @SerialName("max_participants")
-    val maxParticipants: Int?,
+    val maxParticipants: Int,
 
-    @SerialName("date")
-    val date: String,
+    @SerialName("start_date_time")
+    val startDateTime: String,
 
-    @SerialName("time")
-    val time: String,
+    @SerialName("end_date_time")
+    val endDateTime: String,
 
     @SerialName("organizer")
     val organizer: String,
@@ -52,27 +52,27 @@ data class EventDTO (
     fun asDomainModel(): Event {
         return Event(
 
-            id = this.id,
+            id = this.id ?: "", //TODO()
 
-            createdAt = this.createdAt,
+            createdAt = this.createdAt ?: "", //TODO()
 
             title = this.title,
 
-            country = this.country,
+            locationCoordinates = Pair(this.locationLatitude ?: 0.0, this.locationLongitude ?: 0.0),
 
-            city = this.city,
-
-            postalCode = this.postalCode,
-
-            address = this.address,
+            locationText = this.locationText,
 
             description = this.description,
 
             maxParticipants = this.maxParticipants,
 
-            date = this.date,
+            startDate = DateTimeHelper.parseDateFromSupabaseTimestampz(this.startDateTime),
 
-            time = this.time,
+            startTime = DateTimeHelper.parseTimeFromSupabaseTimestampz(this.startDateTime),
+
+            endDate = DateTimeHelper.parseDateFromSupabaseTimestampz(this.endDateTime),
+
+            endTime = DateTimeHelper.parseTimeFromSupabaseTimestampz(this.endDateTime),
 
             organizer = this.organizer,
 

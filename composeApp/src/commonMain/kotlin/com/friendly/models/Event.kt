@@ -8,21 +8,21 @@ data class Event(
 
     val title: String,
 
-    val country: String,
+    val locationCoordinates: Pair<Double,Double>,
 
-    val city: String,
-
-    val postalCode: String,
-
-    val address: String,
+    val locationText: String,
 
     val description: String?,
 
-    val maxParticipants: Int?,
+    val maxParticipants: Int,
 
-    val date: String,
+    val startDate: String,
 
-    val time: String,
+    val startTime: String,
+
+    val endDate: String,
+
+    val endTime: String,
 
     val eventPictureUrl: String,
 

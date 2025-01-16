@@ -12,10 +12,6 @@ import org.koin.core.component.inject
 class StorageRepository: IStorageRepository, KoinComponent {
     private val storage: Storage by inject()
 
-    override suspend fun createUserBucket(userId: String) {
-        storage.createBucket(id = userId)
-    }
-
     override suspend fun uploadAProfilePicture(userId: String, picture: ImageBitmap): Boolean {
         val bucket = storage.from("profilePictures")
         return try {
@@ -27,26 +23,15 @@ class StorageRepository: IStorageRepository, KoinComponent {
             throw e
         }
     }
-
-/*    override suspend fun fetchProfilePicture(userId: String): String {
-        val bucket = storage.from("profilePictures")
-        *//*        return try {
-            decodeByteArrayToBitMap(bucket.downloadPublic("$userId.jpg"))!!
-        } catch (e: Exception) {
-            return try {
-                decodeByteArrayToBitMap(bucket.downloadPublic("defaultUserPicture.jpg"))!!
-            } catch (e: Exception) {
-                throw e
-            }
-        }*//*
+    override suspend fun uploadEventPicture(eventId: String, picture: ImageBitmap): Boolean {
+        val bucket = storage.from("eventPictures")
         return try {
-            bucket.publicUrl("$userId.jpg")
+            val resizedPicture = resizeImageBitmapWithAspectRatio(picture, 1000)
+            val pictureAsByteArray = decodeBitMapToByteArray(resizedPicture)
+            bucket.upload("$eventId.jpg", pictureAsByteArray)
+            true
         } catch (e: Exception) {
-            return try {
-                bucket.publicUrl("defaultUserPicture.jpg")
-            } catch (e: Exception) {
-                throw e
-            }
+            throw e
         }
-    }*/
+    }
 }

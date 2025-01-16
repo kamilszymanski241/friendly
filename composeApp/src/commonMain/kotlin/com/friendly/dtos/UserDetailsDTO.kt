@@ -13,7 +13,7 @@ data class UserDetailsDTO (
     val id: String,
 
     @SerialName("created_at")
-    val createdAt: String = "",
+    val createdAt: String? = null,
 
     @SerialName("name")
     val name: String,
@@ -28,7 +28,7 @@ data class UserDetailsDTO (
     fun asDomainModel(): UserDetails {
         return UserDetails(
             id = this.id,
-            joined = this.createdAt,
+            joined = this.createdAt ?: "", //TODO()
             name = this.name,
             surname = this.surname,
             profilePictureUrl = BuildConfig.SUPABASE_URL+BuildConfig.PROFILE_PICTURES_STORAGE_URL + "${this.id}.jpg",

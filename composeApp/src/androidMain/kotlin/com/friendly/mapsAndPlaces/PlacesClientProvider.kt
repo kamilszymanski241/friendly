@@ -1,4 +1,4 @@
-package com.friendly
+package com.friendly.mapsAndPlaces
 
 import Friendly.composeApp.BuildConfig
 import android.content.Context
@@ -18,6 +18,6 @@ class PlacesClientProvider: IPlacesClientProvider {
     }
 
     override fun shutdown() {
-        placesClientProvider = null // Pozwala na późniejsze zwolnienie zasobów przez GC
+        placesClientProvider = null
     }
 }

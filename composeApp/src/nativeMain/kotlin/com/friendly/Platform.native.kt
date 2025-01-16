@@ -1,5 +1,6 @@
 package com.friendly
 
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import org.koin.core.module.Module
 
@@ -48,11 +49,21 @@ actual fun PickPhoto(
 }
 
 @Composable
-actual fun MapComponent(
-    onSelect: (Pair<Double, Double>) -> Unit,
-    onCancel: () -> Unit
+actual fun SelectLocation(
+    onSelect: (Pair<Double, Double>, String) -> Unit,
+    onCancel: () -> Unit,
+    modifier: Modifier
 ) {
 }
 
 actual val nativeModule: Module
     get() = TODO("Not yet implemented")
+
+
+@Composable
+actual fun ShowStaticMap(
+    modifier: Modifier,
+    coordinates: Pair<Double, Double>,
+    zoom: Float
+) {
+}

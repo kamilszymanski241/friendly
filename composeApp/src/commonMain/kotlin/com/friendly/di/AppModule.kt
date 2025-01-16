@@ -27,9 +27,6 @@ import com.friendly.viewModels.signInSignUp.SignUpViewModel
 import com.friendly.viewModels.home.UpcomingEventsScreenViewModel
 import com.friendly.viewModels.signInSignUp.UploadProfilePictureViewModel
 import com.friendly.viewModels.UserProfileViewModel
-import com.friendly.viewModels.createEvent.FillBasicEventDetailsScreenViewModel
-import com.friendly.viewModels.createEvent.SelectEventLocalizationScreenViewModel
-import com.friendly.viewModels.createEvent.SelectDateTimeScreenViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -49,10 +46,6 @@ val appModule = module {
     viewModelOf(::DiscoverScreenViewModel)
     viewModelOf(::UpcomingEventsScreenViewModel)
     viewModelOf(::MyEventsScreenViewModel)
-
-    viewModelOf(::SelectEventLocalizationScreenViewModel)
-    viewModelOf(::FillBasicEventDetailsScreenViewModel)
-    viewModelOf(::SelectDateTimeScreenViewModel)
 
     viewModelOf(::SignInViewModel)
     viewModelOf(::SignUpViewModel)
