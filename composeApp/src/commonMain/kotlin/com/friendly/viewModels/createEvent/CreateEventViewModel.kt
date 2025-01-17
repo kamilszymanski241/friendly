@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.friendly.dtos.EventDTO
 import com.friendly.helpers.DateTimeHelper
+import com.friendly.helpers.LocationAndGeocodingHelper
 import com.friendly.managers.ISessionManager
 import com.friendly.repositories.IEventRepository
 import com.friendly.repositories.IStorageRepository
@@ -20,9 +21,11 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
 
     private val eventsRepository: IEventRepository by inject()
 
-    val storageRepository: IStorageRepository by inject()
+    private val storageRepository: IStorageRepository by inject()
 
     private val sessionManager: ISessionManager by inject()
+
+    private val locationAndGeocodingHelper: LocationAndGeocodingHelper by inject()
 
     private val _title = MutableStateFlow("")
     val title: Flow<String> = _title
@@ -48,11 +51,11 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
     private val _eventPicture = MutableStateFlow<ImageBitmap?>(null)
     val eventPicture: StateFlow<ImageBitmap?> = _eventPicture.asStateFlow()
 
-    private val _selectedLocation = MutableStateFlow<Pair<Double, Double>?>(null)
-    val selectedLocation: StateFlow<Pair<Double, Double>?> = _selectedLocation.asStateFlow()
+    private val _selectedLocation = MutableStateFlow(Pair(0.0, 0.0))
+    val selectedLocation: StateFlow<Pair<Double, Double>> = _selectedLocation
 
     private val _selectedLocationText = MutableStateFlow("")
-    val selectedLocationText: Flow<String> = _selectedLocationText
+    val selectedLocationText: StateFlow<String> = _selectedLocationText
 
     private val _errorMessage = MutableStateFlow<String?>("")
     val errorMessage: Flow<String?> = _errorMessage
@@ -89,12 +92,18 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
         _endTime.value = time
     }
 
+    fun setInitialLocation(){
+        locationAndGeocodingHelper.getLastLocation(onLocationRetrieved = {_selectedLocation.value = it}, onPermissionDenied = {})//TODO()
+        locationAndGeocodingHelper.fetchAddress(latLng = _selectedLocation.value, onAddressFetched = {_selectedLocationText.value = it})
+    }
+
     fun onLocationChange(location: Pair<Double, Double>) {
         _selectedLocation.value = location
     }
 
     fun onLocationTextChange(locationText: String) {
         _selectedLocationText.value = locationText
+        locationAndGeocodingHelper.getLatLngFromPlace(locationText, onLatLngFetched = {onLocationChange(it)})
     }
 
     fun onConfirm(onSuccess: ()->Unit, onFailure: ()->Unit) {

@@ -11,14 +11,12 @@ import coil3.PlatformContext
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.request.crossfade
 import coil3.util.DebugLogger
-import com.friendly.di.initKoin
 import com.friendly.navigation.AppNavHost
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 
 @Composable
 fun App() {
-    initKoin()
     setSingletonImageLoaderFactory { context ->
         getAsyncImageLoader(context)
     }

@@ -34,15 +34,3 @@ expect fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: ()-> Unit)
 
 @Composable
 expect fun PickPhoto(onSelect: (ImageBitmap) ->Unit, onClose: ()->Unit)
-
-@Composable
-expect fun SelectLocation(
-    onSelect: (Pair<Double, Double>, String) -> Unit,
-    onCancel: () -> Unit,
-    modifier: Modifier = Modifier
-)
-
-@Composable
-expect fun ShowStaticMap(modifier: Modifier = Modifier, coordinates: Pair<Double,Double>, zoom: Float)
-
-expect val nativeModule: Module

@@ -56,7 +56,7 @@ actual fun SelectLocation(
 ) {
 }
 
-actual val nativeModule: Module
+actual val platformModule: Module
     get() = TODO("Not yet implemented")
 
 

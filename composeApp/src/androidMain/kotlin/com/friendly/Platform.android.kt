@@ -1,6 +1,5 @@
 package com.friendly
 
-import com.friendly.mapsAndPlaces.components.SearchComponentViewModel
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -57,8 +56,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import com.friendly.mapsAndPlaces.IPlacesClientProvider
-import com.friendly.mapsAndPlaces.PlacesClientProvider
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -70,8 +67,6 @@ import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.module
 import java.io.ByteArrayOutputStream
 
 
@@ -81,11 +76,6 @@ class AndroidPlatform : Platform {
 
 actual fun getPlatform(): Platform = AndroidPlatform()
 
-actual val nativeModule = module{
-    single<IPlacesClientProvider>{ PlacesClientProvider() }
-    viewModelOf(::SearchComponentViewModel)
-    viewModelOf(::SelectLocationViewModel)
-}
 actual fun httpClient(config: HttpClientConfig<*>.() -> Unit) = HttpClient(OkHttp) {
     config(this)
     engine {

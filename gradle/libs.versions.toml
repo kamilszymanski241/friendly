@@ -37,6 +37,7 @@ kotlinx-datetime = "0.6.1"
 coil3 = "3.0.0-rc01"
 playServicesLocation = "21.3.0"
 google_places="4.1.0"
+moko = "0.18.0"
 
 
 [libraries]
@@ -74,6 +75,7 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 
 insert-koin-core = { module="io.insert-koin:koin-core", version.ref="koin_version" }
 insert-koin-android = { module="io.insert-koin:koin-android", version.ref="koin_version" }
+insert-koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin_version" }
 insert-koin-compose = {module="io.insert-koin:koin-compose", version.ref="koin-compose"}
 insert-koin-compose-viewmodel = {module="io.insert-koin:koin-compose-viewmodel", version.ref="koin-compose"}
 insert-koin-compose-viewmodel-navigation = {module="io.insert-koin:koin-compose-viewmodel-navigation", version.ref="koin-compose"}
@@ -97,6 +99,9 @@ kotlinx-datetime = {module="org.jetbrains.kotlinx:kotlinx-datetime", version.ref
 android-google-maps-compose = {module = "com.google.maps.android:maps-compose", version.ref = "maps-compose"}
 play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 google-places = {module="com.google.android.libraries.places:places", version.ref = "google_places" }
+
+moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "moko" }
+moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

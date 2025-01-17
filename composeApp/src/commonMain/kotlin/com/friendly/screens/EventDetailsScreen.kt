@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import com.friendly.ShowStaticMap
+import com.friendly.components.StaticMapComponent
 import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
@@ -76,7 +76,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                             fontSize = 15.sp
                         )
                         println(eventDetails.value!!.locationCoordinates)
-                        ShowStaticMap(
+                        StaticMapComponent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(300.dp)

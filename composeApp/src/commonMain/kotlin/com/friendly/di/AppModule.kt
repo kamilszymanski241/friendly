@@ -26,11 +26,14 @@ import com.friendly.viewModels.signInSignUp.SignInViewModel
 import com.friendly.viewModels.signInSignUp.SignUpViewModel
 import com.friendly.viewModels.home.UpcomingEventsScreenViewModel
 import com.friendly.viewModels.signInSignUp.UploadProfilePictureViewModel
+import com.friendly.viewModels.SearchLocationViewModel
 import com.friendly.viewModels.UserProfileViewModel
+import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
+expect val platformModule: Module
 
 val appModule = module {
     single<IEventRepository> {EventRepository()}
@@ -56,4 +59,5 @@ val appModule = module {
     viewModelOf(::UserProfileViewModel)
     viewModel{(eventId: String)->EventDetailsScreenViewModel(eventId)}
     viewModelOf(::AppSettingsScreenViewModel)
+    viewModelOf(::SearchLocationViewModel)
 }

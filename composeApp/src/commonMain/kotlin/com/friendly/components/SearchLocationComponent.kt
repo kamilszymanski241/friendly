@@ -1,4 +1,4 @@
-package com.friendly.mapsAndPlaces.components
+package com.friendly.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,20 +28,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import com.friendly.viewModels.SearchLocationViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun SearchLocationComponent(modifier: Modifier = Modifier, viewModel: SearchComponentViewModel = koinViewModel(), onLocationSelected: (String) -> Unit) {
+fun SearchLocationComponent(modifier: Modifier = Modifier, viewModel: SearchLocationViewModel = koinViewModel(), onLocationSelected: (String) -> Unit) {
 
     val query = viewModel.query.collectAsState()
     val suggestions = viewModel.suggestions.collectAsState()
-    val context = LocalContext.current
     var showLocationList by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
@@ -52,7 +51,7 @@ fun SearchLocationComponent(modifier: Modifier = Modifier, viewModel: SearchComp
                 TextField(
                     value = query.value,
                     onValueChange = {
-                        viewModel.onQueryChanged(it, context)
+                        viewModel.onQueryChanged(it)
                         showLocationList = true
                     },
                     modifier = Modifier
@@ -87,7 +86,9 @@ fun SearchLocationComponent(modifier: Modifier = Modifier, viewModel: SearchComp
                         properties = PopupProperties()
                     ) {
                         LazyColumn(
-                            modifier = Modifier.background(Color.Transparent).clip(RoundedCornerShape(16.dp)),
+                            modifier = Modifier.background(Color.Transparent).clip(
+                                RoundedCornerShape(16.dp)
+                            ),
                             userScrollEnabled = true,
 
                             ) {
@@ -112,7 +113,7 @@ fun SearchLocationComponent(modifier: Modifier = Modifier, viewModel: SearchComp
                                                 onLocationSelected(suggestion)
                                                 viewModel.locationIsSelected(true)
                                                 showLocationList = false
-                                                viewModel.onQueryChanged(suggestion,context)
+                                                viewModel.onQueryChanged(suggestion)
                                                 keyboardController?.hide()
                                             }
                                             .padding(8.dp)

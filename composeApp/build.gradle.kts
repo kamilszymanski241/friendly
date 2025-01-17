@@ -54,6 +54,9 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
 
+            implementation(libs.insert.koin.android)
+            implementation(libs.insert.koin.androidx.compose)
+
             implementation(libs.ktor.client.okhttp)
             implementation(libs.accompanist.permissions)
 
@@ -94,6 +97,9 @@ kotlin {
             implementation(libs.coil.network.ktor)
 
             implementation(libs.kotlinx.datetime)
+
+            api(libs.moko.permissions)
+            api(libs.moko.permissions.compose)
         }
         iosMain.dependencies {
             implementation((libs.ktor.client.darwin))

@@ -1,15 +1,15 @@
-package com.friendly.mapsAndPlaces
+package com.friendly.helpers
 
 import Friendly.composeApp.BuildConfig
 import android.content.Context
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 
-class PlacesClientProvider: IPlacesClientProvider {
+class PlacesClientProvider( private val context: Context ) {
 
     private var placesClientProvider: PlacesClient? = null
 
-    override fun getPlacesClient(context: Context): PlacesClient {
+    fun getPlacesClient(): PlacesClient {
         if (placesClientProvider == null) {
             Places.initialize(context.applicationContext, BuildConfig.GOOGLE_MAPS_ANDROID_API_KEY)
             placesClientProvider = Places.createClient(context.applicationContext)
@@ -17,7 +17,7 @@ class PlacesClientProvider: IPlacesClientProvider {
         return placesClientProvider!!
     }
 
-    override fun shutdown() {
+    fun shutdown() {
         placesClientProvider = null
     }
 }

@@ -1,15 +1,8 @@
-package com.friendly.mapsAndPlaces.components
+package com.friendly.components
 
-import android.content.Context
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.GoogleMap
@@ -19,18 +12,18 @@ import com.google.maps.android.compose.rememberCameraPositionState
 import com.google.maps.android.compose.rememberMarkerState
 
 @Composable
-fun StaticMapComponent(modifier: Modifier = Modifier, cameraPositionCoordinates: LatLng, zoom: Float){
+actual fun StaticMapComponent(modifier: Modifier, cameraPositionCoordinates: Pair<Double,Double>, zoom: Float){
 
-    val markerState = rememberMarkerState(position = cameraPositionCoordinates)
+    val markerState = rememberMarkerState(position = LatLng(cameraPositionCoordinates.first, cameraPositionCoordinates.second))
 
     val cameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(cameraPositionCoordinates, zoom)
+        position = CameraPosition.fromLatLngZoom(LatLng(cameraPositionCoordinates.first, cameraPositionCoordinates.second), zoom)
     }
 
     LaunchedEffect(cameraPositionCoordinates) {
-        markerState.position = cameraPositionCoordinates
+        markerState.position = LatLng(cameraPositionCoordinates.first, cameraPositionCoordinates.second)
         cameraPositionState.position =
-            CameraPosition.fromLatLngZoom(cameraPositionCoordinates, zoom)
+            CameraPosition.fromLatLngZoom(LatLng(cameraPositionCoordinates.first, cameraPositionCoordinates.second), zoom)
     }
 
     GoogleMap(

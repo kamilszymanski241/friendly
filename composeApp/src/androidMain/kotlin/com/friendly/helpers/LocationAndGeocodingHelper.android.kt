@@ -1,4 +1,4 @@
-package com.friendly.mapsAndPlaces
+package com.friendly.helpers
 
 import android.Manifest
 import android.content.Context
@@ -9,45 +9,40 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
 import java.util.Locale
 
-object LocationAndGeocodingHelper {
-    fun getLastLocation(
-        context: Context,
+actual class LocationAndGeocodingHelper(
+    private val context: Context
+) {
+    actual fun getLastLocation(
         onPermissionDenied: () -> Unit,
-        onLocationRetrieved: (LatLng) -> Unit
+        onLocationRetrieved: (Pair<Double,Double>) -> Unit
     ) {
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            onPermissionDenied()
-            return
-        }
 
         val fusedLocationClient: FusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(context)
 
-        fusedLocationClient.lastLocation
-            .addOnSuccessListener { location ->
-                if (location != null) {
-                    val newCoordinates = LatLng(location.latitude, location.longitude)
-                    onLocationRetrieved(newCoordinates)
-                } else {
-                    println("Location is null")
+        try {
+            fusedLocationClient.lastLocation
+                .addOnSuccessListener { location ->
+                    if (location != null) {
+                        val newCoordinates = Pair(location.latitude, location.longitude)
+                        onLocationRetrieved(newCoordinates)
+                    } else {
+                        println("Location is null")
+                    }
                 }
-            }
-            .addOnFailureListener { exception ->
-                println("Failed to get location: ${exception.message}")
-            }
+                .addOnFailureListener { exception ->
+                    println("Failed to get location: ${exception.message}")
+                }
+        }catch(e: SecurityException){
+            onPermissionDenied()
+        }
     }
 
-    fun getLatLngFromPlace(
+    actual fun getLatLngFromPlace(
         place: String,
-        context: Context,
-        onLatLngFetched: (LatLng) -> Unit
+        onLatLngFetched: (Pair<Double,Double>) -> Unit
     ) {
         val geocoder = Geocoder(context, Locale.getDefault())
 
@@ -55,9 +50,9 @@ object LocationAndGeocodingHelper {
             val geocodeListener = Geocoder.GeocodeListener { addresses ->
                 if (addresses.isNotEmpty()) {
                     val location = addresses[0]
-                    onLatLngFetched(LatLng(location.latitude, location.longitude))
+                    onLatLngFetched(Pair(location.latitude, location.longitude))
                 } else {
-                    onLatLngFetched(LatLng(0.0, 0.0))
+                    onLatLngFetched(Pair(0.0, 0.0))
                 }
             }
 
@@ -65,37 +60,34 @@ object LocationAndGeocodingHelper {
                 geocoder.getFromLocationName(place, 1, geocodeListener)
             } catch (e: Exception) {
                 println("Error fetching LatLng: ${e.message}")
-                onLatLngFetched(LatLng(0.0, 0.0))
+                onLatLngFetched(Pair(0.0, 0.0))
             }
         } else {
             try {
                 val locations = geocoder.getFromLocationName(place, 1)
                 if (!locations.isNullOrEmpty()) {
                     val location = locations[0]
-                    onLatLngFetched(LatLng(location.latitude, location.longitude))
+                    onLatLngFetched(Pair(location.latitude, location.longitude))
                 } else {
-                    onLatLngFetched(LatLng(0.0, 0.0))
+                    onLatLngFetched(Pair(0.0, 0.0))
                 }
             } catch (e: Exception) {
                 println("Error fetching LatLng: ${e.message}")
-                onLatLngFetched(LatLng(0.0, 0.0))
+                onLatLngFetched(Pair(0.0, 0.0))
             }
         }
     }
 
-
-
-    fun fetchAddress(
-        context: Context,
-        latLng: LatLng,
+    actual fun fetchAddress(
+        latLng: Pair<Double, Double>,
         onAddressFetched: (String) -> Unit
     ) {
         val geocoder = Geocoder(context, Locale.getDefault())
         try {
             if (Build.VERSION.SDK_INT >= 33) {
                 geocoder.getFromLocation(
-                    latLng.latitude,
-                    latLng.longitude,
+                    latLng.first,
+                    latLng.second,
                     1,
                     object : Geocoder.GeocodeListener {
                         override fun onGeocode(addresses: MutableList<Address>) {
@@ -114,7 +106,7 @@ object LocationAndGeocodingHelper {
                     }
                 )
             } else {
-                val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+                val addresses = geocoder.getFromLocation(latLng.first, latLng.second, 1)
                 if (!addresses.isNullOrEmpty()) {
                     val address = addresses[0].getAddressLine(0)
                     onAddressFetched(address)
