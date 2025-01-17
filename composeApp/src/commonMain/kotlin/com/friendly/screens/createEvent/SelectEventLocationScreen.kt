@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -40,13 +41,17 @@ import com.friendly.viewModels.createEvent.CreateEventViewModel
 @Composable
 fun SelectEventLocationScreen(navController: NavController, viewModel: CreateEventViewModel) {
 
-    val locationText = viewModel.selectedLocationText.collectAsState("")
+    val locationText = viewModel.selectedLocationAddress.collectAsState("")
 
-    val coordinates = viewModel.selectedLocation.collectAsState()
+    val coordinates = viewModel.selectedLocationCoordinates.collectAsState()
 
     LaunchedEffect(Unit)
     {
         viewModel.setInitialLocation()
+    }
+
+    LaunchedEffect(coordinates.value){
+        viewModel.updateAddressOnCoordinatesChange()
     }
 
     FriendlyAppTheme {
@@ -65,7 +70,9 @@ fun SelectEventLocationScreen(navController: NavController, viewModel: CreateEve
                 SearchLocationComponent(
                     onLocationSelected = {locationText ->
                         viewModel.onLocationTextChange(locationText)},
-                    modifier = Modifier.align(Alignment.TopCenter).fillMaxSize())
+                    modifier = Modifier.fillMaxSize(),
+                    leadingIcon = Icons.Default.Search,
+                    textFieldPlaceHolder = "Search for a place")
                 Column(
                     modifier = Modifier
                         .offset(y = 65.dp)

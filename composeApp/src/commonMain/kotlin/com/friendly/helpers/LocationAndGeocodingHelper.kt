@@ -1,17 +1,17 @@
 package com.friendly.helpers
 
 expect class LocationAndGeocodingHelper {
-    fun getLastLocation(
+    suspend fun getLastLocation(
         onPermissionDenied: () -> Unit,
         onLocationRetrieved: (Pair<Double,Double>) -> Unit
     )
 
-    fun getLatLngFromPlace(
+    suspend fun getLatLngFromPlace(
         place: String,
         onLatLngFetched: (Pair<Double,Double>) -> Unit
     )
 
-    fun fetchAddress(
+    suspend fun fetchAddress(
         latLng: Pair<Double, Double>,
         onAddressFetched: (String) -> Unit
     )

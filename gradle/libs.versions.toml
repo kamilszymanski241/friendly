@@ -57,6 +57,7 @@ androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "compose-material3" }
 compose-material3-icons = {module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "compose-material3"}
 
+
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor-wasm" }
 ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor_version" }
 ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor_version" }

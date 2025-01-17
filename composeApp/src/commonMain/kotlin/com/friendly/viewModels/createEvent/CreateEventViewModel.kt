@@ -51,11 +51,11 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
     private val _eventPicture = MutableStateFlow<ImageBitmap?>(null)
     val eventPicture: StateFlow<ImageBitmap?> = _eventPicture.asStateFlow()
 
-    private val _selectedLocation = MutableStateFlow(Pair(0.0, 0.0))
-    val selectedLocation: StateFlow<Pair<Double, Double>> = _selectedLocation
+    private val _selectedLocationCoordinates = MutableStateFlow(Pair(0.0, 0.0))
+    val selectedLocationCoordinates: StateFlow<Pair<Double, Double>> = _selectedLocationCoordinates
 
-    private val _selectedLocationText = MutableStateFlow("")
-    val selectedLocationText: StateFlow<String> = _selectedLocationText
+    private val _selectedLocationAddress = MutableStateFlow("")
+    val selectedLocationAddress: StateFlow<String> = _selectedLocationAddress
 
     private val _errorMessage = MutableStateFlow<String?>("")
     val errorMessage: Flow<String?> = _errorMessage
@@ -93,17 +93,37 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
     }
 
     fun setInitialLocation(){
-        locationAndGeocodingHelper.getLastLocation(onLocationRetrieved = {_selectedLocation.value = it}, onPermissionDenied = {})//TODO()
-        locationAndGeocodingHelper.fetchAddress(latLng = _selectedLocation.value, onAddressFetched = {_selectedLocationText.value = it})
+        viewModelScope.launch {
+            locationAndGeocodingHelper.getLastLocation(onLocationRetrieved = {
+                _selectedLocationCoordinates.value = it
+            }, onPermissionDenied = {})//TODO()
+        }
     }
 
     fun onLocationChange(location: Pair<Double, Double>) {
-        _selectedLocation.value = location
+        _selectedLocationCoordinates.value = location
     }
 
     fun onLocationTextChange(locationText: String) {
-        _selectedLocationText.value = locationText
-        locationAndGeocodingHelper.getLatLngFromPlace(locationText, onLatLngFetched = {onLocationChange(it)})
+        _selectedLocationAddress.value = locationText
+        updateCoordinatesOnAddressChange()
+    }
+
+    fun updateAddressOnCoordinatesChange ()
+    {
+        viewModelScope.launch {
+            locationAndGeocodingHelper.fetchAddress(
+                latLng = _selectedLocationCoordinates.value,
+                onAddressFetched = { _selectedLocationAddress.value = it })
+        }
+    }
+
+    fun updateCoordinatesOnAddressChange (){
+        viewModelScope.launch {
+            locationAndGeocodingHelper.getLatLngFromPlace(
+                place = _selectedLocationAddress.value,
+                onLatLngFetched = { onLocationChange(it) })
+        }
     }
 
     fun onConfirm(onSuccess: ()->Unit, onFailure: ()->Unit) {
@@ -117,7 +137,7 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
                 _endTime.value!!
             )
             val locationCoordinates =
-                "POINT(${_selectedLocation.value?.first} ${_selectedLocation.value?.second})"
+                "POINT(${_selectedLocationCoordinates.value?.first} ${_selectedLocationCoordinates.value?.second})"
             println(locationCoordinates)
             val eventDTO = EventDTO(
                 title = _title.value,
@@ -125,7 +145,7 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
                 locationWKB = locationCoordinates,
                 startDateTime = startDateTime,
                 endDateTime = endDateTime,
-                locationText = _selectedLocationText.value,
+                locationText = _selectedLocationAddress.value,
                 maxParticipants = _maxParticipants.value.toInt(),
                 organizer = sessionManager.currentUser.value!!.id,
             )

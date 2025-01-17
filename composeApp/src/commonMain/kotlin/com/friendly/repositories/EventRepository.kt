@@ -8,6 +8,8 @@ import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -15,15 +17,21 @@ class EventRepository: IEventRepository, KoinComponent {
 
     private val postgrest: Postgrest by inject()
 
-    override suspend fun getEventsWithFilters(): List<EventDTO> {
+    override suspend fun getEventsWithFilters(lat:Double, lng: Double, distance: Int, endTime: String, tag: Int?, query: String?): List<EventDTO> {
         return withContext(Dispatchers.IO) {
-            val result = postgrest.from("Events")
-                .select(
-                    Columns.raw("id, created_at, title, description, location_lat, location_long, location_text, max_participants, start_date_time, end_date_time, organizer, UserDetails(id, created_at, name, surname)")
-                ) {
-
-                }.decodeList<EventDTO>()
-            result
+            val result = postgrest.rpc(
+                function = "get_events_filtered",
+                parameters = buildJsonObject {
+                    put("lat", lat)
+                    put("lng", lng)
+                    put("distance", distance*1000)
+                    put("endTime", endTime)
+                    put("tag", tag)
+                    put("query", query)
+                }
+            )
+            println(result.data)
+            result.decodeList<EventDTO>()
         }
     }
 

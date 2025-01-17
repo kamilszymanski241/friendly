@@ -14,7 +14,7 @@ import java.util.Locale
 actual class LocationAndGeocodingHelper(
     private val context: Context
 ) {
-    actual fun getLastLocation(
+    actual suspend fun getLastLocation(
         onPermissionDenied: () -> Unit,
         onLocationRetrieved: (Pair<Double,Double>) -> Unit
     ) {
@@ -40,7 +40,7 @@ actual class LocationAndGeocodingHelper(
         }
     }
 
-    actual fun getLatLngFromPlace(
+    actual suspend fun getLatLngFromPlace(
         place: String,
         onLatLngFetched: (Pair<Double,Double>) -> Unit
     ) {
@@ -78,7 +78,7 @@ actual class LocationAndGeocodingHelper(
         }
     }
 
-    actual fun fetchAddress(
+    actual suspend fun fetchAddress(
         latLng: Pair<Double, Double>,
         onAddressFetched: (String) -> Unit
     ) {

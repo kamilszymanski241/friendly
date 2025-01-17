@@ -13,11 +13,9 @@ import org.koin.core.component.inject
 
 class SearchLocationViewModel: ViewModel(), KoinComponent {
 
-    private val locationAndGeocodingHelper: LocationAndGeocodingHelper by inject()
-
     private val placesHelper: PlacesHelper by inject()
 
-    val coordinates = mutableStateOf(Pair(0.0, 0.0))
+    private val locationAndGeocodingHelper: LocationAndGeocodingHelper by inject()
 
     private val _query = MutableStateFlow("")
     val query: StateFlow<String> = _query
@@ -25,7 +23,7 @@ class SearchLocationViewModel: ViewModel(), KoinComponent {
     private val _suggestions = MutableStateFlow<List<String>>(emptyList())
     val suggestions: StateFlow<List<String>> = _suggestions
 
-    private val _isLocationSelected = MutableStateFlow(false)
+    private val _isLocationSelected = MutableStateFlow(true)
     val isLocationSelected: StateFlow<Boolean> = _isLocationSelected
 
     fun locationIsSelected(newValue: Boolean){

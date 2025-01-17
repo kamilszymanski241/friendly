@@ -2,10 +2,12 @@ package com.friendly.viewModels.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.friendly.helpers.DateTimeHelper
 import com.friendly.helpers.LocationAndGeocodingHelper
 import com.friendly.models.Event
 import com.friendly.repositories.IEventRepository
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -24,40 +26,68 @@ class DiscoverScreenViewModel: ViewModel(), KoinComponent {
     private val _distance = MutableStateFlow(15)
     val distance: StateFlow<Int> = _distance
 
-    private val _tags = MutableStateFlow<List<Int>>(emptyList())
-    val tags: StateFlow<List<Int>> = _tags
+    private val _tag = MutableStateFlow<List<Int>>(emptyList())
+    val tag: StateFlow<List<Int>> = _tag
 
-    private val _x = MutableStateFlow<String>("emptyList()")
-    val x: StateFlow<String> = _x
+    private val _selectedLocationCoordinates = MutableStateFlow(Pair(0.0, 0.0))
+    val selectedLocationCoordinates: StateFlow<Pair<Double, Double>> = _selectedLocationCoordinates
 
+    private val _selectedLocationAddress = MutableStateFlow("")
+    val selectedLocationAddress: StateFlow<String> = _selectedLocationAddress
 
     fun initialize(){
         if(_eventsList.value == null)
         {
             viewModelScope.launch {
-                getEvents()
+                locationAndGeocodingHelper.getLastLocation(
+                    onPermissionDenied = {},
+                    onLocationRetrieved = { location->
+                        _selectedLocationCoordinates.value=Pair(location.first,location.second)
+                        viewModelScope.launch {
+                            locationAndGeocodingHelper.fetchAddress(
+                                _selectedLocationCoordinates.value,
+                                onAddressFetched = { _selectedLocationAddress.value = it })
+                        }
+                        getEvents()
+                    }
+                )
             }
         }
-        locationAndGeocodingHelper.getLastLocation(onPermissionDenied = {}, onLocationRetrieved = {location-> _x.value="${location.first} ${location.second}"})
     }
 
     private fun getEvents() {
         viewModelScope.launch {
             try {
-                val events = eventRepository.getEventsWithFilters().map { it.asDomainModel() }
+                val events = eventRepository.getEventsWithFilters(
+                    _selectedLocationCoordinates.value.first,
+                    _selectedLocationCoordinates.value.second,
+                    _distance.value,
+                    DateTimeHelper.convertDateAndTimeToSupabaseTimestamptz(
+                        DateTimeHelper.getCurrentDate(), DateTimeHelper.getCurrentTime()
+                    ),
+                    null,
+                    null
+                ).map { it.asDomainModel() }
                 _eventsList.emit(events)
-
             } catch (e: Exception) {
                 println("Error loading events: ${e.message}")
             }
         }
     }
 
-    fun getTagsString(): String{
-        return if(_tags.value.isNotEmpty()) {
-            _tags.value.joinToString { ", " }
-        } else{
-            "-"
+    fun onLocationChange(newLocation: String){
+        _selectedLocationAddress.value = newLocation
+        viewModelScope.launch {
+            locationAndGeocodingHelper.getLatLngFromPlace(newLocation, onLatLngFetched = {
+                _selectedLocationCoordinates.value = it
+                getEvents()
+            })
         }
     }
+
+    fun onDistanceChange(newDistance: Int){
+        _distance.value = newDistance
+        getEvents()
+    }
+
 }

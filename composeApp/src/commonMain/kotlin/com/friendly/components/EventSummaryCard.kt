@@ -184,20 +184,23 @@ fun EventSummaryCard(event: Event, navController: NavController, modifier: Modif
 
                             }
                             Row() {
-                                if (event.participants!!.isNotEmpty()) {
-                                    for (participant in event.participants) {
-                                        AsyncImage(
-                                            model = participant.profilePictureUrl,
-                                            contentDescription = null,
-                                            modifier = Modifier
-                                                .clip(CircleShape)
-                                                .size(30.dp)
+                                if(event.participants != null)
+                                {
+                                    if (event.participants.isNotEmpty()) {
+                                        for (participant in event.participants) {
+                                            AsyncImage(
+                                                model = participant.profilePictureUrl,
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .clip(CircleShape)
+                                                    .size(30.dp)
+                                            )
+                                        }
+                                    } else {
+                                        Text(
+                                            text = "Be the first one to join!"
                                         )
                                     }
-                                } else {
-                                    Text(
-                                        text = "Be the first one to join!"
-                                    )
                                 }
                             }
                         }
