@@ -2,6 +2,7 @@ package com.friendly.managers
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.friendly.dtos.UserDetailsDTO
+import com.friendly.models.Gender
 import com.friendly.repositories.IAuthRepository
 import com.friendly.repositories.IStorageRepository
 import com.friendly.repositories.IUserDetailsRepository
@@ -57,7 +58,7 @@ class RegistrationManager: KoinComponent, IRegistrationManager {
             )
         ) {
             if (userDetailsRepository.createUserDetails(
-                UserDetailsDTO(id = sessionManager.currentUser.value!!.id, name = _name.value, surname = _surname.value)
+                UserDetailsDTO(id = sessionManager.currentUser.value!!.id, name = _name.value, dateOfBirth = "", description = "", gender = Gender.Male, surname = _surname.value)
                 )
             ) {
                 if (storageRepository.uploadAProfilePicture(

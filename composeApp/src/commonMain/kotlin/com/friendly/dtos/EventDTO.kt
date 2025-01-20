@@ -66,11 +66,11 @@ data class EventDTO (
 
             maxParticipants = this.maxParticipants,
 
-            startDate = DateTimeHelper.parseDateFromSupabaseTimestampz(this.startDateTime),
+            startDate = DateTimeHelper.parseDateFromSupabaseTimestampzToString(this.startDateTime),
 
             startTime = DateTimeHelper.parseTimeFromSupabaseTimestampz(this.startDateTime),
 
-            endDate = DateTimeHelper.parseDateFromSupabaseTimestampz(this.endDateTime),
+            endDate = DateTimeHelper.parseDateFromSupabaseTimestampzToString(this.endDateTime),
 
             endTime = DateTimeHelper.parseTimeFromSupabaseTimestampz(this.endDateTime),
 

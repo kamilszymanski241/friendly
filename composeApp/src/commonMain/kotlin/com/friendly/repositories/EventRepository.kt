@@ -39,7 +39,7 @@ class EventRepository: IEventRepository, KoinComponent {
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
                 .select(
-                    Columns.raw("id, created_at, title, description, location_lat, location_long, location_text, max_participants, start_date_time, end_date_time, organizer, UserDetails(id, created_at, name, surname)")
+                    Columns.raw("id, created_at, title, description, location_lat, location_long, location_text, max_participants, start_date_time, end_date_time, organizer, UserDetails(id, created_at, name, surname, date_of_birth, description, gender)")
                 ) {
                     filter {
                         eq("id", eventId)
@@ -54,13 +54,13 @@ class EventRepository: IEventRepository, KoinComponent {
             val result = postgrest.from("Events")
                 .select(
                     Columns.raw(
-                        "id, created_at, title, description, location_lat, location_long, location_text, max_participants, start_date_time, end_date_time, organizer, UserDetails( id, created_at, name, surname)"
+                        "id, created_at, title, description, location_lat, location_long, location_text, max_participants, start_date_time, end_date_time, organizer, UserDetails( id, created_at, name, surname, date_of_birth, description, gender)"
                     )
                 ) {
                     filter {
                         and {
                             isIn("id", eventIds)
-                            gte("start_date_time", DateTimeHelper.convertDateAndTimeToSupabaseTimestamptz(DateTimeHelper.getCurrentDate(), DateTimeHelper.getCurrentTime()))
+                            gte("start_date_time", DateTimeHelper.convertDateAndTimeToSupabaseTimestamptz(DateTimeHelper.getCurrentDateAsString(), DateTimeHelper.getCurrentTimeAsString()))
                         }
                     }
                     order(column = "start_date_time", order = Order.ASCENDING)
@@ -73,7 +73,7 @@ class EventRepository: IEventRepository, KoinComponent {
         return withContext(Dispatchers.IO) {
             val result = postgrest.from("Events")
                 .select(
-                    Columns.raw("id, created_at, title, description, location_lat, location_long, location_text, max_participants, start_date_time, end_date_time, organizer, UserDetails(id, created_at, name, surname)")
+                    Columns.raw("id, created_at, title, description, location_lat, location_long, location_text, max_participants, start_date_time, end_date_time, organizer, UserDetails(id, created_at, name, surname, date_of_birth, description, gender)")
                 ) {
                     filter {
                         eq("organizer", userId)

@@ -6,8 +6,6 @@ import com.friendly.helpers.DateTimeHelper
 import com.friendly.helpers.LocationAndGeocodingHelper
 import com.friendly.models.Event
 import com.friendly.repositories.IEventRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -23,7 +21,7 @@ class DiscoverScreenViewModel: ViewModel(), KoinComponent {
     private val _eventsList = MutableStateFlow<List<Event>?>(null)
     val eventsList: StateFlow<List<Event>?> = _eventsList
 
-    private val _distance = MutableStateFlow(15)
+    private val _distance = MutableStateFlow(10)
     val distance: StateFlow<Int> = _distance
 
     private val _tag = MutableStateFlow<List<Int>>(emptyList())
@@ -63,7 +61,7 @@ class DiscoverScreenViewModel: ViewModel(), KoinComponent {
                     _selectedLocationCoordinates.value.second,
                     _distance.value,
                     DateTimeHelper.convertDateAndTimeToSupabaseTimestamptz(
-                        DateTimeHelper.getCurrentDate(), DateTimeHelper.getCurrentTime()
+                        DateTimeHelper.getCurrentDateAsString(), DateTimeHelper.getCurrentTimeAsString()
                     ),
                     null,
                     null

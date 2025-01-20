@@ -2,6 +2,7 @@ package com.friendly.components
 
 import Friendly.composeApp.BuildConfig
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,12 +37,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
+import com.friendly.generated.resources.Res
+import com.friendly.generated.resources.defaultEventPicture
 import com.friendly.models.Event
 import com.friendly.themes.FriendlyAppTheme
+import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun EventSummaryCard(event: Event, navController: NavController, modifier: Modifier = Modifier) {
-    var showDefaultPhoto by rememberSaveable() { mutableStateOf(false) }
     FriendlyAppTheme {
         Card(
             modifier = modifier
@@ -62,24 +65,15 @@ fun EventSummaryCard(event: Event, navController: NavController, modifier: Modif
                 Column(
                     modifier = Modifier.weight(2 / 5f, true)
                 ) {
-                    if(showDefaultPhoto)
-                    {
-                        AsyncImage(
-                            model = BuildConfig.SUPABASE_URL+BuildConfig.EVENT_PICTURES_STORAGE_URL + "default.jpg",
-                            contentDescription = null,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
-                    else {
-                        AsyncImage(
-                            model = event.eventPictureUrl,
-                            contentDescription = "Event Picture",
-                            onError = {showDefaultPhoto = true},
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier.fillMaxSize()
-                        )
-                    }
+                    AsyncImage(
+                        model = event.eventPictureUrl,
+                        contentDescription = "Event Picture",
+                        placeholder = painterResource(Res.drawable.defaultEventPicture),
+                        fallback = painterResource(Res.drawable.defaultEventPicture),
+                        error = painterResource(Res.drawable.defaultEventPicture),
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
+                    )
                 }
                 Column(
                     modifier = Modifier

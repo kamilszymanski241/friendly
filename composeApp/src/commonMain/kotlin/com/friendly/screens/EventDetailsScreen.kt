@@ -1,5 +1,6 @@
 package com.friendly.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -108,6 +109,28 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                             }
                         }
 
+                        EventDetailsScreenViewModel.EventDetailsButtonType.Edit ->{
+                            Button(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(20.dp)
+                                    .align(Alignment.BottomCenter),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = MaterialTheme.colorScheme.tertiary,
+                                    contentColor = Color.White
+                                ),
+                                shape = MaterialTheme.shapes.medium,
+                                onClick = {
+                                    viewModel.onEdit()
+                                    navController.navigate(AppNavigation.HomeScreen.route)
+                                }
+                            ) {
+                                Text(
+                                    text = "Edit"
+                                )
+                            }
+                        }
+
                         EventDetailsScreenViewModel.EventDetailsButtonType.Join -> {
                             Button(
                                 modifier = Modifier
@@ -130,57 +153,38 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                             }
                         }
 
-                        EventDetailsScreenViewModel.EventDetailsButtonType.QuitAndChat -> {
-                            Row(modifier = Modifier.align(Alignment.BottomCenter)) {
-                                Column(
-                                    modifier = Modifier.weight(1 / 2f)
-                                ) {
-                                    Button(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(20.dp),
-                                        colors = ButtonDefaults.buttonColors(
-                                            containerColor = Color.Red,
-                                            contentColor = Color.White
-                                        ),
-                                        shape = MaterialTheme.shapes.medium,
-                                        onClick = {
-                                            viewModel.onQuit()
-                                            navController.navigate(AppNavigation.HomeScreen.route)
-                                        }
-                                    ) {
-                                        Text(
-                                            text = "Quit!"
-                                        )
-                                    }
+                        EventDetailsScreenViewModel.EventDetailsButtonType.Quit -> {
+                            Button(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(20.dp)
+                                    .align(Alignment.BottomCenter),
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Color.Red,
+                                    contentColor = Color.White
+                                ),
+                                shape = MaterialTheme.shapes.medium,
+                                onClick = {
+                                    viewModel.onQuit()
+                                    navController.navigate(AppNavigation.HomeScreen.route)
                                 }
-                                Column(
-                                    modifier = Modifier.weight(1 / 2f)
-                                ) {
-                                    Button(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .padding(20.dp),
-                                        colors = ButtonDefaults.buttonColors(
-                                            containerColor = MaterialTheme.colorScheme.tertiary,
-                                            contentColor = Color.White
-                                        ),
-                                        shape = MaterialTheme.shapes.medium,
-                                        onClick = {
-                                            navController.navigate(AppNavigation.HomeScreen.route)
-                                            //TODO()
-                                        }
-                                    ) {
-                                        Text(
-                                            text = "Chat-TODO"
-                                        )
-                                    }
-                                }
+                            ) {
+                                Text(
+                                    text = "Quit!"
+                                )
                             }
                         }
                     }
                 } else {
-                    CircularProgressIndicator()
+                    Column(
+                        modifier = Modifier
+                            .verticalScroll(rememberScrollState())
+                            .fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
                 }
             }
         }

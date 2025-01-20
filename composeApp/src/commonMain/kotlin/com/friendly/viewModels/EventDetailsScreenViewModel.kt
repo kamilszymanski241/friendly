@@ -23,7 +23,8 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
     enum class EventDetailsButtonType {
         PleaseSignIn,
         Join,
-        QuitAndChat
+        Edit,
+        Quit
     }
 
     private val _eventDetails = MutableStateFlow<Event?>(null)
@@ -34,18 +35,18 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
 
     init {
         viewModelScope.launch {
-            loadEvent()
+            _eventDetails.value = eventRepository.getSingleEventWithParticipants(eventId).asDomainModel()
             if (sessionManager.sessionStatus.value == SessionStatus.NotAuthenticated(false) ||
-                sessionManager.sessionStatus.value == SessionStatus.NotAuthenticated(true)) {
+                sessionManager.sessionStatus.value == SessionStatus.NotAuthenticated(true)
+            ) {
                 _buttonType.value = EventDetailsButtonType.PleaseSignIn
-            }
-            else{
-                if(eventId in eventUserDetailsRepository.getAllUserEvents(sessionManager.currentUser.value!!.id))
-                {
-                    _buttonType.value = EventDetailsButtonType.QuitAndChat
-                }
-                else{
-                    _buttonType.value= EventDetailsButtonType.Join
+            } else {
+                if (_eventDetails.value!!.organizer == sessionManager.currentUser.value!!.id) {
+                    _buttonType.value = EventDetailsButtonType.Edit
+                } else if (eventId in eventUserDetailsRepository.getAllUserEvents(sessionManager.currentUser.value!!.id)) {
+                    _buttonType.value = EventDetailsButtonType.Quit
+                } else {
+                    _buttonType.value = EventDetailsButtonType.Join
                 }
             }
         }
@@ -72,6 +73,10 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
                 println(e.message)
             }
         }
+    }
+
+    fun onEdit(){
+
     }
 
     fun onQuit(){

@@ -10,7 +10,19 @@ data class UserDetails(
 
     val joined: String,
 
+    val description: String,
+
+    val gender: Gender,
+
+    val dateOfBirth: String,
+
+    val age: Int,
+
     val profilePictureUrl: String,
 
     val events: List<Event>? = null
 )
+
+enum class Gender {
+    Male, Female, Other
+}

@@ -25,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,8 +42,8 @@ import com.friendly.components.DatePickerModal
 import com.friendly.components.TimePickerModal
 import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.helpers.DateTimeHelper.Companion.convertMillisToDate
-import com.friendly.helpers.DateTimeHelper.Companion.getCurrentDate
-import com.friendly.helpers.DateTimeHelper.Companion.getCurrentTime
+import com.friendly.helpers.DateTimeHelper.Companion.getCurrentDateAsString
+import com.friendly.helpers.DateTimeHelper.Companion.getCurrentTimeAsString
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.createEvent.CreateEventViewModel
@@ -53,13 +52,13 @@ import com.friendly.viewModels.createEvent.CreateEventViewModel
 fun FillMoreEventDetailsScreen(navController: NavController, viewModel: CreateEventViewModel) {
     val showStartDatePicker = remember { mutableStateOf(false) }
     val showEndDatePicker = remember { mutableStateOf(false) }
-    val selectedStartDate = viewModel.startDate.collectAsState(getCurrentDate())
-    val selectedEndDate = viewModel.endDate.collectAsState(getCurrentDate())
+    val selectedStartDate = viewModel.startDate.collectAsState(getCurrentDateAsString())
+    val selectedEndDate = viewModel.endDate.collectAsState(getCurrentDateAsString())
 
     val showStartTimePicker = remember { mutableStateOf(false) }
     val showEndTimePicker = remember { mutableStateOf(false) }
-    val selectedStartTime = viewModel.startTime.collectAsState(getCurrentTime())
-    val selectedEndTime = viewModel.endTime.collectAsState(getCurrentTime())
+    val selectedStartTime = viewModel.startTime.collectAsState(getCurrentTimeAsString())
+    val selectedEndTime = viewModel.endTime.collectAsState(getCurrentTimeAsString())
 
     val maxParticipants = viewModel.maxParticipants.collectAsState("")
 

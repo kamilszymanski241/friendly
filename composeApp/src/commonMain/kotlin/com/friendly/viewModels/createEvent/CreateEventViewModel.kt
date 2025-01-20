@@ -4,10 +4,12 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.friendly.dtos.EventDTO
+import com.friendly.dtos.EventUserDTO
 import com.friendly.helpers.DateTimeHelper
 import com.friendly.helpers.LocationAndGeocodingHelper
 import com.friendly.managers.ISessionManager
 import com.friendly.repositories.IEventRepository
+import com.friendly.repositories.IEventUserRepository
 import com.friendly.repositories.IStorageRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +23,8 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
 
     private val eventsRepository: IEventRepository by inject()
 
+    private val eventUserRepository: IEventUserRepository by inject()
+
     private val storageRepository: IStorageRepository by inject()
 
     private val sessionManager: ISessionManager by inject()
@@ -33,16 +37,16 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
     private val _description = MutableStateFlow("")
     val description: Flow<String> = _description
 
-    private val _startDate = MutableStateFlow<String?>(DateTimeHelper.getCurrentDate())
+    private val _startDate = MutableStateFlow<String?>(DateTimeHelper.getCurrentDateAsString())
     val startDate: Flow<String?> = _startDate
 
-    private val _endDate = MutableStateFlow<String?>(DateTimeHelper.getCurrentDate())
+    private val _endDate = MutableStateFlow<String?>(DateTimeHelper.getCurrentDateAsString())
     val endDate: Flow<String?> = _endDate
 
-    private val _startTime = MutableStateFlow<String?>(DateTimeHelper.getCurrentTime())
+    private val _startTime = MutableStateFlow<String?>(DateTimeHelper.getCurrentTimeAsString())
     val startTime: Flow<String?> = _startTime
 
-    private val _endTime = MutableStateFlow<String?>(DateTimeHelper.getCurrentTime())
+    private val _endTime = MutableStateFlow<String?>(DateTimeHelper.getCurrentTimeAsString())
     val endTime: Flow<String?> = _endTime
 
     private val _maxParticipants = MutableStateFlow("")
@@ -152,7 +156,7 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
             try {
                 val event = eventsRepository.postEvent(eventDTO)
                 if(event.id != null) {
-                    println(event.id)
+                    eventUserRepository.addUserToEvent(EventUserDTO(eventId = event.id, userId = sessionManager.currentUser.value!!.id))
                     if (_eventPicture.value != null) {
                         if(storageRepository.uploadEventPicture(event.id, _eventPicture.value!!)) {
                             onSuccess()

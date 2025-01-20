@@ -2,6 +2,7 @@ package com.friendly.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,6 +26,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -98,15 +100,15 @@ fun SearchLocationComponent(
         )
         ExposedDropdownMenu(
             expanded = expanded,
+            modifier = Modifier
+                .height(250.dp)
+                .padding(start = 8.dp, end = 8.dp)
+                .fillMaxSize(),
             onDismissRequest = {
                 expanded = false
             },
-            modifier = Modifier
-                .background(Color.Transparent)
-                .height(250.dp)
-                .padding(start = 8.dp, end = 8.dp)
-                .fillMaxWidth()
-                .background(Color.White)
+            shape = RoundedCornerShape(16.dp),
+            containerColor = Color.White,
         ) {
             suggestions.value.forEach { suggestion ->
                 DropdownMenuItem(

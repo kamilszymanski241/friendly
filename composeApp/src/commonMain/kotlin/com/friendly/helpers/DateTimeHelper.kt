@@ -8,8 +8,8 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.format
 import kotlinx.datetime.offsetIn
+import kotlinx.datetime.periodUntil
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
@@ -21,15 +21,19 @@ sealed class DateTimeHelper() {
             return date
         }
 
-        fun getCurrentDate(): String {
+        fun getCurrentDateAsString(): String {
             return Clock.System.now()
                 .toLocalDateTime(TimeZone.currentSystemDefault()).date.toString()
         }
 
-        fun getCurrentTime(): String {
+        fun getCurrentTimeAsString(): String {
             val hour = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).hour
             val minute = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).minute
             return LocalTime(hour = hour, minute = minute).toString()
+        }
+
+        fun getCurrentDateAsLocalDate(): LocalDate {
+            return Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
         }
 
         fun convertDateAndTimeToSupabaseTimestamptz(dateString: String, timeString: String): String {
@@ -53,16 +57,29 @@ sealed class DateTimeHelper() {
             }
         }
 
-        fun parseDateFromSupabaseTimestampz(dateTime: String): String{
+        fun parseDateFromSupabaseTimestampzToString(dateTime: String): String{
             val instant = Instant.parse(dateTime)
             val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
             return localDateTime.date.toString()
+        }
+
+        fun parseDateFromSupabaseTimestampzToLocalDate(dateTime: String): LocalDate{
+            val instant = Instant.parse(dateTime)
+            val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+            return localDateTime.date
         }
 
         fun parseTimeFromSupabaseTimestampz(dateTime: String): String{
             val instant = Instant.parse(dateTime)
             val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
             return LocalTime(localDateTime.hour, localDateTime.minute).toString()
+        }
+
+        fun getAgeFromDateOfBirth(dateTime: String): Int{
+            val dob = parseDateFromSupabaseTimestampzToLocalDate(dateTime)
+            val today = getCurrentDateAsLocalDate()
+
+            return dob.periodUntil(today).years
         }
 
     }

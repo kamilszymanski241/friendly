@@ -62,7 +62,7 @@ fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, 
     val options = listOf(5,10,20,50,100)
 
     val events = viewModel.eventsList.collectAsState(null)
-    val distance = viewModel.distance.collectAsState(15)
+    val distance = viewModel.distance.collectAsState(10)
     val selectedLocationAddress = viewModel.selectedLocationAddress.collectAsState()
     val tags = viewModel.distance.collectAsState(emptyList<Int>())
 
