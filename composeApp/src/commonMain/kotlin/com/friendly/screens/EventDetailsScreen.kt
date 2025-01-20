@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,15 +26,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.friendly.components.StaticMapComponent
 import com.friendly.components.TopBarWithBackButtonAndTitle
+import com.friendly.generated.resources.Res
+import com.friendly.generated.resources.defaultEventPicture
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.EventDetailsScreenViewModel
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -61,10 +66,16 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         AsyncImage(
-                            eventDetails.value!!.eventPictureUrl,
-                            null,
+                            model = eventDetails.value!!.eventPictureUrl,
+                            contentDescription = "Event Picture",
+                            placeholder = painterResource(Res.drawable.defaultEventPicture),
+                            fallback = painterResource(Res.drawable.defaultEventPicture),
+                            error = painterResource(Res.drawable.defaultEventPicture),
+                            contentScale = ContentScale.Crop,
                             modifier = Modifier
-                                .size(220.dp)
+                                .padding(8.dp)
+                                .fillMaxWidth()
+                                .aspectRatio(16/9f)
                                 .clip(RoundedCornerShape(16.dp))
                         )
                         Text(
@@ -76,7 +87,26 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                             text = eventDetails.value!!.locationText,
                             fontSize = 15.sp
                         )
-                        println(eventDetails.value!!.locationCoordinates)
+                        Text(
+                            text = eventDetails.value!!.startTime,
+                            fontSize = 15.sp
+                        )
+                        Text(
+                            text = eventDetails.value!!.endTime,
+                            fontSize = 15.sp
+                        )
+                        Text(
+                            text = eventDetails.value!!.startDate,
+                            fontSize = 15.sp
+                        )
+                        Text(
+                            text = eventDetails.value!!.endDate,
+                            fontSize = 15.sp
+                        )
+                        Text(
+                            text = eventDetails.value!!.description ?: "",
+                            fontSize = 15.sp
+                        )
                         StaticMapComponent(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -178,7 +208,6 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                 } else {
                     Column(
                         modifier = Modifier
-                            .verticalScroll(rememberScrollState())
                             .fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
