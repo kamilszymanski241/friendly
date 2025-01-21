@@ -2,6 +2,7 @@ package com.friendly.managers
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.friendly.dtos.UserDetailsDTO
+import com.friendly.helpers.DateTimeHelper
 import com.friendly.models.Gender
 import com.friendly.repositories.IAuthRepository
 import com.friendly.repositories.IStorageRepository
@@ -27,6 +28,9 @@ class RegistrationManager: KoinComponent, IRegistrationManager {
 
     private val _surname = MutableStateFlow("")
     override val surname: StateFlow<String> = _surname
+
+    private val _dateOfBirth = MutableStateFlow("")
+    override val dateOfBirth: StateFlow<String> = _dateOfBirth
 
     private val _email = MutableStateFlow("")
     override val email: StateFlow<String> = _email
@@ -58,7 +62,7 @@ class RegistrationManager: KoinComponent, IRegistrationManager {
             )
         ) {
             if (userDetailsRepository.createUserDetails(
-                UserDetailsDTO(id = sessionManager.currentUser.value!!.id, name = _name.value, dateOfBirth = "", description = "", gender = Gender.Male, surname = _surname.value)
+                UserDetailsDTO(id = sessionManager.currentUser.value!!.id, name = _name.value, dateOfBirth = DateTimeHelper.getCurrentDateAsString(), description = "", gender = Gender.Male, surname = _surname.value)
                 )
             ) {
                 if (storageRepository.uploadAProfilePicture(
@@ -66,6 +70,7 @@ class RegistrationManager: KoinComponent, IRegistrationManager {
                         _userProfilePicture.value!!
                     )
                 ) {
+                    sessionManager.initUserDetails()
                     updateUserDetails("","")
                     updateEmail("")
                     updatePassword("")

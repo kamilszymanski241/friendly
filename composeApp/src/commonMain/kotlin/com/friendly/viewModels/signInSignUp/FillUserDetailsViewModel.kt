@@ -1,7 +1,9 @@
 package com.friendly.viewModels.signInSignUp
 
 import androidx.lifecycle.ViewModel
+import com.friendly.helpers.DateTimeHelper
 import com.friendly.managers.IRegistrationManager
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,12 +23,19 @@ class FillUserDetailsViewModel: ViewModel(), KoinComponent {
     private val _errorMessage = MutableStateFlow<String?>("")
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
+    private val _dateOfBirth = MutableStateFlow<String?>(DateTimeHelper.getCurrentDateAsString())
+    val dateOfBirth: Flow<String?> = _dateOfBirth
+
     fun onNameChange(name: String) {
         _name.value = name
     }
 
     fun onSurnameChange(surname: String) {
         _surname.value = surname
+    }
+
+    fun onDateOfBirthChange(date: String) {
+        _dateOfBirth.value = date
     }
 
     fun onContinue(): Boolean {

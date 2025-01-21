@@ -96,6 +96,10 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
         _endTime.value = time
     }
 
+    fun onErrorMessageChange(errorMessage: String) {
+        _errorMessage.value = errorMessage
+    }
+
     fun setInitialLocation(){
         viewModelScope.launch {
             locationAndGeocodingHelper.getLastLocation(onLocationRetrieved = {
@@ -128,6 +132,29 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
                 place = _selectedLocationAddress.value,
                 onLatLngFetched = { onLocationChange(it) })
         }
+    }
+
+    fun onConfirmBasicDetails(onSuccess: () -> Unit, onFailure: () -> Unit) {
+        if (_title.value.isEmpty() || _title.value.toCharArray().size < 10){
+            onFailure()
+        }
+        else{
+            onSuccess()
+        }
+    }
+
+    fun onConfirmMoreDetails(onSuccess: () -> Unit, onFailure: () -> Unit) {
+        val maxParticipantsInt = _maxParticipants.value.toIntOrNull()
+        if (maxParticipantsInt != null && _startTime.value != null && _endTime.value != null && _startDate.value != null && _endDate.value != null){
+            if(maxParticipantsInt > 0){
+                if(_startDate.value == _endDate.value){
+                    if(_startTime.value!! <= _endTime.value!!){
+                        onSuccess()
+                    }
+                }
+            }
+        }
+        onFailure()
     }
 
     fun onConfirm(onSuccess: ()->Unit, onFailure: ()->Unit) {

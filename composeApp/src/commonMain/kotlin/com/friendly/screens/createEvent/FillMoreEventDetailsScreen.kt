@@ -54,7 +54,7 @@ fun FillMoreEventDetailsScreen(navController: NavController, viewModel: CreateEv
     val showEndDatePicker = remember { mutableStateOf(false) }
     val selectedStartDate = viewModel.startDate.collectAsState(getCurrentDateAsString())
     val selectedEndDate = viewModel.endDate.collectAsState(getCurrentDateAsString())
-
+    val errorMessage = viewModel.errorMessage.collectAsState("")
     val showStartTimePicker = remember { mutableStateOf(false) }
     val showEndTimePicker = remember { mutableStateOf(false) }
     val selectedStartTime = viewModel.startTime.collectAsState(getCurrentTimeAsString())
@@ -251,12 +251,26 @@ fun FillMoreEventDetailsScreen(navController: NavController, viewModel: CreateEv
                         )
                     }
                 }
+                errorMessage.value?.let { message ->
+                    Text(
+                        text = message,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
                 Button(
                     modifier = Modifier
                         .padding(20.dp)
                         .fillMaxWidth(),
                     onClick = {
-                        navController.navigate(AppNavigation.SelectEventLocalization.route)
+                        viewModel.onConfirmMoreDetails(
+                            onSuccess = {
+                                navController.navigate(AppNavigation.SelectEventLocalization.route)
+                                viewModel.onErrorMessageChange("")
+                            },
+                            onFailure = {
+                                viewModel.onErrorMessageChange("Please enter correct date and maximum number of participants")
+                            }
+                        )
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.tertiary,

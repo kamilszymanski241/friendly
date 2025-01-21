@@ -5,11 +5,13 @@ import com.friendly.dtos.UserDetailsDTO
 import com.friendly.models.UserDetails
 import com.friendly.repositories.IUserDetailsRepository
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.status.SessionSource
 import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.auth.user.UserInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -63,7 +65,6 @@ class SessionManager: KoinComponent, ISessionManager {
             _userDetailsStatus.value = UserDetailsStatus.Success
         } catch (e: Exception) {
             _userDetailsStatus.value = UserDetailsStatus.Failed
-            println(e.message)
             //TODO()
         }
     }

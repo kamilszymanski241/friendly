@@ -6,6 +6,9 @@ import com.friendly.decodeBitMapToByteArray
 import com.friendly.decodeByteArrayToBitMap
 import com.friendly.resizeImageBitmapWithAspectRatio
 import io.github.jan.supabase.storage.Storage
+import io.github.jan.supabase.storage.UploadStatus
+import io.github.jan.supabase.storage.uploadAsFlow
+import kotlinx.coroutines.flow.first
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -17,7 +20,7 @@ class StorageRepository: IStorageRepository, KoinComponent {
         return try {
             val resizedPicture = resizeImageBitmapWithAspectRatio(picture, 1000)
             val pictureAsByteArray = decodeBitMapToByteArray(resizedPicture)
-            bucket.upload("$userId.jpg", pictureAsByteArray)
+            bucket.uploadAsFlow("$userId.jpg", pictureAsByteArray).first{it is UploadStatus.Success}
             true
         } catch (e: Exception) {
             throw e
@@ -28,7 +31,7 @@ class StorageRepository: IStorageRepository, KoinComponent {
         return try {
             val resizedPicture = resizeImageBitmapWithAspectRatio(picture, 1000)
             val pictureAsByteArray = decodeBitMapToByteArray(resizedPicture)
-            bucket.upload("$eventId.jpg", pictureAsByteArray)
+            bucket.uploadAsFlow("$eventId.jpg", pictureAsByteArray).first{it is UploadStatus.Success}
             true
         } catch (e: Exception) {
             throw e

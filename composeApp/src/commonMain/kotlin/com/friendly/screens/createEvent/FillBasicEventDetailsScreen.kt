@@ -215,7 +215,15 @@ fun FillBasicEventDetailsScreen(navController: NavController, viewModel: CreateE
                         .padding(20.dp)
                         .fillMaxWidth(),
                     onClick = {
-                        navController.navigate(AppNavigation.SelectEventDateTime.route)
+                        viewModel.onConfirmBasicDetails(
+                            onSuccess = {
+                                navController.navigate(AppNavigation.SelectEventDateTime.route)
+                                viewModel.onErrorMessageChange("")
+                            },
+                            onFailure = {
+                                viewModel.onErrorMessageChange("The title must be at least 10 characters")
+                            }
+                        )
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.tertiary,
@@ -233,7 +241,6 @@ fun FillBasicEventDetailsScreen(navController: NavController, viewModel: CreateE
                 CapturePhoto(onSelect = { picture ->
                     viewModel.onPictureChange(picture)
                     showCamera = false
-                    // viewModel.setErrorMessage("")
                 },
                     onClose = {
                         showCamera = false
@@ -246,7 +253,6 @@ fun FillBasicEventDetailsScreen(navController: NavController, viewModel: CreateE
                 PickPhoto(onSelect = { picture ->
                     viewModel.onPictureChange(picture)
                     showPhotoPicker = false
-                    //viewModel.setErrorMessage("")
                 },
                     onClose = {
                         showPhotoPicker = false

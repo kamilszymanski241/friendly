@@ -48,8 +48,7 @@ class RegisterEmailAndPasswordViewModel: KoinComponent, ViewModel() {
                 registrationManager.updateEmail(_email.value)
                 registrationManager.updatePassword(_password.value)
                 try {
-                    registrationManager.registerUser()
-                    success.value = true
+                    success.value = registrationManager.registerUser()
                 }
                 catch (e: Exception)
                 {

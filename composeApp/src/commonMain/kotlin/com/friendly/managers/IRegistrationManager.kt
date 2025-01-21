@@ -10,6 +10,7 @@ interface IRegistrationManager {
     val password: StateFlow<String>
     val surname: StateFlow<String>
     val name: StateFlow<String>
+    val dateOfBirth: StateFlow<String>
     suspend fun registerUser(): Boolean
     fun updateEmail(newEmail: String)
     fun updatePassword(newPassword: String)
