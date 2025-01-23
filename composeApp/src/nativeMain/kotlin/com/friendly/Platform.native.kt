@@ -67,3 +67,7 @@ actual fun ShowStaticMap(
     zoom: Float
 ) {
 }
+
+actual fun cropBitmapToPanorama(original: ImageBitmap): ImageBitmap {
+    TODO("Not yet implemented")
+}

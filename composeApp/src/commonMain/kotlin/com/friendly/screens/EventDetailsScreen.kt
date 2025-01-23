@@ -15,9 +15,13 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -28,6 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -49,6 +55,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
         koinViewModel(parameters = { parametersOf(eventId) })
     val buttonType =
         viewModel.buttonType.collectAsState(EventDetailsScreenViewModel.EventDetailsButtonType.PleaseSignIn)
+    val isFull = viewModel.isNotFull.collectAsState(false)
     val eventDetails = viewModel.eventDetails.collectAsState(null)
     FriendlyAppTheme {
         Scaffold(
@@ -79,44 +86,131 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                 .aspectRatio(16/9f)
                                 .clip(RoundedCornerShape(16.dp))
                         )
-                        Text(
-                            text = eventDetails.value!!.title,
-                            fontSize = 30.sp
-                        )
-                        Spacer(modifier = Modifier.height(20.dp))
-                        Text(
-                            text = eventDetails.value!!.locationText,
-                            fontSize = 15.sp
-                        )
-                        Text(
-                            text = eventDetails.value!!.startTime,
-                            fontSize = 15.sp
-                        )
-                        Text(
-                            text = eventDetails.value!!.endTime,
-                            fontSize = 15.sp
-                        )
-                        Text(
-                            text = eventDetails.value!!.startDate,
-                            fontSize = 15.sp
-                        )
-                        Text(
-                            text = eventDetails.value!!.endDate,
-                            fontSize = 15.sp
-                        )
-                        Text(
-                            text = eventDetails.value!!.description ?: "",
-                            fontSize = 15.sp
-                        )
-                        StaticMapComponent(
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(300.dp)
                                 .padding(8.dp)
-                                .clip(RoundedCornerShape(16.dp)),
-                            eventDetails.value!!.locationCoordinates,
-                            15f
-                        )
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Color.White)
+                                .padding(20.dp),
+                        ) {
+                            Spacer(modifier = Modifier.height(5.dp))
+                            Text(
+                                text = eventDetails.value!!.title,
+                                fontSize = 30.sp,
+                                color = Color.Black
+                            )
+                            Spacer(modifier = Modifier.height(25.dp))
+                            Text(
+                                text = eventDetails.value!!.locationText,
+                                fontSize = 15.sp,
+                                color = Color.Black
+                            )
+                            Spacer(modifier = Modifier.height(15.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "Start:",
+                                    fontSize = (20.sp),
+                                    color = Color.Black,
+                                    textAlign = TextAlign.Start,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        Icons.Filled.Event,
+                                        "",
+                                        Modifier.size(15.dp),
+                                        tint = Color.Black
+                                    )
+                                    Text(
+                                        text = eventDetails.value!!.startDate,
+                                        color = Color.Black,
+                                        fontSize = 15.sp,
+                                    )
+                                    Spacer(modifier = Modifier.size(5.dp))
+                                    Icon(
+                                        Icons.Filled.Schedule,
+                                        "",
+                                        Modifier.size(15.dp),
+                                        tint = Color.Black
+                                    )
+                                    Text(
+                                        text = eventDetails.value!!.startTime,
+                                        color = Color.Black,
+                                        fontSize = 15.sp,
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(15.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = "End:",
+                                    fontSize = (20.sp),
+                                    color = Color.Black,
+                                    textAlign = TextAlign.Start,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        Icons.Filled.Event,
+                                        "",
+                                        Modifier.size(15.dp),
+                                        tint = Color.Black
+                                    )
+                                    Text(
+                                        text = eventDetails.value!!.endDate,
+                                        color = Color.Black,
+                                        fontSize = 15.sp,
+                                    )
+                                    Spacer(modifier = Modifier.size(5.dp))
+                                    Icon(
+                                        Icons.Filled.Schedule,
+                                        "",
+                                        Modifier.size(15.dp),
+                                        tint = Color.Black
+                                    )
+                                    Text(
+                                        text = eventDetails.value!!.endTime,
+                                        color = Color.Black,
+                                        fontSize = 15.sp,
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(15.dp))
+                            Text(
+                                text = "Description",
+                                fontSize = (20.sp),
+                                color = Color.Black,
+                                modifier = Modifier.fillMaxWidth(),
+                                textAlign = TextAlign.Start,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = eventDetails.value!!.description ?: "",
+                                fontSize = (15.sp),
+                                color = Color.Black,
+                                textAlign = TextAlign.Justify
+                            )
+                            Spacer(modifier = Modifier.height(15.dp))
+                            StaticMapComponent(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(300.dp)
+                                    .clip(RoundedCornerShape(16.dp)),
+                                eventDetails.value!!.locationCoordinates,
+                                15f
+                            )
+                        }
                     }
                     when (buttonType.value) {
                         EventDetailsScreenViewModel.EventDetailsButtonType.PleaseSignIn -> {
@@ -132,14 +226,14 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                 shape = MaterialTheme.shapes.medium,
                                 onClick = {
                                     navController.navigate(AppNavigation.SignIn.route)
-                                }
+                                },
+                                enabled = isFull.value
                             ) {
                                 Text(
                                     text = "Sign in to join!"
                                 )
                             }
                         }
-
                         EventDetailsScreenViewModel.EventDetailsButtonType.Edit ->{
                             Button(
                                 modifier = Modifier
@@ -176,7 +270,8 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                 onClick = {
                                     viewModel.onJoin()
                                     navController.navigate(AppNavigation.HomeScreen.route)
-                                }
+                                },
+                                enabled = isFull.value
                             ) {
                                 Text(
                                     text = "Join!"

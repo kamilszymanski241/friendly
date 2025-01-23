@@ -79,7 +79,7 @@ fun UserProfileScreen(navController: NavController, viewModel: UserProfileViewMo
                             fontSize = (30.sp),
                             color = Color.Black
                         )
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(25.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -97,7 +97,7 @@ fun UserProfileScreen(navController: NavController, viewModel: UserProfileViewMo
                                 color = Color.Black
                             )
                         }
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(15.dp))
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
@@ -115,7 +115,7 @@ fun UserProfileScreen(navController: NavController, viewModel: UserProfileViewMo
                                 color = Color.Black
                             )
                         }
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(15.dp))
                         Text(
                             text = "Description",
                             fontSize = (20.sp),

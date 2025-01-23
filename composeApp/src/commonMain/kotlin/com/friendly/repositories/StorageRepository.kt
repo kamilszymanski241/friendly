@@ -2,6 +2,8 @@ package com.friendly.repositories
 
 import androidx.compose.ui.graphics.ImageBitmap
 import com.friendly.compressBitmapToDesiredSize
+import com.friendly.cropBitmapToPanorama
+import com.friendly.cropBitmapToSquare
 import com.friendly.decodeBitMapToByteArray
 import com.friendly.decodeByteArrayToBitMap
 import com.friendly.resizeImageBitmapWithAspectRatio
@@ -19,7 +21,8 @@ class StorageRepository: IStorageRepository, KoinComponent {
         val bucket = storage.from("profilePictures")
         return try {
             val resizedPicture = resizeImageBitmapWithAspectRatio(picture, 1000)
-            val pictureAsByteArray = decodeBitMapToByteArray(resizedPicture)
+            val changedToSquare = cropBitmapToSquare(resizedPicture)
+            val pictureAsByteArray = decodeBitMapToByteArray(changedToSquare)
             bucket.uploadAsFlow("$userId.jpg", pictureAsByteArray).first{it is UploadStatus.Success}
             true
         } catch (e: Exception) {
@@ -30,7 +33,8 @@ class StorageRepository: IStorageRepository, KoinComponent {
         val bucket = storage.from("eventPictures")
         return try {
             val resizedPicture = resizeImageBitmapWithAspectRatio(picture, 1000)
-            val pictureAsByteArray = decodeBitMapToByteArray(resizedPicture)
+            val changedToPanorama = cropBitmapToPanorama(resizedPicture)
+            val pictureAsByteArray = decodeBitMapToByteArray(changedToPanorama)
             bucket.uploadAsFlow("$eventId.jpg", pictureAsByteArray).first{it is UploadStatus.Success}
             true
         } catch (e: Exception) {

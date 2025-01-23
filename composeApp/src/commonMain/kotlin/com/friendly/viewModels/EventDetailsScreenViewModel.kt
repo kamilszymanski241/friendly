@@ -17,7 +17,7 @@ import org.koin.core.component.inject
 class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), KoinComponent {
 
     private val eventRepository: IEventRepository by inject()
-    private val eventUserDetailsRepository: IEventUserRepository by inject()
+    private val eventUserRepository: IEventUserRepository by inject()
     private val sessionManager: ISessionManager by inject()
 
     enum class EventDetailsButtonType {
@@ -33,9 +33,16 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
     private val _buttonType = MutableStateFlow(EventDetailsButtonType.PleaseSignIn)
     val buttonType: Flow<EventDetailsButtonType> = _buttonType
 
+    private val _isNotFull = MutableStateFlow(true)
+    val isNotFull: Flow<Boolean> = _isNotFull
+
     init {
         viewModelScope.launch {
-            _eventDetails.value = eventRepository.getSingleEventWithParticipants(eventId).asDomainModel()
+            _eventDetails.value =
+                eventRepository.getSingleEventWithParticipants(eventId).asDomainModel()
+            if (_eventDetails.value!!.maxParticipants <= _eventDetails.value!!.participants!!.size) {
+                _isNotFull.value = false
+            }
             if (sessionManager.sessionStatus.value == SessionStatus.NotAuthenticated(false) ||
                 sessionManager.sessionStatus.value == SessionStatus.NotAuthenticated(true)
             ) {
@@ -43,7 +50,7 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
             } else {
                 if (_eventDetails.value!!.organizer == sessionManager.currentUser.value!!.id) {
                     _buttonType.value = EventDetailsButtonType.Edit
-                } else if (eventId in eventUserDetailsRepository.getAllUserEvents(sessionManager.currentUser.value!!.id)) {
+                } else if (eventId in eventUserRepository.getAllUserEvents(sessionManager.currentUser.value!!.id)) {
                     _buttonType.value = EventDetailsButtonType.Quit
                 } else {
                     _buttonType.value = EventDetailsButtonType.Join
@@ -66,7 +73,7 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
                         _eventDetails.value!!.id,
                         sessionManager.currentUser.value!!.id
                     )
-                eventUserDetailsRepository.addUserToEvent(eventUser)
+                eventUserRepository.addUserToEvent(eventUser)
             }
             catch (e: Exception)
             {
@@ -82,7 +89,7 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
     fun onQuit(){
         viewModelScope.launch {
             try {
-                eventUserDetailsRepository.removeUserFromEvent(
+                eventUserRepository.removeUserFromEvent(
                     sessionManager.currentUser.value!!.id,
                     eventId
                 )

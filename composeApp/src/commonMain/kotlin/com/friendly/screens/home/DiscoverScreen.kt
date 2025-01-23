@@ -68,6 +68,8 @@ fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, 
 
     var expandedDistanceSelect by remember { mutableStateOf(false) }
 
+    var showPermissionWasNotGranted by remember {mutableStateOf(false)}
+
     val factory = rememberPermissionsControllerFactory()
     val controller = remember(factory) {
         factory.createPermissionsController()
@@ -83,9 +85,12 @@ fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, 
             }
 
             PermissionState.DeniedAlways -> {
-
+                showPermissionWasNotGranted = true
             }
 
+            PermissionState.NotGranted ->{
+                showPermissionWasNotGranted = true
+            }
             else -> {
                 permissionsViewModel.provideOrRequestLocationPermission()
             }

@@ -146,6 +146,33 @@ actual fun cropBitmapToSquare(original: ImageBitmap): ImageBitmap {
     return new.asImageBitmap()
 }
 
+actual fun cropBitmapToPanorama(original: ImageBitmap): ImageBitmap {
+    val width = original.width
+    val height = original.height
+
+    if (width.toFloat() / height == 16f / 9f) {
+        return original
+    }
+
+    val targetWidth: Int
+    val targetHeight: Int
+
+    if (width.toFloat() / height > 16f / 9f) {
+        targetHeight = height
+        targetWidth = (height * 16f / 9f).toInt()
+    } else {
+        targetWidth = width
+        targetHeight = (width * 9f / 16f).toInt()
+    }
+
+    val x = (width - targetWidth) / 2
+    val y = (height - targetHeight) / 2
+
+    val new = Bitmap.createBitmap(original.asAndroidBitmap(), x, y, targetWidth, targetHeight)
+    return new.asImageBitmap()
+}
+
+
 actual fun compressBitmapToDesiredSize(original: ImageBitmap, maxSizeInKB: Int): ImageBitmap {
     val bitmap = original.asAndroidBitmap()
     var quality = 100
@@ -404,7 +431,7 @@ actual fun CapturePhoto(onSelect: (ImageBitmap) -> Unit, onClose: () -> Unit) {
                         )
                     }
                     IconButton(
-                        onClick = { onSelect(cropBitmapToSquare(capturedBitmap.value!!)) },
+                        onClick = { onSelect(capturedBitmap.value!!) },
                         modifier = Modifier
                             .size(80.dp)
                             .background(MaterialTheme.colorScheme.tertiary, shape = CircleShape)
@@ -431,7 +458,7 @@ actual fun PickPhoto(
     val context = LocalContext.current
     val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
-            onSelect(cropBitmapToSquare(uriToImageBitmap(context, uri)!!))
+            onSelect(uriToImageBitmap(context, uri)!!)
         } else {
             onClose()
         }

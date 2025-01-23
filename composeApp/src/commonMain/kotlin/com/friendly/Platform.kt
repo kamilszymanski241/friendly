@@ -25,6 +25,8 @@ expect fun decodeBase64ToBitMap(base64: String): ImageBitmap
 
 expect fun cropBitmapToSquare(original: ImageBitmap): ImageBitmap
 
+expect fun cropBitmapToPanorama(original: ImageBitmap): ImageBitmap
+
 expect fun compressBitmapToDesiredSize(original: ImageBitmap, maxSizeInKB: Int): ImageBitmap
 
 expect fun resizeImageBitmapWithAspectRatio(original: ImageBitmap, maxDimension: Int): ImageBitmap

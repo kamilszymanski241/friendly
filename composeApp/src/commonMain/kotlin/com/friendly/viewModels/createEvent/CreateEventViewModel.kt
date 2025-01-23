@@ -152,6 +152,11 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
                         onSuccess()
                     }
                 }
+                else{
+                    if(_startDate.value!! < _endDate.value!!){
+                        onSuccess()
+                    }
+                }
             }
         }
         onFailure()
