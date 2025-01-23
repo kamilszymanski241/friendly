@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -48,6 +50,9 @@ import com.friendly.viewModels.EventDetailsScreenViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun EventDetailsScreen(eventId: String, navController: NavController) {
@@ -89,7 +94,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(8.dp)
+                                .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 100.dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .background(Color.White)
                                 .padding(20.dp),
@@ -101,18 +106,33 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                 color = Color.Black
                             )
                             Spacer(modifier = Modifier.height(25.dp))
-                            Text(
-                                text = eventDetails.value!!.locationText,
-                                fontSize = 15.sp,
-                                color = Color.Black
-                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Address",
+                                    fontSize = (20.sp),
+                                    color = Color.Black,
+                                    textAlign = TextAlign.Start,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = eventDetails.value!!.locationText,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    fontSize = 15.sp,
+                                    color = Color.Black
+                                )
+                            }
                             Spacer(modifier = Modifier.height(15.dp))
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
-                                    text = "Start:",
+                                    text = "Start",
                                     fontSize = (20.sp),
                                     color = Color.Black,
                                     textAlign = TextAlign.Start,
@@ -152,7 +172,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Text(
-                                    text = "End:",
+                                    text = "End",
                                     fontSize = (20.sp),
                                     color = Color.Black,
                                     textAlign = TextAlign.Start,
@@ -201,6 +221,38 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                 color = Color.Black,
                                 textAlign = TextAlign.Justify
                             )
+                            Spacer(modifier = Modifier.height(15.dp))
+                            Text(
+                                text = "Participants",
+                                fontSize = (20.sp),
+                                color = Color.Black,
+                                textAlign = TextAlign.Start,
+                                fontWeight = FontWeight.Bold
+                            )
+                            if (eventDetails.value?.participants != null) {
+                                for (participant in eventDetails.value!!.participants!!) {
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        AsyncImage(
+                                            model = participant.profilePictureUrl,
+                                            contentDescription = "Profile pic",
+                                            modifier = Modifier
+                                                .clip(CircleShape)
+                                                .size(35.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(5.dp))
+                                        Text(
+                                            participant.name + " " + participant.surname + ", " + participant.age,
+                                            fontSize = (15.sp),
+                                            color = Color.Black,
+                                        )
+                                    }
+
+                                }
+                            }
                             Spacer(modifier = Modifier.height(15.dp))
                             StaticMapComponent(
                                 modifier = Modifier
