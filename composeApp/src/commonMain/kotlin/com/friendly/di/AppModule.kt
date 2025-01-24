@@ -1,8 +1,6 @@
 package com.friendly.di
 
-import com.friendly.managers.IRegistrationManager
 import com.friendly.managers.ISessionManager
-import com.friendly.managers.RegistrationManager
 import com.friendly.managers.SessionManager
 import com.friendly.repositories.AuthRepository
 import com.friendly.repositories.EventRepository
@@ -23,11 +21,8 @@ import com.friendly.viewModels.home.HomeScreenTopBarViewModel
 import com.friendly.viewModels.home.HomeScreenViewModel
 import com.friendly.viewModels.home.MyEventsScreenViewModel
 import com.friendly.viewModels.home.UpcomingEventsScreenViewModel
-import com.friendly.viewModels.signInSignUp.FillUserDetailsViewModel
-import com.friendly.viewModels.signInSignUp.RegisterEmailAndPasswordViewModel
 import com.friendly.viewModels.signInSignUp.SignInViewModel
 import com.friendly.viewModels.signInSignUp.SignUpViewModel
-import com.friendly.viewModels.signInSignUp.UploadProfilePictureViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -43,7 +38,6 @@ val appModule = module {
     single<IEventUserRepository>{EventUserRepository()}
 
     single<ISessionManager>{SessionManager()}
-    single<IRegistrationManager>{ RegistrationManager() }
 
     viewModelOf(::HomeScreenViewModel)
     viewModelOf(::DiscoverScreenViewModel)
@@ -53,9 +47,6 @@ val appModule = module {
     viewModelOf(::SignInViewModel)
     viewModelOf(::SignUpViewModel)
     viewModelOf(::HomeScreenTopBarViewModel)
-    viewModelOf(::FillUserDetailsViewModel)
-    viewModelOf(::UploadProfilePictureViewModel)
-    viewModelOf(::RegisterEmailAndPasswordViewModel)
     viewModel{(userId: String)->UserProfileViewModel(userId)}
     viewModel{(eventId: String)->EventDetailsScreenViewModel(eventId)}
     viewModelOf(::AppSettingsScreenViewModel)

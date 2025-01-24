@@ -36,22 +36,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.friendly.CapturePhoto
 import com.friendly.PickPhoto
+import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.defaultUserPicture
-import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
-import com.friendly.viewModels.signInSignUp.UploadProfilePictureViewModel
+import com.friendly.viewModels.signInSignUp.SignUpViewModel
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadProfilePictureViewModel = koinViewModel ()) {
+fun UploadProfilePictureScreen(navController: NavController, viewModel: SignUpViewModel) {
     val capturedPhoto = viewModel.userProfilePicture.collectAsState()
     var showCamera by remember { mutableStateOf(false) }
     var showPhotoPicker by remember { mutableStateOf(false) }
@@ -151,7 +149,7 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadPr
                 }
                 Button(
                     onClick = {
-                        if (viewModel.onContinue()) {
+                        if (viewModel.onContinueToEmailAndPassword()) {
                             navController.navigate(AppNavigation.RegisterEmailAndPassword.route)
                         }
                     },
@@ -169,7 +167,7 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadPr
                     delay(100)
                 }
                 CapturePhoto(onSelect = { picture ->
-                    viewModel.setPicture(picture)
+                    viewModel.onPictureChange(picture)
                     showCamera = false
                     viewModel.setErrorMessage("")
                 },
@@ -182,7 +180,7 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: UploadPr
                     delay(100)
                 }
                 PickPhoto(onSelect = { picture ->
-                    viewModel.setPicture(picture)
+                    viewModel.onPictureChange(picture)
                     showPhotoPicker = false
                     viewModel.setErrorMessage("")
                 },

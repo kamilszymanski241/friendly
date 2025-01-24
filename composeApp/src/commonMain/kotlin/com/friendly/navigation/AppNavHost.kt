@@ -26,6 +26,7 @@ import com.friendly.screens.signInSignUp.RegisterEmailAndPasswordScreen
 import com.friendly.screens.signInSignUp.SignInScreen
 import com.friendly.screens.signInSignUp.UploadProfilePictureScreen
 import com.friendly.viewModels.createEvent.CreateEventViewModel
+import com.friendly.viewModels.signInSignUp.SignUpViewModel
 
 @Composable
 fun AppNavHost(
@@ -48,14 +49,8 @@ fun AppNavHost(
         composable(AppNavigation.ChooseSignUpMethod.route) {
             ChooseSignUpMethod(navController)
         }
-        composable(AppNavigation.FillUserDetails.route) {
-            FillUserDetailsScreen(navController)
-        }
-        composable(AppNavigation.UploadProfilePicture.route) {
-            UploadProfilePictureScreen(navController)
-        }
-        composable(AppNavigation.RegisterEmailAndPassword.route) {
-            RegisterEmailAndPasswordScreen(navController)
+        composable(AppNavigation.AppSettings.route) {
+            AppSettingsScreen(navController)
         }
         composable(
             AppNavigation.UserProfile.route,
@@ -64,8 +59,6 @@ fun AppNavHost(
             val userId = backStackEntry.arguments?.getString("userId")
             if (userId != null) {
                 UserProfileScreen(userId = userId, navController = navController)
-            } else {
-                //TODO()
             }
         }
         composable(
@@ -75,8 +68,6 @@ fun AppNavHost(
             val eventId = backStackEntry.arguments?.getString("eventId")
             if (eventId != null) {
                 EventDetailsScreen(eventId = eventId, navController = navController)
-            } else {
-                //TODO()
             }
         }
         navigation(
@@ -96,9 +87,24 @@ fun AppNavHost(
                 SelectEventLocationScreen(navController, viewModel)
             }
         }
-        composable(AppNavigation.AppSettings.route) {
-            AppSettingsScreen(navController)
+        navigation(
+            startDestination = AppNavigation.ChooseSignUpMethod.route,
+            route = AppNavigation.SignUp.route
+        ){
+            composable(AppNavigation.FillUserDetails.route) {
+                val viewModel = it.sharedViewModel<SignUpViewModel>(navController)
+                FillUserDetailsScreen(navController, viewModel)
+            }
+            composable(AppNavigation.UploadProfilePicture.route) {
+                val viewModel = it.sharedViewModel<SignUpViewModel>(navController)
+                UploadProfilePictureScreen(navController, viewModel)
+            }
+            composable(AppNavigation.RegisterEmailAndPassword.route) {
+                val viewModel = it.sharedViewModel<SignUpViewModel>(navController)
+                RegisterEmailAndPasswordScreen(navController, viewModel)
+            }
         }
+
     }
 }
 

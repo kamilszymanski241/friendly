@@ -1,8 +1,7 @@
 package com.friendly.managers
 
-import androidx.compose.ui.graphics.ImageBitmap
-import com.friendly.dtos.UserDetailsDTO
 import com.friendly.models.UserDetails
+import com.friendly.repositories.IAuthRepository
 import com.friendly.repositories.IUserDetailsRepository
 import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.status.SessionSource
@@ -11,7 +10,6 @@ import io.github.jan.supabase.auth.user.UserInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,6 +20,8 @@ import org.koin.core.component.inject
 class SessionManager: KoinComponent, ISessionManager {
 
     private val auth: Auth by inject()
+
+    private val authRepository: IAuthRepository by inject()
 
     private val userDetailsRepository: IUserDetailsRepository by inject()
 
@@ -65,7 +65,6 @@ class SessionManager: KoinComponent, ISessionManager {
             _userDetailsStatus.value = UserDetailsStatus.Success
         } catch (e: Exception) {
             _userDetailsStatus.value = UserDetailsStatus.Failed
-            //TODO()
         }
     }
 }

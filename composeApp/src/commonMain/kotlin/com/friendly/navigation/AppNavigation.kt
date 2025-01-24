@@ -2,7 +2,8 @@ package com.friendly.navigation
 
 sealed class AppNavigation(val route: String, val label: String){
 
-    data object ChooseSignUpMethod: AppNavigation("chooseSignUpMethod", "Sign Up")
+    data object SignUp: AppNavigation(route = "signUp", label = "Sign Up")
+    data object ChooseSignUpMethod: AppNavigation("chooseSignUpMethod", "Sign Up With")
     data object FillUserDetails: AppNavigation(route = "fillUserDetails", label = "Fill User Details")
     data object UploadProfilePicture: AppNavigation(route = "uploadAProfilePicture", label = "Upload A Profile Picture")
     data object RegisterEmailAndPassword: AppNavigation(route = "registerEmailAndPassword", label = "Please provide email and password")

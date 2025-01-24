@@ -28,17 +28,15 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.friendly.components.DatePickerModal
 import com.friendly.components.TopBarWithBackButtonAndTitle
-import com.friendly.helpers.DateTimeHelper.Companion.convertMillisToDate
 import com.friendly.helpers.DateTimeHelper.Companion.getCurrentDateAsString
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
-import com.friendly.viewModels.signInSignUp.FillUserDetailsViewModel
+import com.friendly.viewModels.signInSignUp.SignUpViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun FillUserDetailsScreen(navController: NavController, viewModel: FillUserDetailsViewModel = koinViewModel ()) {
+fun FillUserDetailsScreen(navController: NavController, viewModel: SignUpViewModel) {
     FriendlyAppTheme {
         val name = viewModel.name.collectAsState(initial = "")
         val surname = viewModel.surname.collectAsState(initial = "")
@@ -117,7 +115,7 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: FillUserDetai
                 Button(
                     onClick = {
                         localSoftwareKeyboardController?.hide()
-                        if (viewModel.onContinue()) {
+                        if (viewModel.onContinueToProfilePic()) {
                             navController.navigate(AppNavigation.UploadProfilePicture.route)
                         }
                     },
