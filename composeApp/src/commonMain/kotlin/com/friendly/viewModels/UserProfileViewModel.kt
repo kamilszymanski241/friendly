@@ -1,23 +1,41 @@
 package com.friendly.viewModels
 
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
-import com.friendly.models.UserDetails
+import androidx.lifecycle.viewModelScope
 import com.friendly.managers.ISessionManager
-import com.friendly.managers.UserDetailsStatus
+import com.friendly.models.UserDetails
+import com.friendly.repositories.IUserDetailsRepository
 import io.github.jan.supabase.auth.status.SessionStatus
-import io.github.jan.supabase.auth.user.UserInfo
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-class UserProfileViewModel: ViewModel(), KoinComponent {
+class UserProfileViewModel(private val userId: String): ViewModel(), KoinComponent {
 
     private val sessionManager: ISessionManager by inject()
+    private val userDetailsRepository: IUserDetailsRepository by inject()
 
-    val user: StateFlow<UserInfo?> = sessionManager.currentUser
-    val userDetails: StateFlow<UserDetails?> = sessionManager.currentUserDetails
+    private var _userDetails = MutableStateFlow<UserDetails?>(null)
+    val userDetails: StateFlow<UserDetails?> = _userDetails
+
+    private var _isSelfProfile = MutableStateFlow(false)
+    val isSelfProfile: StateFlow<Boolean> = _isSelfProfile
+
     val sessionStatus: StateFlow<SessionStatus> = sessionManager.sessionStatus
-    val userDetailsStatus: StateFlow<UserDetailsStatus> = sessionManager.userDetailsStatus
 
+    init{
+        if(sessionManager.currentUser.value != null) {
+            if (userId == sessionManager.currentUser.value!!.id){
+                _isSelfProfile.value = true
+                _userDetails.value = sessionManager.currentUserDetails.value
+            }
+            else{
+                viewModelScope.launch {
+                    _userDetails.value = userDetailsRepository.getUserDetails(userId).asDomainModel()
+                }
+            }
+        }
+    }
 }

@@ -57,8 +57,16 @@ fun AppNavHost(
         composable(AppNavigation.RegisterEmailAndPassword.route) {
             RegisterEmailAndPasswordScreen(navController)
         }
-        composable(AppNavigation.UserProfile.route) {
-            UserProfileScreen(navController)
+        composable(
+            AppNavigation.UserProfile.route,
+            arguments = listOf(navArgument("userId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId")
+            if (userId != null) {
+                UserProfileScreen(userId = userId, navController = navController)
+            } else {
+                //TODO()
+            }
         }
         composable(
             AppNavigation.EventDetails.route,

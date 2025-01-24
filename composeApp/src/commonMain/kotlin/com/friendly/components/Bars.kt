@@ -37,8 +37,8 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.friendly_logo_white
-import com.friendly.navigation.AppNavigation
 import com.friendly.managers.UserDetailsStatus
+import com.friendly.navigation.AppNavigation
 import com.friendly.viewModels.home.HomeScreenTopBarViewModel
 import io.github.jan.supabase.auth.status.SessionStatus
 import org.jetbrains.compose.resources.painterResource
@@ -111,7 +111,7 @@ fun HomeScreenTopBar(navController: NavController, viewModel: HomeScreenTopBarVi
                 } else {
                     TextButton(
                         onClick = {
-                            navController.navigate(AppNavigation.UserProfile.route)
+                            navController.navigate("userProfile/${userDetails?.id}")
                         }
                     ) {
                         if (userDetailsStatus == UserDetailsStatus.Success) {

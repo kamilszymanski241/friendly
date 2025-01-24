@@ -1,6 +1,7 @@
 package com.friendly.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,8 +14,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -36,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -50,9 +52,6 @@ import com.friendly.viewModels.EventDetailsScreenViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun EventDetailsScreen(eventId: String, navController: NavController) {
@@ -222,18 +221,36 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                 textAlign = TextAlign.Justify
                             )
                             Spacer(modifier = Modifier.height(15.dp))
-                            Text(
-                                text = "Participants",
-                                fontSize = (20.sp),
-                                color = Color.Black,
-                                textAlign = TextAlign.Start,
-                                fontWeight = FontWeight.Bold
-                            )
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "Participants",
+                                    fontSize = (20.sp),
+                                    color = Color.Black,
+                                    textAlign = TextAlign.Start,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                if (eventDetails.value!!.participants!!.size > 3) {
+                                    Spacer(modifier = Modifier.width(10.dp))
+                                    Text(
+                                        text = "Show all",
+                                        fontSize = (15.sp),
+                                        color = Color.Black
+                                    )
+                                }
+                            }
                             if (eventDetails.value?.participants != null) {
-                                for (participant in eventDetails.value!!.participants!!) {
+                                for (participant in eventDetails.value!!.participants!!.take(3)) {
                                     Spacer(modifier = Modifier.height(10.dp))
                                     Row(
-                                        modifier = Modifier.fillMaxWidth(),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable(
+                                                onClick = {
+                                                    navController.navigate("userProfile/${participant.id}")
+                                                }
+                                            ),
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         AsyncImage(
