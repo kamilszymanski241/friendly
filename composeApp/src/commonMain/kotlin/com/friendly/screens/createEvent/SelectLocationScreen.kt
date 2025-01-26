@@ -39,7 +39,7 @@ import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.createEvent.CreateEventViewModel
 
 @Composable
-fun SelectEventLocationScreen(navController: NavController, viewModel: CreateEventViewModel) {
+fun SelectLocationScreen(navController: NavController, viewModel: CreateEventViewModel) {
 
     val locationText = viewModel.selectedLocationAddress.collectAsState("")
 

@@ -87,7 +87,7 @@ fun HomeScreenTopBar(navController: NavController, viewModel: HomeScreenTopBarVi
                         }
                         OutlinedButton(
                             onClick = {
-                                navController.navigate(AppNavigation.ChooseSignUpMethod.route) {
+                                navController.navigate(AppNavigation.SignUp.route) {
                                     launchSingleTop = true
                                     restoreState = true
                                     popUpTo(navController.graph.startDestinationId) {
@@ -97,7 +97,7 @@ fun HomeScreenTopBar(navController: NavController, viewModel: HomeScreenTopBarVi
                             }
                         ) {
                             Text(
-                                text = AppNavigation.ChooseSignUpMethod.label,
+                                text = AppNavigation.SignUp.label,
                                 fontSize = 16.sp,
                                 color = Color.White
                             )

@@ -75,23 +75,10 @@ sealed class DateTimeHelper() {
             return LocalTime(localDateTime.hour, localDateTime.minute).toString()
         }
 
-        fun getAgeFromDateOfBirth(dateTime: String): Int{
-            val dob = parseDateFromSupabaseTimestampzToLocalDate(dateTime)
-            val today = getCurrentDateAsLocalDate()
-
+        fun getAgeFromDateOfBirth(date: String): Int{
+            val dob = LocalDate.parse(date)
+            val today = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
             return dob.periodUntil(today).years
-        }
-
-    }
-    @OptIn(ExperimentalMaterial3Api::class)
-    object SelectableEventDates: SelectableDates {
-        override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-            return Instant.fromEpochMilliseconds(utcTimeMillis).toLocalDateTime(TimeZone.currentSystemDefault()).date >=
-                    Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).date
-        }
-
-        override fun isSelectableYear(year: Int): Boolean {
-            return year >= Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year
         }
     }
 }

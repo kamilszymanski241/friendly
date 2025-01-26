@@ -22,7 +22,3 @@ data class UserDetails(
 
     val events: List<Event>? = null
 )
-
-enum class Gender {
-    Male, Female, Other
-}

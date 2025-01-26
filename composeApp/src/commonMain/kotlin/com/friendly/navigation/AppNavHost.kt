@@ -16,11 +16,11 @@ import androidx.navigation.navigation
 import com.friendly.screens.AppSettingsScreen
 import com.friendly.screens.EventDetailsScreen
 import com.friendly.screens.UserProfileScreen
-import com.friendly.screens.createEvent.FillBasicEventDetailsScreen
-import com.friendly.screens.createEvent.FillMoreEventDetailsScreen
-import com.friendly.screens.createEvent.SelectEventLocationScreen
+import com.friendly.screens.createEvent.FillTitleAndDescriptionScreen
+import com.friendly.screens.createEvent.SelectDateAndTimeScreen
+import com.friendly.screens.createEvent.SelectLocationScreen
 import com.friendly.screens.home.HomeScreen
-import com.friendly.screens.signInSignUp.ChooseSignUpMethod
+import com.friendly.screens.signInSignUp.ChooseSignUpMethodScreen
 import com.friendly.screens.signInSignUp.FillUserDetailsScreen
 import com.friendly.screens.signInSignUp.RegisterEmailAndPasswordScreen
 import com.friendly.screens.signInSignUp.SignInScreen
@@ -47,7 +47,7 @@ fun AppNavHost(
             SignInScreen(navController)
         }
         composable(AppNavigation.ChooseSignUpMethod.route) {
-            ChooseSignUpMethod(navController)
+            ChooseSignUpMethodScreen(navController)
         }
         composable(AppNavigation.AppSettings.route) {
             AppSettingsScreen(navController)
@@ -71,26 +71,29 @@ fun AppNavHost(
             }
         }
         navigation(
-            startDestination = AppNavigation.FillBasicEventDetails.route,
+            startDestination = AppNavigation.FillEventTitleAndDescription.route,
             route = AppNavigation.CreateEvent.route
         ){
-            composable(AppNavigation.FillBasicEventDetails.route) {
+            composable(AppNavigation.FillEventTitleAndDescription.route) {
                 val viewModel = it.sharedViewModel<CreateEventViewModel>(navController)
-                FillBasicEventDetailsScreen(navController, viewModel)
+                FillTitleAndDescriptionScreen(navController, viewModel)
             }
-            composable(AppNavigation.SelectEventDateTime.route) {
+            composable(AppNavigation.SelectEventDateAndTime.route) {
                 val viewModel = it.sharedViewModel<CreateEventViewModel>(navController)
-                FillMoreEventDetailsScreen(navController, viewModel)
+                SelectDateAndTimeScreen(navController, viewModel)
             }
-            composable(AppNavigation.SelectEventLocalization.route) {
+            composable(AppNavigation.SelectEventLocation.route) {
                 val viewModel = it.sharedViewModel<CreateEventViewModel>(navController)
-                SelectEventLocationScreen(navController, viewModel)
+                SelectLocationScreen(navController, viewModel)
             }
         }
         navigation(
             startDestination = AppNavigation.ChooseSignUpMethod.route,
             route = AppNavigation.SignUp.route
         ){
+            composable(AppNavigation.ChooseSignUpMethod.route) {
+                ChooseSignUpMethodScreen(navController)
+            }
             composable(AppNavigation.FillUserDetails.route) {
                 val viewModel = it.sharedViewModel<SignUpViewModel>(navController)
                 FillUserDetailsScreen(navController, viewModel)

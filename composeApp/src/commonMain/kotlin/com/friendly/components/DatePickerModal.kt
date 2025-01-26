@@ -12,6 +12,8 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.friendly.helpers.DateTimeHelper
+import com.friendly.helpers.SelectableDatesTypes
+import com.friendly.helpers.SelectableEventDates
 import kotlinx.datetime.Clock
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -19,9 +21,10 @@ import kotlinx.datetime.Clock
 fun DatePickerModal(
     onDateSelected: (Long?) -> Unit,
     onDismiss: () -> Unit,
+    selectableDatesType: SelectableDatesTypes
 ) {
     val datePickerState = rememberDatePickerState(
-        selectableDates = DateTimeHelper.SelectableEventDates
+        selectableDates = SelectableEventDates(selectableDatesType)
     )
     DatePickerDialog(
         onDismissRequest = { onDismiss() },

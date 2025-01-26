@@ -44,12 +44,13 @@ import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.helpers.DateTimeHelper.Companion.convertMillisToDate
 import com.friendly.helpers.DateTimeHelper.Companion.getCurrentDateAsString
 import com.friendly.helpers.DateTimeHelper.Companion.getCurrentTimeAsString
+import com.friendly.helpers.SelectableDatesTypes
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.createEvent.CreateEventViewModel
 
 @Composable
-fun FillMoreEventDetailsScreen(navController: NavController, viewModel: CreateEventViewModel) {
+fun SelectDateAndTimeScreen(navController: NavController, viewModel: CreateEventViewModel) {
     val showStartDatePicker = remember { mutableStateOf(false) }
     val showEndDatePicker = remember { mutableStateOf(false) }
     val selectedStartDate = viewModel.startDate.collectAsState(getCurrentDateAsString())
@@ -264,7 +265,7 @@ fun FillMoreEventDetailsScreen(navController: NavController, viewModel: CreateEv
                     onClick = {
                         viewModel.onConfirmMoreDetails(
                             onSuccess = {
-                                navController.navigate(AppNavigation.SelectEventLocalization.route)
+                                navController.navigate(AppNavigation.SelectEventLocation.route)
                                 viewModel.onErrorMessageChange("")
                             },
                             onFailure = {
@@ -284,12 +285,14 @@ fun FillMoreEventDetailsScreen(navController: NavController, viewModel: CreateEv
             if (showStartDatePicker.value) {
                 DatePickerModal(
                     onDateSelected = { viewModel.onStartDateChange(convertMillisToDate(it!!)) },
-                    onDismiss = { showStartDatePicker.value = false })
+                    onDismiss = { showStartDatePicker.value = false },
+                    selectableDatesType = SelectableDatesTypes.Future)
             }
             if (showEndDatePicker.value) {
                 DatePickerModal(
                     onDateSelected = { viewModel.onEndDateChange(convertMillisToDate(it!!)) },
-                    onDismiss = { showEndDatePicker.value = false })
+                    onDismiss = { showEndDatePicker.value = false },
+                    selectableDatesType = SelectableDatesTypes.Future)
             }
             if (showStartTimePicker.value) {
                 TimePickerModal(

@@ -46,6 +46,8 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Sign
     val passwordRepeat = viewModel.passwordRepeat.collectAsState()
     val errorMessage = viewModel.errorMessage.collectAsState()
     val successState = viewModel.success.collectAsState()
+    val localSoftwareKeyboardController =
+        LocalSoftwareKeyboardController.current
     LaunchedEffect(successState.value) {
         if (successState.value) {
             navController.navigate(AppNavigation.HomeScreen.route)
@@ -141,18 +143,22 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Sign
                         )
                     }
                     Spacer(modifier = Modifier.height(20.dp))
-                    val localSoftwareKeyboardController =
-                        LocalSoftwareKeyboardController.current
                     Button(
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .fillMaxWidth(),
                         onClick = {
-                            localSoftwareKeyboardController?.hide()
-                            loading = true
-                            viewModel.onSignUp()
+                            if (viewModel.onContinueToProfilePic()) {
+                                localSoftwareKeyboardController?.hide()
+                                loading = true
+                                viewModel.onSignUp()
+                            }
                         },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = MaterialTheme.colorScheme.tertiary,
                             contentColor = Color.White
-                        )
+                        ),
+                        shape = MaterialTheme.shapes.medium,
                     ) {
                         Text("Sign up")
                     }

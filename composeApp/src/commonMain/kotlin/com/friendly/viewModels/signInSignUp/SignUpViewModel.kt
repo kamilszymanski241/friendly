@@ -34,8 +34,14 @@ class SignUpViewModel: ViewModel(), KoinComponent {
     private val _surname = MutableStateFlow("")
     val surname: StateFlow<String> = _surname
 
-    private val _dateOfBirth = MutableStateFlow<String?>(DateTimeHelper.getCurrentDateAsString())
+    private val _dateOfBirth = MutableStateFlow<String?>(null)
     val dateOfBirth: Flow<String?> = _dateOfBirth
+
+    private val _description = MutableStateFlow("")
+    val description: StateFlow<String> = _description
+
+    private val _gender = MutableStateFlow<Gender?>(null)
+    val gender: StateFlow<Gender?> = _gender
 
     private val _email = MutableStateFlow("")
     val email: StateFlow<String> = _email
@@ -64,8 +70,16 @@ class SignUpViewModel: ViewModel(), KoinComponent {
         _surname.value = surname
     }
 
+    fun onDescriptionChange(description: String) {
+        _description.value = description
+    }
+
     fun onDateOfBirthChange(date: String) {
         _dateOfBirth.value = date
+    }
+
+    fun onGenderChange(gender: Gender) {
+        _gender.value = gender
     }
 
     fun onEmailChange(email: String) {
@@ -84,7 +98,7 @@ class SignUpViewModel: ViewModel(), KoinComponent {
         _userProfilePicture.value = picture
     }
     fun onContinueToProfilePic(): Boolean {
-        if (_name.value == "" || _surname.value == "") {
+        if (_name.value == "" || _surname.value == "" || _gender.value == null || _dateOfBirth.value == null) {
             _errorMessage.value = "All fields must be filled"
             return false
         } else {
@@ -116,9 +130,9 @@ class SignUpViewModel: ViewModel(), KoinComponent {
                                     id = sessionManager.currentUser.value!!.id,
                                     name = _name.value,
                                     surname = _surname.value,
-                                    dateOfBirth = DateTimeHelper.getCurrentDateAsString(),
-                                    description = "",
-                                    gender = Gender.Male
+                                    dateOfBirth = _dateOfBirth.value!!,
+                                    description = _description.value,
+                                    gender = _gender.value!!
                                 )
                             )
                         ) {
@@ -133,7 +147,7 @@ class SignUpViewModel: ViewModel(), KoinComponent {
                         }
                     }
                 } catch (e: Exception) {
-                    println(e.message)
+                    println("Couldn't register: ${e.message}")
                     _errorMessage.value = "Couldn't register: ${e.message}"
                 }
             }

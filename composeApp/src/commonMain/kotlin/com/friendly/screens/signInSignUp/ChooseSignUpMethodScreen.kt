@@ -31,7 +31,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 
 @Composable
-fun ChooseSignUpMethod(navController: NavController, viewModel: SignUpViewModel = koinInject ()) {
+fun ChooseSignUpMethodScreen(navController: NavController, viewModel: SignUpViewModel = koinInject ()) {
     FriendlyAppTheme {
         Scaffold(
             topBar = { TopBarWithBackButtonAndTitle(navController, "") },

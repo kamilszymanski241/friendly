@@ -17,7 +17,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -48,23 +51,45 @@ fun UserProfileScreen(userId: String, navController: NavController) {
 
     val userDetails = viewModel.userDetails.collectAsState()
     val isSelfProfile = viewModel.isSelfProfile.collectAsState()
-
-    if (userDetails.value != null) {
+    val showSignInReminder = viewModel.showSignInReminder.collectAsState(false)
     Scaffold(
         topBar = {
-            if(isSelfProfile.value){
-            TopBarWithBackEditAndSettingsButton(
-                navController,
-                AppNavigation.HomeScreen,
-                AppNavigation.AppSettings
-            )}
-            else{
+            if (isSelfProfile.value) {
+                TopBarWithBackEditAndSettingsButton(
+                    navController,
+                    AppNavigation.HomeScreen,
+                    AppNavigation.AppSettings
+                )
+            } else {
                 TopBarWithBackButtonAndTitle(navController, "")
             }
         },
         containerColor = MaterialTheme.colorScheme.secondary
     ) { innerPadding ->
-        FriendlyAppTheme {
+        if (showSignInReminder.value) {
+            Column(
+                modifier = Modifier.fillMaxSize().padding(innerPadding),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Row()
+                {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "",
+                        modifier = Modifier
+                            .size(100.dp)
+                    )
+                }
+                Row() {
+                    Text(
+                        text = "Sign in to see other's profile",
+                        fontSize = 15.sp
+                    )
+                }
+            }
+        } else {
+            if (userDetails.value != null) {
                 Column(
                     modifier = Modifier
                         .fillMaxHeight()
@@ -155,12 +180,16 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                         )
                     }
                 }
+            } else {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator()
+                }
             }
         }
     }
-    else{
-        Column(modifier = Modifier.fillMaxSize()) {
-            CircularProgressIndicator()
-        }
-    }
 }
+

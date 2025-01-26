@@ -148,8 +148,12 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: SignUpVi
                     }
                 }
                 Button(
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth(),
                     onClick = {
-                        if (viewModel.onContinueToEmailAndPassword()) {
+                        if (viewModel.onContinueToProfilePic()) {
+                            viewModel.setErrorMessage("")
                             navController.navigate(AppNavigation.RegisterEmailAndPassword.route)
                         }
                     },
@@ -157,7 +161,7 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: SignUpVi
                         containerColor = MaterialTheme.colorScheme.tertiary,
                         contentColor = Color.White
                     ),
-                    shape = RoundedCornerShape(16.dp)
+                    shape = MaterialTheme.shapes.medium,
                 ) {
                     Text("Continue")
                 }

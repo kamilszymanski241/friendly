@@ -60,7 +60,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeScreenViewModel = ko
                             }
                         }
                     ) {
-                        Text("Create!")
+                        Text("Create")
                     }
                 }
             },

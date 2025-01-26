@@ -2,7 +2,6 @@ package com.friendly.screens.createEvent
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -41,7 +40,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
@@ -59,7 +57,7 @@ import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun FillBasicEventDetailsScreen(navController: NavController, viewModel: CreateEventViewModel) {
+fun FillTitleAndDescriptionScreen(navController: NavController, viewModel: CreateEventViewModel) {
     val title = viewModel.title.collectAsState(initial = "")
     val description = viewModel.description.collectAsState(initial = "")
     val capturedPhoto = viewModel.eventPicture.collectAsState()
@@ -227,7 +225,7 @@ fun FillBasicEventDetailsScreen(navController: NavController, viewModel: CreateE
                     onClick = {
                         viewModel.onConfirmBasicDetails(
                             onSuccess = {
-                                navController.navigate(AppNavigation.SelectEventDateTime.route)
+                                navController.navigate(AppNavigation.SelectEventDateAndTime.route)
                                 viewModel.onErrorMessageChange("")
                             },
                             onFailure = {

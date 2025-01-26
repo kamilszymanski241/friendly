@@ -18,7 +18,6 @@ import org.koin.core.component.inject
 class MyEventsScreenViewModel: ViewModel(), KoinComponent {
     private val sessionManager: ISessionManager by inject()
     private val eventRepository: IEventRepository by inject()
-    private val eventUserRepository: IEventUserRepository by inject()
 
     val user: StateFlow<UserInfo?> = sessionManager.currentUser
     val sessionStatus: StateFlow<SessionStatus> = sessionManager.sessionStatus

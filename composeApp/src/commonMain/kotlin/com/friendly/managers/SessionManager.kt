@@ -21,8 +21,6 @@ class SessionManager: KoinComponent, ISessionManager {
 
     private val auth: Auth by inject()
 
-    private val authRepository: IAuthRepository by inject()
-
     private val userDetailsRepository: IUserDetailsRepository by inject()
 
     private val _sessionStatus = MutableStateFlow<SessionStatus>(SessionStatus.Initializing)
@@ -65,6 +63,7 @@ class SessionManager: KoinComponent, ISessionManager {
             _userDetailsStatus.value = UserDetailsStatus.Success
         } catch (e: Exception) {
             _userDetailsStatus.value = UserDetailsStatus.Failed
+            println("Couldn't initialize user details: ${e.message}")
         }
     }
 }
