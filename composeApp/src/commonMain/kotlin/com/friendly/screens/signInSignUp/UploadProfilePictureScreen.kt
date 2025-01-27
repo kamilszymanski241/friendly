@@ -54,6 +54,7 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: SignUpVi
     var showCamera by remember { mutableStateOf(false) }
     var showPhotoPicker by remember { mutableStateOf(false) }
     val errorMessage = viewModel.errorMessage.collectAsState()
+    var showDropDownMenu by remember { mutableStateOf(false) }
     FriendlyAppTheme {
         Scaffold(
             topBar = {
@@ -102,7 +103,6 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: SignUpVi
                                     .clip(CircleShape)
                             )
                         }
-                        var showDropDownMenu by remember { mutableStateOf(false) }
                         Box(
                             modifier = Modifier
                                 .align(Alignment.BottomEnd)
@@ -127,7 +127,9 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: SignUpVi
                                 expanded = showDropDownMenu,
                                 onDismissRequest = { showDropDownMenu = false },
                                 modifier = Modifier
-                                    .align(Alignment.BottomEnd)
+                                    .align(Alignment.BottomEnd),
+                                shape = RoundedCornerShape(16.dp),
+                                containerColor = Color.White,
                             ) {
                                 DropdownMenuItem(
                                     text = { Text("Choose from gallery") },
@@ -153,8 +155,10 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: SignUpVi
                         .fillMaxWidth(),
                     onClick = {
                         if (viewModel.onContinueToProfilePic()) {
-                            viewModel.setErrorMessage("")
-                            navController.navigate(AppNavigation.RegisterEmailAndPassword.route)
+                            if(viewModel.onContinueToEmailAndPassword()) {
+                                viewModel.setErrorMessage("")
+                                navController.navigate(AppNavigation.RegisterEmailAndPassword.route)
+                            }
                         }
                     },
                     colors = ButtonDefaults.buttonColors(

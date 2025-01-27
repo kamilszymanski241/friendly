@@ -24,6 +24,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -34,12 +35,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
+import androidx.navigation.PopUpToBuilder
 import coil3.compose.AsyncImage
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.friendly_logo_white
 import com.friendly.managers.UserDetailsStatus
 import com.friendly.navigation.AppNavigation
 import com.friendly.viewModels.home.HomeScreenTopBarViewModel
+import io.github.jan.supabase.auth.status.RefreshFailureCause
 import io.github.jan.supabase.auth.status.SessionStatus
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
@@ -47,10 +51,16 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenTopBar(navController: NavController, viewModel: HomeScreenTopBarViewModel = koinViewModel ()) {
-    val user by viewModel.user.collectAsState()
     val userDetails by viewModel.userDetails.collectAsState()
     val sessionStatus by viewModel.sessionStatus.collectAsState()
-    val userDetailsStatus by viewModel.userDetailsStatus.collectAsState()
+    LaunchedEffect(sessionStatus){
+        when(sessionStatus){
+            is SessionStatus.Authenticated->{
+                viewModel.fetchUserDetails()
+            }
+            else->{}
+        }
+    }
     TopAppBar(
         colors = topAppBarColors(
             containerColor = MaterialTheme.colorScheme.tertiary,
@@ -66,7 +76,8 @@ fun HomeScreenTopBar(navController: NavController, viewModel: HomeScreenTopBarVi
                     contentDescription = "logo",
                     modifier = Modifier.size(100.dp)
                 )
-                if (user == null) {
+                if (sessionStatus is SessionStatus.NotAuthenticated ||
+                    sessionStatus is SessionStatus.RefreshFailure) {
                     Row {
                         TextButton(
                             onClick = {
@@ -103,7 +114,7 @@ fun HomeScreenTopBar(navController: NavController, viewModel: HomeScreenTopBarVi
                             )
                         }
                     }
-                } else if (sessionStatus == SessionStatus.Initializing || userDetailsStatus == UserDetailsStatus.Initializing) {
+                } else if (sessionStatus == SessionStatus.Initializing || userDetails == null) {
                     CircularProgressIndicator(
                         modifier = Modifier
                             .padding(end = 12.dp)
@@ -114,7 +125,7 @@ fun HomeScreenTopBar(navController: NavController, viewModel: HomeScreenTopBarVi
                             navController.navigate("userProfile/${userDetails?.id}")
                         }
                     ) {
-                        if (userDetailsStatus == UserDetailsStatus.Success) {
+                        if (userDetails != null) {
                             AsyncImage(
                                 model = userDetails?.profilePictureUrl,
                                 contentDescription = "User Profile Picture",
@@ -195,7 +206,9 @@ fun TopBarWithBackEditAndSettingsButton(navController: NavController,editRoute: 
                 ) {
                     Row() {
                         IconButton(
-                            onClick = { navController.navigate(editRoute.route) },
+                            onClick = {
+                                navController.navigate(route = editRoute.route)
+                            },
                         ) {
                             Icon(
                                 Icons.Default.Edit,

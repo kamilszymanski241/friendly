@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -15,7 +16,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.friendly.screens.AppSettingsScreen
 import com.friendly.screens.EventDetailsScreen
-import com.friendly.screens.UserProfileScreen
+import com.friendly.screens.userProfile.UserProfileScreen
 import com.friendly.screens.createEvent.FillTitleAndDescriptionScreen
 import com.friendly.screens.createEvent.SelectDateAndTimeScreen
 import com.friendly.screens.createEvent.SelectLocationScreen
@@ -25,6 +26,7 @@ import com.friendly.screens.signInSignUp.FillUserDetailsScreen
 import com.friendly.screens.signInSignUp.RegisterEmailAndPasswordScreen
 import com.friendly.screens.signInSignUp.SignInScreen
 import com.friendly.screens.signInSignUp.UploadProfilePictureScreen
+import com.friendly.screens.userProfile.EditUserDetailsScreen
 import com.friendly.viewModels.createEvent.CreateEventViewModel
 import com.friendly.viewModels.signInSignUp.SignUpViewModel
 
@@ -48,6 +50,9 @@ fun AppNavHost(
         }
         composable(AppNavigation.ChooseSignUpMethod.route) {
             ChooseSignUpMethodScreen(navController)
+        }
+        composable(AppNavigation.EditUserDetails.route){
+            EditUserDetailsScreen(navController)
         }
         composable(AppNavigation.AppSettings.route) {
             AppSettingsScreen(navController)

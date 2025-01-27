@@ -1,5 +1,6 @@
 package com.friendly.di
 
+import com.friendly.helpers.CacheHelper
 import com.friendly.helpers.LocationAndGeocodingHelper
 import com.friendly.helpers.PlacesClientProvider
 import com.friendly.helpers.PlacesHelper
@@ -11,5 +12,6 @@ actual val platformModule: Module
     get() = module {
         single{ PlacesClientProvider(androidApplication()) }
         single{LocationAndGeocodingHelper(androidApplication())}
+        factory{ CacheHelper(androidApplication()) }
         single{ PlacesHelper() }
     }

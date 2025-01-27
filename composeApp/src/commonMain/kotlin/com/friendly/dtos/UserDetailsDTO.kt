@@ -46,7 +46,7 @@ data class UserDetailsDTO (
             age = DateTimeHelper.getAgeFromDateOfBirth(this.dateOfBirth),
             description = this.description,
             gender = this.gender,
-            profilePictureUrl = BuildConfig.SUPABASE_URL+BuildConfig.PROFILE_PICTURES_STORAGE_URL + "${this.id}.jpg",
+            profilePictureUrl = BuildConfig.SUPABASE_URL+BuildConfig.PROFILE_PICTURES_STORAGE_URL + "/${this.id}/profile.jpg",
             events =  this.events?.map {  it.asDomainModel() }
         )
     }

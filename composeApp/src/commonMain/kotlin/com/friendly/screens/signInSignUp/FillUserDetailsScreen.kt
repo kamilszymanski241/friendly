@@ -203,7 +203,9 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: SignUpViewMod
                                 )
                                 ExposedDropdownMenu(
                                     expanded = expandedGenderSelect,
-                                    onDismissRequest = { expandedGenderSelect = false }
+                                    onDismissRequest = { expandedGenderSelect = false },
+                                    shape = RoundedCornerShape(16.dp),
+                                    containerColor = Color.White,
                                 ) {
                                     Gender.entries.forEach { option ->
                                         DropdownMenuItem(

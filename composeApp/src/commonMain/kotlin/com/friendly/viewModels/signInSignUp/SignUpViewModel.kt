@@ -141,7 +141,6 @@ class SignUpViewModel: ViewModel(), KoinComponent {
                                     _userProfilePicture.value!!
                                 )
                             ) {
-                                sessionManager.initUserDetails()
                                 success.value = true
                             }
                         }

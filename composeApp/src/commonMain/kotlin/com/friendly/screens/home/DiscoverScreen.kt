@@ -124,7 +124,9 @@ fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, 
                         )
                         ExposedDropdownMenu(
                             expanded = expandedDistanceSelect,
-                            onDismissRequest = { expandedDistanceSelect = false }
+                            onDismissRequest = { expandedDistanceSelect = false },
+                            shape = RoundedCornerShape(16.dp),
+                            containerColor = Color.White
                         ) {
                             options.forEach { option ->
                                 DropdownMenuItem(

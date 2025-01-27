@@ -37,8 +37,8 @@ fun DatePickerModal(
                 }
             }) {
                 Text(
-                    text = "OK",
-                    color = MaterialTheme.colorScheme.tertiary
+                    text = "Confirm",
+                    color = Color.Black
                 )
             }
         },
@@ -46,7 +46,7 @@ fun DatePickerModal(
             TextButton(onClick = { onDismiss() }) {
                 Text(
                     text = "Cancel",
-                    color = MaterialTheme.colorScheme.tertiary
+                    color = Color.Red
                 )
             }
         }

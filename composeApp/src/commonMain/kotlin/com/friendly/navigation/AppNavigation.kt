@@ -10,8 +10,10 @@ sealed class AppNavigation(val route: String, val label: String){
     data object SignIn: AppNavigation("signIn", "Sign In")
 
     data object UserProfile: AppNavigation(route= "userProfile/{userId}", label = "User Profile")
-    data object EventDetails: AppNavigation(route="eventDetails/{eventId}", label = "Event Details")
+    data object EditUserDetails: AppNavigation(route = "editUserDetails", label = "Edit User Details")
     data object AppSettings: AppNavigation(route="appSettings", label = "App settings")
+
+    data object EventDetails: AppNavigation(route="eventDetails/{eventId}", label = "Event Details")
     data object HomeScreen: AppNavigation(route="homeScreen", label = "Home Screen")
 
     data object CreateEvent : AppNavigation("createEvent", "Create New Event")
