@@ -95,4 +95,101 @@ class EventRepository: IEventRepository, KoinComponent {
             throw e
         }
     }
+
+    override suspend fun changeTitle(eventId: String, title: String): Boolean{
+        return try{
+            withContext(Dispatchers.IO){
+                postgrest.from("Events").update(
+                    {
+                        set("title", title)
+                    }
+                ){
+                    filter {
+                        eq("id", eventId)
+                    }
+                }
+            }
+            true
+        }catch(e: Exception){
+            throw e
+        }
+    }
+
+    override suspend fun changeDescription(eventId: String, description: String): Boolean{
+        return try{
+            withContext(Dispatchers.IO){
+                postgrest.from("Events").update(
+                    {
+                        set("description", description)
+                    }
+                ){
+                    filter {
+                        eq("id", eventId)
+                    }
+                }
+            }
+            true
+        }catch(e: Exception){
+            throw e
+        }
+    }
+
+    override suspend fun changeDateTimes(eventId: String, startDateTime: String, endDateTime: String): Boolean{
+        return try{
+            withContext(Dispatchers.IO){
+                postgrest.from("Events").update(
+                    {
+                        set("start_date_time", startDateTime)
+                        set("end_date_time", endDateTime)
+                    }
+                ){
+                    filter {
+                        eq("id", eventId)
+                    }
+                }
+            }
+            true
+        }catch(e: Exception){
+            throw e
+        }
+    }
+
+    override suspend fun changeLocation(eventId: String, coordinates: Pair<Double,Double>, locationText: String): Boolean{
+        return try{
+            withContext(Dispatchers.IO){
+                postgrest.from("Events").update(
+                    {
+                        set("location_WKB", "POINT(${coordinates.first} ${coordinates.second})")
+                        set("location_text", locationText)
+                    }
+                ){
+                    filter {
+                        eq("id", eventId)
+                    }
+                }
+            }
+            true
+        }catch(e: Exception){
+            throw e
+        }
+    }
+
+    override suspend fun changeMaxParticipants(eventId: String, maxParticipants: Int): Boolean{
+        return try{
+            withContext(Dispatchers.IO){
+                postgrest.from("Events").update(
+                    {
+                        set("max_participants", maxParticipants)
+                    }
+                ){
+                    filter {
+                        eq("id", eventId)
+                    }
+                }
+            }
+            true
+        }catch(e: Exception){
+            throw e
+        }
+    }
 }

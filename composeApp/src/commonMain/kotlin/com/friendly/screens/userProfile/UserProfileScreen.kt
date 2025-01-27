@@ -57,9 +57,13 @@ import com.friendly.CapturePhoto
 import com.friendly.PickPhoto
 import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.components.TopBarWithBackEditAndSettingsButton
+import com.friendly.generated.resources.Res
+import com.friendly.generated.resources.defaultEventPicture
+import com.friendly.generated.resources.defaultUserPicture
 import com.friendly.navigation.AppNavigation
 import com.friendly.viewModels.userProfile.UserProfileViewModel
 import kotlinx.coroutines.delay
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -85,8 +89,8 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                 if (isSelfProfile.value) {
                     TopBarWithBackEditAndSettingsButton(
                         navController,
-                        AppNavigation.EditUserDetails,
-                        AppNavigation.AppSettings
+                        AppNavigation.EditUserDetails.route,
+                        AppNavigation.AppSettings.route
                     )
                 } else {
                     TopBarWithBackButtonAndTitle(navController, "")
@@ -218,6 +222,9 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                                     AsyncImage(
                                         model = userDetails.value?.profilePictureUrl,
                                         contentDescription = "User Profile Picture",
+                                        placeholder = painterResource(Res.drawable.defaultUserPicture),
+                                        fallback = painterResource(Res.drawable.defaultUserPicture),
+                                        error = painterResource(Res.drawable.defaultUserPicture),
                                         modifier = Modifier
                                             .clip(CircleShape)
                                             .size(180.dp)

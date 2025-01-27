@@ -1,4 +1,4 @@
-package com.friendly.viewModels
+package com.friendly.viewModels.userProfile
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

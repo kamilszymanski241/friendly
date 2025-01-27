@@ -1,4 +1,4 @@
-package com.friendly.screens
+package com.friendly.screens.eventDetails
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -44,11 +44,12 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.friendly.components.StaticMapComponent
 import com.friendly.components.TopBarWithBackButtonAndTitle
+import com.friendly.components.TopBarWithBackEditAndSettingsButton
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.defaultEventPicture
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
-import com.friendly.viewModels.EventDetailsScreenViewModel
+import com.friendly.viewModels.eventDetails.EventDetailsScreenViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -59,11 +60,18 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
         koinViewModel(parameters = { parametersOf(eventId) })
     val buttonType =
         viewModel.buttonType.collectAsState(EventDetailsScreenViewModel.EventDetailsButtonType.PleaseSignIn)
+    val isViewedByOrganizer = viewModel.isViewedByOrganizer.collectAsState(false)
     val isFull = viewModel.isNotFull.collectAsState(false)
     val eventDetails = viewModel.eventDetails.collectAsState(null)
     FriendlyAppTheme {
         Scaffold(
-            topBar = { TopBarWithBackButtonAndTitle(navController, "Event Details") },
+            topBar = {
+                if (isViewedByOrganizer.value) {
+                    TopBarWithBackEditAndSettingsButton(navController, editRoute = "editEventDetails/$eventId", settingsRoute = AppNavigation.EventSettings.route)
+                } else {
+                    TopBarWithBackButtonAndTitle(navController, "Event Details")
+                }
+            },
             bottomBar = {},
             containerColor = MaterialTheme.colorScheme.secondary
         ) { innerPadding ->
@@ -93,7 +101,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 100.dp)
+                                .padding(top = 8.dp, start = 8.dp, end = 8.dp, bottom = 8.dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .background(Color.White)
                                 .padding(20.dp),
@@ -279,94 +287,70 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                 eventDetails.value!!.locationCoordinates,
                                 15f
                             )
-                        }
-                    }
-                    when (buttonType.value) {
-                        EventDetailsScreenViewModel.EventDetailsButtonType.PleaseSignIn -> {
-                            Button(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(20.dp)
-                                    .align(Alignment.BottomCenter),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.tertiary,
-                                    contentColor = Color.White
-                                ),
-                                shape = MaterialTheme.shapes.medium,
-                                onClick = {
-                                    navController.navigate(AppNavigation.SignIn.route)
-                                },
-                                enabled = isFull.value
-                            ) {
-                                Text(
-                                    text = "Sign in to join!"
-                                )
-                            }
-                        }
-                        EventDetailsScreenViewModel.EventDetailsButtonType.Edit ->{
-                            Button(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(20.dp)
-                                    .align(Alignment.BottomCenter),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.tertiary,
-                                    contentColor = Color.White
-                                ),
-                                shape = MaterialTheme.shapes.medium,
-                                onClick = {
-                                    viewModel.onEdit()
-                                    navController.navigate(AppNavigation.HomeScreen.route)
+                            Spacer(modifier = Modifier.height(15.dp))
+                            when (buttonType.value) {
+                                EventDetailsScreenViewModel.EventDetailsButtonType.PleaseSignIn -> {
+                                    Button(
+                                        modifier = Modifier
+                                            .fillMaxWidth(),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = MaterialTheme.colorScheme.tertiary,
+                                            contentColor = Color.White
+                                        ),
+                                        shape = MaterialTheme.shapes.medium,
+                                        onClick = {
+                                            navController.navigate(AppNavigation.SignIn.route)
+                                        },
+                                        enabled = isFull.value
+                                    ) {
+                                        Text(
+                                            text = "Sign in to join!"
+                                        )
+                                    }
                                 }
-                            ) {
-                                Text(
-                                    text = "Edit"
-                                )
-                            }
-                        }
-
-                        EventDetailsScreenViewModel.EventDetailsButtonType.Join -> {
-                            Button(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(20.dp)
-                                    .align(Alignment.BottomCenter),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = MaterialTheme.colorScheme.tertiary,
-                                    contentColor = Color.White
-                                ),
-                                shape = MaterialTheme.shapes.medium,
-                                onClick = {
-                                    viewModel.onJoin()
-                                    navController.navigate(AppNavigation.HomeScreen.route)
-                                },
-                                enabled = isFull.value
-                            ) {
-                                Text(
-                                    text = "Join!"
-                                )
-                            }
-                        }
-
-                        EventDetailsScreenViewModel.EventDetailsButtonType.Quit -> {
-                            Button(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(20.dp)
-                                    .align(Alignment.BottomCenter),
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = Color.Red,
-                                    contentColor = Color.White
-                                ),
-                                shape = MaterialTheme.shapes.medium,
-                                onClick = {
-                                    viewModel.onQuit()
-                                    navController.navigate(AppNavigation.HomeScreen.route)
+                                EventDetailsScreenViewModel.EventDetailsButtonType.None ->{
                                 }
-                            ) {
-                                Text(
-                                    text = "Quit!"
-                                )
+
+                                EventDetailsScreenViewModel.EventDetailsButtonType.Join -> {
+                                    Button(
+                                        modifier = Modifier
+                                            .fillMaxWidth(),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = MaterialTheme.colorScheme.tertiary,
+                                            contentColor = Color.White
+                                        ),
+                                        shape = MaterialTheme.shapes.medium,
+                                        onClick = {
+                                            viewModel.onJoin()
+                                            navController.navigate(AppNavigation.HomeScreen.route)
+                                        },
+                                        enabled = isFull.value
+                                    ) {
+                                        Text(
+                                            text = "Join!"
+                                        )
+                                    }
+                                }
+
+                                EventDetailsScreenViewModel.EventDetailsButtonType.Quit -> {
+                                    Button(
+                                        modifier = Modifier
+                                            .fillMaxWidth(),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color.Red,
+                                            contentColor = Color.White
+                                        ),
+                                        shape = MaterialTheme.shapes.medium,
+                                        onClick = {
+                                            viewModel.onQuit()
+                                            navController.navigate(AppNavigation.HomeScreen.route)
+                                        }
+                                    ) {
+                                        Text(
+                                            text = "Quit!"
+                                        )
+                                    }
+                                }
                             }
                         }
                     }

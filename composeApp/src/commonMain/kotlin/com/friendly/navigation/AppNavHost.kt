@@ -7,19 +7,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
-import com.friendly.screens.AppSettingsScreen
-import com.friendly.screens.EventDetailsScreen
+import com.friendly.screens.userProfile.AppSettingsScreen
+import com.friendly.screens.eventDetails.EventDetailsScreen
 import com.friendly.screens.userProfile.UserProfileScreen
 import com.friendly.screens.createEvent.FillTitleAndDescriptionScreen
 import com.friendly.screens.createEvent.SelectDateAndTimeScreen
 import com.friendly.screens.createEvent.SelectLocationScreen
+import com.friendly.screens.eventDetails.EditEventDetailsScreen
+import com.friendly.screens.eventDetails.EventSettingsScreen
 import com.friendly.screens.home.HomeScreen
 import com.friendly.screens.signInSignUp.ChooseSignUpMethodScreen
 import com.friendly.screens.signInSignUp.FillUserDetailsScreen
@@ -56,6 +57,18 @@ fun AppNavHost(
         }
         composable(AppNavigation.AppSettings.route) {
             AppSettingsScreen(navController)
+        }
+        composable(
+            AppNavigation.EditEventDetails.route,
+            arguments = listOf(navArgument("eventId") { type = NavType.StringType }))
+        { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId")
+            if (eventId != null) {
+                EditEventDetailsScreen(eventId = eventId, navController = navController)
+            }
+        }
+        composable(AppNavigation.EventSettings.route) {
+            EventSettingsScreen(navController)
         }
         composable(
             AppNavigation.UserProfile.route,

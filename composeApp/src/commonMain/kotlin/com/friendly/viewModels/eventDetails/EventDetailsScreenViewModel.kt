@@ -1,4 +1,4 @@
-package com.friendly.viewModels
+package com.friendly.viewModels.eventDetails
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -23,9 +23,11 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
     enum class EventDetailsButtonType {
         PleaseSignIn,
         Join,
-        Edit,
+        None,
         Quit
     }
+    private val _isViewedByOrganizer = MutableStateFlow(false)
+    val isViewedByOrganizer: Flow<Boolean> = _isViewedByOrganizer
 
     private val _eventDetails = MutableStateFlow<Event?>(null)
     val eventDetails: Flow<Event?> = _eventDetails
@@ -49,7 +51,8 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
                 _buttonType.value = EventDetailsButtonType.PleaseSignIn
             } else {
                 if (_eventDetails.value!!.organizer == sessionManager.currentUser.value!!.id) {
-                    _buttonType.value = EventDetailsButtonType.Edit
+                    _buttonType.value = EventDetailsButtonType.None
+                    _isViewedByOrganizer.value = true
                 } else if (eventId in eventUserRepository.getAllUserEvents(sessionManager.currentUser.value!!.id)) {
                     _buttonType.value = EventDetailsButtonType.Quit
                 } else {

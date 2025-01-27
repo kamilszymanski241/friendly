@@ -180,7 +180,7 @@ fun TopBarWithBackButtonAndTitle(navController: NavController, title: String) {
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun TopBarWithBackEditAndSettingsButton(navController: NavController,editRoute: AppNavigation, settingsRoute: AppNavigation) {
+fun TopBarWithBackEditAndSettingsButton(navController: NavController,editRoute: String, settingsRoute: String) {
     TopAppBar(
         colors = topAppBarColors(
             containerColor = MaterialTheme.colorScheme.secondary,
@@ -207,7 +207,7 @@ fun TopBarWithBackEditAndSettingsButton(navController: NavController,editRoute: 
                     Row() {
                         IconButton(
                             onClick = {
-                                navController.navigate(route = editRoute.route)
+                                navController.navigate(route = editRoute)
                             },
                         ) {
                             Icon(
@@ -217,7 +217,7 @@ fun TopBarWithBackEditAndSettingsButton(navController: NavController,editRoute: 
                             )
                         }
                         IconButton(
-                            onClick = { navController.navigate(settingsRoute.route) },
+                            onClick = { navController.navigate(settingsRoute) },
                         ) {
                             Icon(
                                 Icons.Default.Settings,

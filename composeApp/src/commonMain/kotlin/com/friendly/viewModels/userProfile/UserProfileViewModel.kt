@@ -64,6 +64,7 @@ class UserProfileViewModel(private val userId: String): ViewModel(), KoinCompone
                     viewModelScope.launch {
                         _userDetails.value =
                             userDetailsRepository.getUserDetails(userId).asDomainModel()
+                        cacheHelper.clearFromCacheByKey(_userDetails.value!!.profilePictureUrl)
                     }
                 }
             }
@@ -85,7 +86,6 @@ class UserProfileViewModel(private val userId: String): ViewModel(), KoinCompone
                             picture
                         )
                     ) {
-                        println("RETURNED TRUE")
                         cacheHelper.clearFromCacheByKey(pictureURL)
                         initialize()
                     }

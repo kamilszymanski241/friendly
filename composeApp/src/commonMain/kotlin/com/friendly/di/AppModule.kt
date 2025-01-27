@@ -12,8 +12,8 @@ import com.friendly.repositories.IStorageRepository
 import com.friendly.repositories.IUserDetailsRepository
 import com.friendly.repositories.StorageRepository
 import com.friendly.repositories.UserDetailsRepository
-import com.friendly.viewModels.AppSettingsScreenViewModel
-import com.friendly.viewModels.EventDetailsScreenViewModel
+import com.friendly.viewModels.userProfile.AppSettingsScreenViewModel
+import com.friendly.viewModels.eventDetails.EventDetailsScreenViewModel
 import com.friendly.viewModels.SearchLocationViewModel
 import com.friendly.viewModels.home.DiscoverScreenViewModel
 import com.friendly.viewModels.home.HomeScreenTopBarViewModel
@@ -24,6 +24,8 @@ import com.friendly.viewModels.signInSignUp.SignInViewModel
 import com.friendly.viewModels.signInSignUp.SignUpViewModel
 import com.friendly.viewModels.userProfile.EditUserDetailsViewModel
 import com.friendly.viewModels.userProfile.UserProfileViewModel
+import com.friendly.viewModels.eventDetails.EditEventDetailsViewModel
+import com.friendly.viewModels.eventDetails.EventSettingsScreenViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -44,12 +46,14 @@ val appModule = module {
     viewModelOf(::DiscoverScreenViewModel)
     viewModelOf(::UpcomingEventsScreenViewModel)
     viewModelOf(::MyEventsScreenViewModel)
+    viewModelOf(::EventSettingsScreenViewModel)
+    viewModel{(eventId: String)-> EditEventDetailsViewModel(eventId)}
 
     viewModelOf(::SignInViewModel)
     viewModelOf(::SignUpViewModel)
     viewModelOf(::HomeScreenTopBarViewModel)
     viewModel{(userId: String)-> UserProfileViewModel(userId) }
-    viewModel{(eventId: String)->EventDetailsScreenViewModel(eventId)}
+    viewModel{(eventId: String)-> EventDetailsScreenViewModel(eventId) }
     viewModelOf(::AppSettingsScreenViewModel)
     viewModelOf(::EditUserDetailsViewModel)
     viewModelOf(::SearchLocationViewModel)
