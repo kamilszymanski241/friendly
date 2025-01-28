@@ -30,7 +30,18 @@ class UpcomingEventsScreenViewModel: ViewModel(), KoinComponent {
     private val _eventsList = MutableStateFlow<Map<String, List<Event>>?>(null)
     val eventsList: Flow<Map<String, List<Event>>?> = _eventsList
 
-    init{
+    private var _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+
+
+    fun refresh(){
+        _isRefreshing.value = true
+        _eventsList.value = null
+        initialize()
+        _isRefreshing.value = false
+    }
+
+    fun initialize(){
         if(sessionStatus.value == SessionStatus.NotAuthenticated(false) || sessionStatus.value == SessionStatus.NotAuthenticated(true))
         {
             _showSignInReminder.value = true

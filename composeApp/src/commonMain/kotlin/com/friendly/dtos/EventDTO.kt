@@ -76,7 +76,7 @@ data class EventDTO (
 
             organizer = this.organizer,
 
-            eventPictureUrl = BuildConfig.SUPABASE_URL + BuildConfig.EVENT_PICTURES_STORAGE_URL + "${this.id}.jpg",
+            eventPictureUrl = BuildConfig.SUPABASE_URL + BuildConfig.EVENT_PICTURES_STORAGE_URL + "${this.id}/event.jpg",
 
             participants = this.participants?.map { it.asDomainModel() }
         )

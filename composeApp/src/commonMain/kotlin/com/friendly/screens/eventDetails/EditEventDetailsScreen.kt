@@ -101,6 +101,9 @@ fun EditEventDetailsScreen(eventId: String, navController: NavController) {
             selectedEndTime = event.value!!.endTime
         }
     }
+    LaunchedEffect(coordinates.value){
+        viewModel.updateAddressOnCoordinatesChange()
+    }
     FriendlyAppTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             Scaffold(

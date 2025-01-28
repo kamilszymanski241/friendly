@@ -1,6 +1,5 @@
 package com.friendly.screens.userProfile
 
-import androidx.compose.foundation.Indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,10 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
-import androidx.compose.material3.pulltorefresh.PullToRefreshState
-import androidx.compose.material3.pulltorefresh.pullToRefresh
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -58,7 +54,6 @@ import com.friendly.PickPhoto
 import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.components.TopBarWithBackEditAndSettingsButton
 import com.friendly.generated.resources.Res
-import com.friendly.generated.resources.defaultEventPicture
 import com.friendly.generated.resources.defaultUserPicture
 import com.friendly.navigation.AppNavigation
 import com.friendly.viewModels.userProfile.UserProfileViewModel

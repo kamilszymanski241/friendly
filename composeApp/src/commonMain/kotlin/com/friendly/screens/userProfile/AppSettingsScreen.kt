@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -35,7 +36,7 @@ fun AppSettingsScreen(navController: NavController, viewModel: AppSettingsScreen
                     .fillMaxSize()
                     .padding(innerPadding)
             ) {
-                OutlinedButton(
+                Button(
                     onClick = {
                         viewModel.onSignOut()
                         navController.navigate(AppNavigation.HomeScreen.route)
@@ -47,7 +48,8 @@ fun AppSettingsScreen(navController: NavController, viewModel: AppSettingsScreen
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color.Red,
                         contentColor = Color.Red
-                    )
+                    ),
+                    shape = MaterialTheme.shapes.medium,
                 ) {
                     Text(
                         text = "Sign Out",

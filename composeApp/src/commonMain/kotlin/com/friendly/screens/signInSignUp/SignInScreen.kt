@@ -5,13 +5,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -21,11 +27,17 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -42,6 +54,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun SignInScreen(navController: NavController, viewModel: SignInViewModel = koinViewModel ()) {
     val email = viewModel.email.collectAsState(initial = "")
     val password = viewModel.password.collectAsState()
+    var passwordVisible by rememberSaveable { mutableStateOf(false) }
     val errorMessage = viewModel.errorMessage.collectAsState()
     val successState = viewModel.success.collectAsState()
     FriendlyAppTheme {
@@ -70,10 +83,9 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = koin
                         .padding(bottom = 30.dp)
                 )
                 Text(
-                    text = "Sign in:",
+                    text = "Sign in",
                     fontSize = 40.sp
                 )
-                Spacer(modifier = Modifier.height(10.dp))
                 errorMessage.value?.let { message ->
                     Text(
                         text = message,
@@ -81,12 +93,16 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = koin
                     )
                 }
                 TextField(
-                    modifier = Modifier,
-                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp),
+                    shape = MaterialTheme.shapes.medium,
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
+                        disabledIndicatorColor = Color.Transparent,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White
                     ),
                     value = email.value,
                     onValueChange = {
@@ -100,14 +116,17 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = koin
                     },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                 )
-                Spacer(modifier = Modifier.height(20.dp))
                 TextField(
-                    modifier = Modifier,
-                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp),
+                    shape = MaterialTheme.shapes.medium,
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent
+                        disabledIndicatorColor = Color.Transparent,
+                        focusedContainerColor = Color.White,
+                        unfocusedContainerColor = Color.White
                     ),
                     value = password.value,
                     onValueChange = {
@@ -119,11 +138,25 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = koin
                             color = Color.Black
                         )
                     },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    trailingIcon = {
+                        val image = if (passwordVisible)
+                            Icons.Filled.Visibility
+                        else Icons.Filled.VisibilityOff
+
+                        val description = if (passwordVisible) "Hide password" else "Show password"
+
+                        IconButton(onClick = {passwordVisible = !passwordVisible}){
+                            Icon(imageVector  = image, description)
+                        }
+                    }
                 )
-                Spacer(modifier = Modifier.height(20.dp))
                 val localSoftwareKeyboardController = LocalSoftwareKeyboardController.current
                 Button(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp),
                     onClick = {
                         localSoftwareKeyboardController?.hide()
                         viewModel.onSignIn()
@@ -131,11 +164,11 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = koin
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.tertiary,
                         contentColor = Color.White
-                    )
+                    ),
+                    shape = MaterialTheme.shapes.medium
                 ) {
                     Text("Sign In")
                 }
-                Spacer(modifier = Modifier.height(10.dp))
                 TextButton(
                     onClick = {
                         navController.navigate(AppNavigation.ChooseSignUpMethod.route)

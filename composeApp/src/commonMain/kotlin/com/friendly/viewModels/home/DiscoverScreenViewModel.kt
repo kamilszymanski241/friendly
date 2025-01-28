@@ -33,6 +33,16 @@ class DiscoverScreenViewModel: ViewModel(), KoinComponent {
     private val _selectedLocationAddress = MutableStateFlow("")
     val selectedLocationAddress: StateFlow<String> = _selectedLocationAddress
 
+    private var _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+
+    fun refresh(){
+        _isRefreshing.value = true
+        _eventsList.value = null
+        getEvents()
+        _isRefreshing.value = false
+    }
+
     fun initialize(){
         if(_eventsList.value == null)
         {
@@ -78,14 +88,14 @@ class DiscoverScreenViewModel: ViewModel(), KoinComponent {
         viewModelScope.launch {
             locationAndGeocodingHelper.getLatLngFromPlace(newLocation, onLatLngFetched = {
                 _selectedLocationCoordinates.value = it
-                getEvents()
+                refresh()
             })
         }
     }
 
     fun onDistanceChange(newDistance: Int){
         _distance.value = newDistance
-        getEvents()
+        refresh()
     }
 
 }

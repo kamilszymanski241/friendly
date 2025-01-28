@@ -36,7 +36,7 @@ class StorageRepository: IStorageRepository, KoinComponent {
             val resizedPicture = resizeImageBitmapWithAspectRatio(picture, 1000)
             val changedToPanorama = cropBitmapToPanorama(resizedPicture)
             val pictureAsByteArray = decodeBitMapToByteArray(changedToPanorama)
-            bucket.uploadAsFlow("$eventId.jpg", pictureAsByteArray).first{it is UploadStatus.Success}
+            bucket.uploadAsFlow("$eventId/event.jpg", pictureAsByteArray).first{it is UploadStatus.Success}
             true
         } catch (e: Exception) {
             throw e
@@ -49,6 +49,18 @@ class StorageRepository: IStorageRepository, KoinComponent {
             val changedToSquare = cropBitmapToSquare(resizedPicture)
             val pictureAsByteArray = decodeBitMapToByteArray(changedToSquare)
             bucket.updateAsFlow("$userId/profile.jpg", pictureAsByteArray){upsert = true}.first{it is UploadStatus.Success}
+            true
+        } catch (e: Exception) {
+            throw e
+        }
+    }
+    override suspend fun upsertEventPicture(eventId: String, picture: ImageBitmap): Boolean{
+        val bucket = storage.from("eventPictures")
+        return try {
+            val resizedPicture = resizeImageBitmapWithAspectRatio(picture, 1000)
+            val changedToPanorama = cropBitmapToPanorama(resizedPicture)
+            val pictureAsByteArray = decodeBitMapToByteArray(changedToPanorama)
+            bucket.updateAsFlow("$eventId/event.jpg", pictureAsByteArray){upsert = true}.first{it is UploadStatus.Success}
             true
         } catch (e: Exception) {
             throw e

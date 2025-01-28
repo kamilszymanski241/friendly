@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
@@ -57,10 +58,11 @@ fun ChooseSignUpMethodScreen(navController: NavController, viewModel: SignUpView
                     fontSize = 40.sp
                 )
                 Spacer(modifier = Modifier.height(50.dp))
-                OutlinedButton(
+                Button(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(20.dp),
+                    shape = MaterialTheme.shapes.medium,
                     onClick = {
                         navController.navigate(AppNavigation.FillUserDetails.route)
                     },

@@ -55,6 +55,9 @@ class SignUpViewModel: ViewModel(), KoinComponent {
     private val _success = MutableStateFlow(value = false)
     val success = _success
 
+    private val _loading = MutableStateFlow(value = false)
+    val loading = _loading
+
     private val _userProfilePicture = MutableStateFlow<ImageBitmap?>(null)
     val userProfilePicture: StateFlow<ImageBitmap?> = _userProfilePicture.asStateFlow()
 
@@ -118,6 +121,7 @@ class SignUpViewModel: ViewModel(), KoinComponent {
 
     fun onSignUp() {
         if (password.value == passwordRepeat.value) {
+            loading.value = true
             viewModelScope.launch {
                 try {
                     if (authRepository.signUp(

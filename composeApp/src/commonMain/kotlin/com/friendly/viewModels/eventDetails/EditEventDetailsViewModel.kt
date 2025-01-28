@@ -56,6 +56,15 @@ class EditEventDetailsViewModel(private val eventId: String): ViewModel(), KoinC
         updateCoordinatesOnAddressChange()
     }
 
+    fun updateAddressOnCoordinatesChange ()
+    {
+        viewModelScope.launch {
+            locationAndGeocodingHelper.fetchAddress(
+                latLng = _selectedLocationCoordinates.value,
+                onAddressFetched = { _selectedLocationAddress.value = it })
+        }
+    }
+
     fun updateCoordinatesOnAddressChange() {
         viewModelScope.launch {
             locationAndGeocodingHelper.getLatLngFromPlace(

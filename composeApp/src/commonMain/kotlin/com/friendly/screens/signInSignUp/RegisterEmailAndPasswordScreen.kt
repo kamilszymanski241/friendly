@@ -11,9 +11,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,6 +38,8 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.friendly.components.TopBarWithBackButtonAndTitle
@@ -46,6 +54,9 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Sign
     val passwordRepeat = viewModel.passwordRepeat.collectAsState()
     val errorMessage = viewModel.errorMessage.collectAsState()
     val successState = viewModel.success.collectAsState()
+    var password1Visible by rememberSaveable { mutableStateOf(false) }
+    var password2Visible by rememberSaveable { mutableStateOf(false) }
+    val loading = viewModel.loading.collectAsState()
     val localSoftwareKeyboardController =
         LocalSoftwareKeyboardController.current
     LaunchedEffect(successState.value) {
@@ -53,8 +64,7 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Sign
             navController.navigate(AppNavigation.HomeScreen.route)
         }
     }
-    var loading: Boolean by remember { mutableStateOf(false) }
-    if (!loading) {
+    if (!loading.value) {
         FriendlyAppTheme {
             Scaffold(
                 topBar = { TopBarWithBackButtonAndTitle(navController, "Email and password") },
@@ -80,13 +90,16 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Sign
                             )
                         }
                         TextField(
-                            modifier = Modifier,
-                            shape = RoundedCornerShape(16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp),
+                            shape = MaterialTheme.shapes.medium,
                             colors = TextFieldDefaults.colors(
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent
-                            ),
+                                disabledIndicatorColor = Color.Transparent,
+                                focusedContainerColor = Color.White,
+                                unfocusedContainerColor = Color.White),
                             value = email.value,
                             onValueChange = {
                                 viewModel.onEmailChange(it)
@@ -99,15 +112,17 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Sign
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                         )
-                        Spacer(modifier = Modifier.height(20.dp))
                         TextField(
-                            modifier = Modifier,
-                            shape = RoundedCornerShape(16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp),
+                            shape = MaterialTheme.shapes.medium,
                             colors = TextFieldDefaults.colors(
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent
-                            ),
+                                disabledIndicatorColor = Color.Transparent,
+                                focusedContainerColor = Color.White,
+                                unfocusedContainerColor = Color.White),
                             value = password.value,
                             onValueChange = {
                                 viewModel.onPasswordChange(it)
@@ -118,17 +133,31 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Sign
                                     color = Color.Black
                                 )
                             },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                            visualTransformation = if (password1Visible) VisualTransformation.None else PasswordVisualTransformation(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                            trailingIcon = {
+                                val image = if (password1Visible)
+                                    Icons.Filled.Visibility
+                                else Icons.Filled.VisibilityOff
+
+                                val description = if (password1Visible) "Hide password" else "Show password"
+
+                                IconButton(onClick = {password1Visible = !password1Visible}){
+                                    Icon(imageVector  = image, description)
+                                }
+                            }
                         )
-                        Spacer(modifier = Modifier.height(20.dp))
                         TextField(
-                            modifier = Modifier,
-                            shape = RoundedCornerShape(16.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp),
+                            shape = MaterialTheme.shapes.medium,
                             colors = TextFieldDefaults.colors(
                                 focusedIndicatorColor = Color.Transparent,
                                 unfocusedIndicatorColor = Color.Transparent,
-                                disabledIndicatorColor = Color.Transparent
-                            ),
+                                disabledIndicatorColor = Color.Transparent,
+                                focusedContainerColor = Color.White,
+                                unfocusedContainerColor = Color.White),
                             value = passwordRepeat.value,
                             onValueChange = {
                                 viewModel.onPasswordRepeatChange(it)
@@ -139,10 +168,21 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Sign
                                     color = Color.Black
                                 )
                             },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
+                            visualTransformation = if (password2Visible) VisualTransformation.None else PasswordVisualTransformation(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                            trailingIcon = {
+                                val image = if (password2Visible)
+                                    Icons.Filled.Visibility
+                                else Icons.Filled.VisibilityOff
+
+                                val description = if (password2Visible) "Hide password" else "Show password"
+
+                                IconButton(onClick = {password2Visible = !password2Visible}){
+                                    Icon(imageVector  = image, description)
+                                }
+                            }
                         )
                     }
-                    Spacer(modifier = Modifier.height(20.dp))
                     Button(
                         modifier = Modifier
                             .padding(20.dp)
@@ -150,7 +190,6 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Sign
                         onClick = {
                             if (viewModel.onContinueToProfilePic()) {
                                 localSoftwareKeyboardController?.hide()
-                                loading = true
                                 viewModel.onSignUp()
                             }
                         },

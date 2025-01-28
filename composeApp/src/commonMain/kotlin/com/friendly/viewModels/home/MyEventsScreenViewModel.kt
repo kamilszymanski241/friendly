@@ -28,7 +28,18 @@ class MyEventsScreenViewModel: ViewModel(), KoinComponent {
     private val _eventsList = MutableStateFlow<List<Event>?>(null)
     val eventsList: Flow<List<Event>?> = _eventsList
 
-    init{
+    private var _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
+
+
+    fun refresh(){
+        _isRefreshing.value = true
+        _eventsList.value = null
+        initialize()
+        _isRefreshing.value = false
+    }
+
+    fun initialize(){
         if(sessionStatus.value == SessionStatus.NotAuthenticated(false) || sessionStatus.value == SessionStatus.NotAuthenticated(true))
         {
             _showSignInReminder.value = true
@@ -42,7 +53,7 @@ class MyEventsScreenViewModel: ViewModel(), KoinComponent {
         viewModelScope.launch {
             try {
                 val events = eventRepository.getEventsByOrganizer(user.value!!.id).map { it.asDomainModel() }
-                _eventsList.emit(events)
+                _eventsList.value = events
 
             } catch (e: Exception) {
                 println("Error loading events: ${e.message}")
