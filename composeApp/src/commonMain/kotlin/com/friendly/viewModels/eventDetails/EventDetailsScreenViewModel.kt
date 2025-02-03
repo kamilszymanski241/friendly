@@ -135,4 +135,10 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
             }
         }
     }
+    fun removeParticipant(userId: String){
+        viewModelScope.launch {
+            eventUserRepository.removeUserFromEvent(userId, eventId)
+            refresh()
+        }
+    }
 }

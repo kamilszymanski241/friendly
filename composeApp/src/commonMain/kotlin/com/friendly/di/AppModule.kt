@@ -26,6 +26,7 @@ import com.friendly.viewModels.userProfile.EditUserDetailsViewModel
 import com.friendly.viewModels.userProfile.UserProfileViewModel
 import com.friendly.viewModels.eventDetails.EditEventDetailsViewModel
 import com.friendly.viewModels.eventDetails.EventSettingsScreenViewModel
+import com.friendly.viewModels.eventDetails.ShowAllParticipantsViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -48,6 +49,7 @@ val appModule = module {
     viewModelOf(::MyEventsScreenViewModel)
     viewModelOf(::EventSettingsScreenViewModel)
     viewModel{(eventId: String)-> EditEventDetailsViewModel(eventId)}
+    viewModel{(eventId: String)-> ShowAllParticipantsViewModel(eventId)}
 
     viewModelOf(::SignInViewModel)
     viewModelOf(::SignUpViewModel)

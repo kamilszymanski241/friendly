@@ -1,12 +1,9 @@
 package com.friendly.helpers
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.os.Build
-import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.util.Locale

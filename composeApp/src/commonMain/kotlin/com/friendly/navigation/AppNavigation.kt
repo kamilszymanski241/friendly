@@ -16,6 +16,7 @@ sealed class AppNavigation(val route: String, val label: String){
     data object EventDetails: AppNavigation(route="eventDetails/{eventId}", label = "Event Details")
     data object EditEventDetails: AppNavigation(route = "editEventDetails/{eventId}", label = "Edit Event Details")
     data object EventSettings: AppNavigation(route="eventSettings", label = "Event settings")
+    data object ShowAllParticipants: AppNavigation(route="showAllParticipants/{eventId}", label = "Show All Participants")
 
     data object HomeScreen: AppNavigation(route="homeScreen", label = "Home Screen")
 

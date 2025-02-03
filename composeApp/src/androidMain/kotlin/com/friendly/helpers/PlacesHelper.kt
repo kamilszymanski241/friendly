@@ -1,6 +1,5 @@
 package com.friendly.helpers
 
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import kotlinx.coroutines.tasks.await
 import org.koin.core.component.KoinComponent

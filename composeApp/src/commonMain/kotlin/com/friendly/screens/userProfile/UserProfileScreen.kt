@@ -145,7 +145,6 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                                         .fillMaxWidth()
                                         .height(450.dp)
                                         .padding(15.dp)
-                                        .align(Alignment.Center)
                                         .clip(RoundedCornerShape(16.dp))
                                         .background(Color.White)
                                         .padding(20.dp),

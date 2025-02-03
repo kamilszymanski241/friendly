@@ -71,7 +71,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
         Box(modifier = Modifier.fillMaxSize()) {
             Scaffold(
                 topBar = {
-                    TopBarWithBackButtonAndTitle(navController, "")
+                    TopBarWithBackButtonAndTitle(navController, "Edit User Details")
                 },
                 containerColor = MaterialTheme.colorScheme.secondary
             ) { innerPadding ->

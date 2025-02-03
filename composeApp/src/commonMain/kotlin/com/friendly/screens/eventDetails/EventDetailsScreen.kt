@@ -20,20 +20,27 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.Cancel
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -326,43 +333,95 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                             )
                                         }
                                     }
-                                    if (eventDetails.value!!.participants!!.size > 3) {
-                                        Spacer(modifier = Modifier.width(10.dp))
-                                        Text(
-                                            text = "Show all",
-                                            fontSize = (15.sp),
-                                            color = Color.Black
-                                        )
-                                    }
                                 }
                                 if (eventDetails.value?.participants != null) {
-                                    for (participant in eventDetails.value!!.participants!!.take(3)) {
+                                    val organizer = eventDetails.value!!.participants!!.firstOrNull { it.id == eventDetails.value!!.organizer }
+                                    val participantsWithOrganizerFirst = listOfNotNull(organizer) +
+                                            eventDetails.value!!.participants!!
+                                                .filter { it.id != eventDetails.value!!.organizer }
+                                                .take(3)
+                                    for (participant in participantsWithOrganizerFirst.take(3)) {
                                         Spacer(modifier = Modifier.height(10.dp))
                                         Row(
                                             modifier = Modifier
-                                                .fillMaxWidth()
-                                                .clickable(
+                                                .fillMaxWidth(),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                AsyncImage(
+                                                    model = participant.profilePictureUrl,
+                                                    contentDescription = "Profile pic",
+                                                    modifier = Modifier
+                                                        .clip(CircleShape)
+                                                        .size(35.dp)
+                                                )
+                                                Spacer(modifier = Modifier.width(5.dp))
+                                                Text(
+                                                    participant.name + " " + participant.surname + ", " + participant.age,
+                                                    fontSize = (15.sp),
+                                                    color = Color.Black,
+                                                )
+                                            }
+                                            Row {
+                                                IconButton(
                                                     onClick = {
                                                         navController.navigate("userProfile/${participant.id}")
                                                     }
-                                                ),
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            AsyncImage(
-                                                model = participant.profilePictureUrl,
-                                                contentDescription = "Profile pic",
-                                                modifier = Modifier
-                                                    .clip(CircleShape)
-                                                    .size(35.dp)
+                                                ) {
+                                                    Icon(
+                                                        Icons.Default.Info,
+                                                        "",
+                                                        tint = Color.Black
+                                                    )
+                                                }
+                                                if (isViewedByOrganizer.value && participant.id != eventDetails.value!!.organizer) {
+                                                    IconButton(
+                                                        onClick = {
+                                                            viewModel.removeParticipant(
+                                                                participant.id
+                                                            )
+                                                        }
+                                                    ) {
+                                                        Icon(
+                                                            Icons.Default.Cancel,
+                                                            "",
+                                                            tint = Color.Red
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if(participant.id == eventDetails.value!!.organizer){
+                                            HorizontalDivider(
+                                                color = Color.Black
                                             )
-                                            Spacer(modifier = Modifier.width(5.dp))
                                             Text(
-                                                participant.name + " " + participant.surname + ", " + participant.age,
-                                                fontSize = (15.sp),
-                                                color = Color.Black,
+                                               modifier = Modifier.fillMaxWidth(),
+                                                textAlign = TextAlign.Center,
+                                                text = "Organizer",
+                                                fontSize = 8.sp,
+                                                color = Color.Black
                                             )
                                         }
-
+                                    }
+                                }
+                                Row(
+                                    modifier= Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    if (eventDetails.value!!.participants!!.size > 3) {
+                                        TextButton(
+                                            onClick = {  navController.navigate("showAllParticipants/${eventId}") },
+                                        ) {
+                                            Text(
+                                                text = "Show all",
+                                                fontSize = (15.sp),
+                                                color = Color.Black
+                                            )
+                                        }
                                     }
                                 }
                                 Spacer(modifier = Modifier.height(25.dp))

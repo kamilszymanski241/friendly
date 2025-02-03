@@ -21,6 +21,7 @@ import com.friendly.screens.createEvent.SelectDateAndTimeScreen
 import com.friendly.screens.createEvent.SelectLocationScreen
 import com.friendly.screens.eventDetails.EditEventDetailsScreen
 import com.friendly.screens.eventDetails.EventSettingsScreen
+import com.friendly.screens.eventDetails.ShowAllParticipantsScreen
 import com.friendly.screens.home.HomeScreen
 import com.friendly.screens.signInSignUp.ChooseSignUpMethodScreen
 import com.friendly.screens.signInSignUp.FillUserDetailsScreen
@@ -86,6 +87,15 @@ fun AppNavHost(
             val eventId = backStackEntry.arguments?.getString("eventId")
             if (eventId != null) {
                 EventDetailsScreen(eventId = eventId, navController = navController)
+            }
+        }
+        composable(
+            AppNavigation.ShowAllParticipants.route,
+            arguments = listOf(navArgument("eventId") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val eventId = backStackEntry.arguments?.getString("eventId")
+            if (eventId != null) {
+                ShowAllParticipantsScreen(eventId = eventId, navController = navController)
             }
         }
         navigation(

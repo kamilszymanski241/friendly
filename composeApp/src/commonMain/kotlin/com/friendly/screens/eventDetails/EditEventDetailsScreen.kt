@@ -108,7 +108,7 @@ fun EditEventDetailsScreen(eventId: String, navController: NavController) {
         Box(modifier = Modifier.fillMaxSize()) {
             Scaffold(
                 topBar = {
-                    TopBarWithBackButtonAndTitle(navController, "")
+                    TopBarWithBackButtonAndTitle(navController, "Edit Event Details")
                 },
                 containerColor = MaterialTheme.colorScheme.secondary
             ) { innerPadding ->
