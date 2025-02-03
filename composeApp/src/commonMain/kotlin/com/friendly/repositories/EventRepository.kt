@@ -192,4 +192,19 @@ class EventRepository: IEventRepository, KoinComponent {
             throw e
         }
     }
+
+    override suspend fun deleteEvent(eventId: String): Boolean{
+        return try{
+            withContext(Dispatchers.IO){
+                postgrest.from("Events").delete{
+                    filter {
+                        eq("id", eventId)
+                    }
+                }
+            }
+            true
+        }catch(e: Exception){
+            throw e
+        }
+    }
 }

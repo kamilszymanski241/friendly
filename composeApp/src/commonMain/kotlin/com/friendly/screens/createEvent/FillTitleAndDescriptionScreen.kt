@@ -64,6 +64,9 @@ fun FillTitleAndDescriptionScreen(navController: NavController, viewModel: Creat
     var showCamera by remember { mutableStateOf(false) }
     var showPhotoPicker by remember { mutableStateOf(false) }
     val errorMessage = viewModel.errorMessage.collectAsState("")
+    LaunchedEffect(Unit){
+        viewModel.onErrorMessageChange("")
+    }
     FriendlyAppTheme {
         Scaffold(
             topBar = {

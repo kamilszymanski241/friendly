@@ -40,7 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.friendly.components.DatePickerModal
+import com.friendly.components.DatePickerDialog
 import com.friendly.components.TextInputDialog
 import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.helpers.DateTimeHelper
@@ -237,7 +237,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                 onDismiss = { showSurnameInputModal = false })
                         }
                         if (showDOBInputModal) {
-                            DatePickerModal(
+                            DatePickerDialog(
                                 onDateSelected = {
                                     viewModel.changeDateOfBirth(
                                         DateTimeHelper.convertMillisToDate(

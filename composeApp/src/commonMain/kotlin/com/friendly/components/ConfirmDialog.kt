@@ -22,40 +22,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextInputDialog(
+fun ConfirmDialog(
     title: String,
-    initialValue: String,
-    allowSpaces: Boolean,
-    minLength: Int,
-    maxLength: Int,
-    maxInputLines: Int,
-    onConfirm: (String)-> Unit,
+    onConfirm: ()-> Unit,
     onDismiss: ()-> Unit
 ){
-    var textFieldValue by remember{mutableStateOf(initialValue)}
-    var errorMessage by remember{mutableStateOf("")}
-    var isError by remember{mutableStateOf(false)}
-
     BasicAlertDialog(
         onDismissRequest = onDismiss,
     ){
         Column(
             modifier = Modifier.padding(20.dp).clip(RoundedCornerShape(16.dp)).background(Color.White).padding(20.dp)
         ) {
-            OutlinedTextField(
-                label = { Text(text = title) },
-                supportingText = {Text(errorMessage, color = Color.Red)},
-                value = textFieldValue,
-                onValueChange = {textFieldValue = it },
-                isError = isError,
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedLabelColor = Color.Black,
-                    focusedBorderColor = Color.Black
-                ),
-                maxLines = maxInputLines
+            Text(
+                text=title,
+                fontSize = 20.sp,
+                color = Color.Black
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -71,26 +56,7 @@ fun TextInputDialog(
                 }
                 TextButton(
                     onClick = {
-                        if(textFieldValue.length > maxLength){
-                            isError = true
-                            errorMessage = "Max $maxLength characters"
-                        }
-                        else if(textFieldValue.length < minLength) {
-                            isError = true
-                            if(textFieldValue.isEmpty()){
-                                errorMessage = "Cannot be empty"
-                            }
-                            else {
-                                errorMessage = "Must be at least $minLength characters"
-                            }
-                        }
-                        else if(!allowSpaces && (" " in textFieldValue)){
-                            isError = true
-                            errorMessage = "Cannot contain spaces"
-                        }
-                        else{
-                            onConfirm(textFieldValue)
-                        }
+                        onConfirm()
                     }
                 ) {
                     Text(

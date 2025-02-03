@@ -2,7 +2,6 @@ package com.friendly.screens.signInSignUp
 
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,15 +17,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.SocialDistance
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.Scaffold
@@ -48,10 +43,9 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.friendly.components.DatePickerModal
+import com.friendly.components.DatePickerDialog
 import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.helpers.DateTimeHelper.Companion.convertMillisToDate
-import com.friendly.helpers.DateTimeHelper.Companion.getCurrentDateAsString
 import com.friendly.helpers.SelectableDatesTypes
 import com.friendly.models.Gender
 import com.friendly.navigation.AppNavigation
@@ -267,7 +261,7 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: SignUpViewMod
                     Text("Continue")
                 }
                 if (showDOBDatePicker.value) {
-                    DatePickerModal(
+                    DatePickerDialog(
                         onDateSelected = { viewModel.onDateOfBirthChange(convertMillisToDate(it!!)) },
                         onDismiss = { showDOBDatePicker.value = false },
                         selectableDatesType = SelectableDatesTypes.Past)

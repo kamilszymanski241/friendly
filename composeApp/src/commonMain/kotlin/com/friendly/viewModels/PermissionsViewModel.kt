@@ -11,17 +11,27 @@ import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionState
 import dev.icerock.moko.permissions.PermissionsController
 import dev.icerock.moko.permissions.RequestCanceledException
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class PermissionsViewModel(private val permissionsController: PermissionsController): ViewModel() {
 
-    var state by mutableStateOf(PermissionState.NotDetermined)
+    var locationPermissionState by mutableStateOf(PermissionState.NotDetermined)
         private set
 
+    private var _isRefreshing = MutableStateFlow(false)
+    val isRefreshing: StateFlow<Boolean> = _isRefreshing
 
     init {
+        getPermissionState()
+    }
+
+    fun getPermissionState(){
         viewModelScope.launch {
-            state = permissionsController.getPermissionState(Permission.LOCATION)
+            _isRefreshing.value = true
+            locationPermissionState = permissionsController.getPermissionState(Permission.LOCATION)
+            _isRefreshing.value = false
         }
     }
 
@@ -29,14 +39,17 @@ class PermissionsViewModel(private val permissionsController: PermissionsControl
         viewModelScope.launch {
             try {
                 permissionsController.providePermission(Permission.LOCATION)
-                state = PermissionState.Granted
+                locationPermissionState = PermissionState.Granted
             } catch(e: DeniedAlwaysException) {
-                state = PermissionState.DeniedAlways
+                locationPermissionState = PermissionState.DeniedAlways
             } catch(e: DeniedException) {
-                state = PermissionState.Denied
+                locationPermissionState = PermissionState.Denied
             } catch(e: RequestCanceledException) {
                 e.printStackTrace()
             }
         }
+    }
+    fun openAppSettings(){
+        permissionsController.openAppSettings()
     }
 }

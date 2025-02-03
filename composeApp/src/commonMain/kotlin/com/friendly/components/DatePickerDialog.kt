@@ -5,20 +5,17 @@ import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.friendly.helpers.DateTimeHelper
 import com.friendly.helpers.SelectableDatesTypes
 import com.friendly.helpers.SelectableEventDates
-import kotlinx.datetime.Clock
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DatePickerModal(
+fun DatePickerDialog(
     onDateSelected: (Long?) -> Unit,
     onDismiss: () -> Unit,
     selectableDatesType: SelectableDatesTypes

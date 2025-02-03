@@ -42,4 +42,29 @@ class AuthRepository: IAuthRepository, KoinComponent {
         }
     }
 
+    override suspend fun updateEmail(emailReceived: String): Boolean{
+        return try {
+            auth.updateUser(updateCurrentUser = true) {
+                email = emailReceived
+            }
+            signOut()
+            true
+        }catch(e: Exception){
+            println(e.message)
+            throw e
+        }
+    }
+
+    override suspend fun updatePassword(passwordReceived: String): Boolean{
+        return try {
+            auth.updateUser(updateCurrentUser = true) {
+                password = passwordReceived
+            }
+            signOut()
+            true
+        }catch(e: Exception){
+            println(e.message)
+            throw e
+        }
+    }
 }

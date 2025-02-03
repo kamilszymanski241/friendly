@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.CircularProgressIndicator
@@ -221,6 +222,60 @@ fun TopBarWithBackEditAndSettingsButton(navController: NavController,editRoute: 
                         ) {
                             Icon(
                                 Icons.Default.Settings,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    )
+}
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun TopBarWithBackEditAndDeleteButton(navController: NavController,editRoute: String, onDelete: ()-> Unit) {
+    TopAppBar(
+        colors = topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.secondary,
+        ),
+        title = {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                ) {
+                    IconButton(
+                        onClick = { navController.popBackStack() },
+                    ) {
+                        Icon(
+                            Icons.AutoMirrored.Default.ArrowBack,
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                    }
+                }
+                Column(
+                ) {
+                    Row() {
+                        IconButton(
+                            onClick = {
+                                navController.navigate(route = editRoute)
+                            },
+                        ) {
+                            Icon(
+                                Icons.Default.Edit,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                        IconButton(
+                            onClick = { onDelete() },
+                        ) {
+                            Icon(
+                                Icons.Default.Cancel,
                                 contentDescription = null,
                                 tint = Color.White
                             )

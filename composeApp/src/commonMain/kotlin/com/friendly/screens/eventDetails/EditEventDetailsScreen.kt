@@ -47,12 +47,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.friendly.components.DatePickerModal
+import com.friendly.components.DatePickerDialog
 import com.friendly.components.NumberInputDialog
 import com.friendly.components.SearchLocationComponent
 import com.friendly.components.StaticMapComponent
 import com.friendly.components.TextInputDialog
-import com.friendly.components.TimePickerModal
+import com.friendly.components.TimePickerDialog
 import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.helpers.DateTimeHelper.Companion.convertMillisToDate
 import com.friendly.helpers.SelectableDatesTypes
@@ -440,24 +440,24 @@ fun EditEventDetailsScreen(eventId: String, navController: NavController) {
                             }
                         }
                         if (showStartDatePicker.value) {
-                            DatePickerModal(
+                            DatePickerDialog(
                                 onDateSelected = { selectedStartDate = convertMillisToDate(it!!) },
                                 onDismiss = { showStartDatePicker.value = false },
                                 selectableDatesType = SelectableDatesTypes.Future)
                         }
                         if (showEndDatePicker.value) {
-                            DatePickerModal(
+                            DatePickerDialog(
                                 onDateSelected = { selectedEndDate = convertMillisToDate(it!!) },
                                 onDismiss = { showEndDatePicker.value = false },
                                 selectableDatesType = SelectableDatesTypes.Future)
                         }
                         if (showStartTimePicker.value) {
-                            TimePickerModal(
+                            TimePickerDialog(
                                 onDateSelected = { selectedStartTime =it.toString() },
                                 onDismiss = { showStartTimePicker.value = false })
                         }
                         if (showEndTimePicker.value) {
-                            TimePickerModal(
+                            TimePickerDialog(
                                 onDateSelected = { selectedEndTime = it.toString() },
                                 onDismiss = { showEndTimePicker.value = false })
                         }

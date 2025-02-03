@@ -65,8 +65,10 @@ import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.friendly.CapturePhoto
 import com.friendly.PickPhoto
+import com.friendly.components.ConfirmDialog
 import com.friendly.components.StaticMapComponent
 import com.friendly.components.TopBarWithBackButtonAndTitle
+import com.friendly.components.TopBarWithBackEditAndDeleteButton
 import com.friendly.components.TopBarWithBackEditAndSettingsButton
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.defaultEventPicture
@@ -86,8 +88,10 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
         viewModel.buttonType.collectAsState(EventDetailsScreenViewModel.EventDetailsButtonType.PleaseSignIn)
     var showCamera by remember { mutableStateOf(false) }
     var showPhotoPicker by remember { mutableStateOf(false) }
+    var showConfirmEventDelete by remember { mutableStateOf(false) }
     val isViewedByOrganizer = viewModel.isViewedByOrganizer.collectAsState(false)
     val isFull = viewModel.isNotFull.collectAsState(false)
+    val isEventDeleted = viewModel.isEventDeleted.collectAsState(false)
     val eventDetails = viewModel.eventDetails.collectAsState(null)
     var showDropDownMenu by remember { mutableStateOf(false) }
     val isRefreshing by viewModel.isRefreshing.collectAsState()
@@ -95,14 +99,19 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
     LaunchedEffect(Unit) {
         viewModel.initialize()
     }
+    LaunchedEffect(isEventDeleted.value){
+        if(isEventDeleted.value){
+            navController.navigate(AppNavigation.HomeScreen.route)
+        }
+    }
     Box() {
         Scaffold(
             topBar = {
                 if (isViewedByOrganizer.value) {
-                    TopBarWithBackEditAndSettingsButton(
+                    TopBarWithBackEditAndDeleteButton(
                         navController,
                         editRoute = "editEventDetails/$eventId",
-                        settingsRoute = AppNavigation.EventSettings.route
+                        onDelete = {showConfirmEventDelete = true}
                     )
                 } else {
                     TopBarWithBackButtonAndTitle(navController, "Event Details")
@@ -402,7 +411,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                                modifier = Modifier.fillMaxWidth(),
                                                 textAlign = TextAlign.Center,
                                                 text = "Organizer",
-                                                fontSize = 8.sp,
+                                                fontSize = 15.sp,
                                                 color = Color.Black
                                             )
                                         }
@@ -552,6 +561,15 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                 onClose = {
                     showPhotoPicker = false
                 })
+        }
+        if(showConfirmEventDelete){
+            ConfirmDialog(
+                title = "Delete this event?",
+                onConfirm = {
+                    showConfirmEventDelete = false
+                    viewModel.onEventDelete(eventId)},
+                onDismiss = {showConfirmEventDelete = false}
+            )
         }
     }
 }

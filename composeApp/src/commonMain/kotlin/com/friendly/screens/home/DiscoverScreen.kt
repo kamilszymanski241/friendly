@@ -1,18 +1,25 @@
 package com.friendly.screens.home
 
+import androidx.compose.foundation.gestures.rememberScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.SentimentDissatisfied
 import androidx.compose.material.icons.filled.SocialDistance
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,7 +50,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.friendly.components.EventSummaryCard
 import com.friendly.components.SearchLocationComponent
-import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.PermissionsViewModel
 import com.friendly.viewModels.home.DiscoverScreenViewModel
 import dev.icerock.moko.permissions.PermissionState
@@ -60,13 +66,12 @@ fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, 
     val events = viewModel.eventsList.collectAsState(null)
     val distance = viewModel.distance.collectAsState(10)
     val selectedLocationAddress = viewModel.selectedLocationAddress.collectAsState()
-    val tags = viewModel.distance.collectAsState(emptyList<Int>())
 
     var expandedDistanceSelect by remember { mutableStateOf(false) }
 
     var showPermissionWasNotGranted by remember { mutableStateOf(false) }
 
-    val isRefreshing by viewModel.isRefreshing.collectAsState()
+    val areEventsRefreshing by viewModel.isRefreshing.collectAsState()
     val pullToRefreshState = rememberPullToRefreshState()
 
     val factory = rememberPermissionsControllerFactory()
@@ -77,10 +82,14 @@ fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, 
     val permissionsViewModel = viewModel {
         PermissionsViewModel(controller)
     }
-    LaunchedEffect(Unit, permissionsViewModel.state) {
-        when (permissionsViewModel.state) {
+
+    val isPermissionRefreshing = permissionsViewModel.isRefreshing.collectAsState()
+
+    LaunchedEffect(Unit, permissionsViewModel.locationPermissionState) {
+        when (permissionsViewModel.locationPermissionState) {
             PermissionState.Granted -> {
                 viewModel.initialize()
+                showPermissionWasNotGranted = false
             }
 
             PermissionState.DeniedAlways -> {
@@ -162,13 +171,13 @@ fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, 
         }
         if (events.value != null) {
             PullToRefreshBox(
-                isRefreshing = isRefreshing,
+                isRefreshing = areEventsRefreshing,
                 onRefresh = { viewModel.refresh() },
                 state = pullToRefreshState,
                 indicator = {
                     Indicator(
                         modifier = Modifier.align(Alignment.TopCenter),
-                        isRefreshing = isRefreshing,
+                        isRefreshing = areEventsRefreshing,
                         containerColor = Color.White,
                         color = MaterialTheme.colorScheme.tertiary,
                         state = pullToRefreshState
@@ -179,7 +188,9 @@ fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, 
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
-                        modifier = modifier
+                        modifier = modifier.verticalScroll(
+                            rememberScrollState()
+                        ),
                     ) {
                         Row()
                         {
@@ -212,33 +223,71 @@ fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, 
                 }
             }
         } else {
-            Column(
-                modifier = Modifier.fillMaxSize().padding(20.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
-            )
-            {
-                if (selectedLocationAddress.value.isEmpty() && showPermissionWasNotGranted) {
-                    Row()
+            if (selectedLocationAddress.value.isEmpty() && showPermissionWasNotGranted) {
+                PullToRefreshBox(
+                    isRefreshing = isPermissionRefreshing.value,
+                    onRefresh = { permissionsViewModel.getPermissionState() },
+                    state = pullToRefreshState,
+                    indicator = {
+                        Indicator(
+                            modifier = Modifier.align(Alignment.TopCenter),
+                            isRefreshing = isPermissionRefreshing.value,
+                            containerColor = Color.White,
+                            color = MaterialTheme.colorScheme.tertiary,
+                            state = pullToRefreshState
+                        )
+                    }
+                ) {
+                    Column(
+                        modifier = Modifier.fillMaxSize().padding(20.dp).verticalScroll(
+                            rememberScrollState()
+                        ),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                    )
                     {
-                        Icon(
-                            imageVector = Icons.Default.SentimentDissatisfied,
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(100.dp)
-                        )
+                        Row()
+                        {
+                            Icon(
+                                imageVector = Icons.Default.SentimentDissatisfied,
+                                contentDescription = "",
+                                modifier = Modifier
+                                    .size(100.dp)
+                            )
+                        }
+                        Row() {
+                            Text(
+                                text = "Cannot find events nearby due to denied permissions.",
+                                fontSize = 15.sp,
+                                textAlign = TextAlign.Justify
+                            )
+                        }
+                        Spacer(modifier = Modifier.size(20.dp))
+                        Button(
+                            onClick = {
+                                permissionsViewModel.openAppSettings()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary,
+                                contentColor = Color.White
+                            ),
+                            shape = MaterialTheme.shapes.medium
+                        ) {
+                            Text("Open settings")
+                        }
                     }
-                    Row() {
-                        Text(
-                            text = "Cannot find events nearby due to denied permissions.",
-                            fontSize = 15.sp,
-                            textAlign = TextAlign.Justify
-                        )
-                    }
-                } else {
+                }
+            } else {
+                Column(
+                    modifier = Modifier.fillMaxSize().padding(20.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                )
+                {
                     CircularProgressIndicator()
                 }
             }
         }
     }
 }
+

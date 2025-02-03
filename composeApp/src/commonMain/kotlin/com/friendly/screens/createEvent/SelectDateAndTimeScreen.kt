@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,8 +39,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.friendly.components.DatePickerModal
-import com.friendly.components.TimePickerModal
+import com.friendly.components.DatePickerDialog
+import com.friendly.components.TimePickerDialog
 import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.helpers.DateTimeHelper.Companion.convertMillisToDate
 import com.friendly.helpers.DateTimeHelper.Companion.getCurrentDateAsString
@@ -62,7 +63,9 @@ fun SelectDateAndTimeScreen(navController: NavController, viewModel: CreateEvent
     val selectedEndTime = viewModel.endTime.collectAsState(getCurrentTimeAsString())
 
     val maxParticipants = viewModel.maxParticipants.collectAsState("")
-
+    LaunchedEffect(Unit){
+        viewModel.onErrorMessageChange("")
+    }
     FriendlyAppTheme {
         Scaffold(
             topBar = { TopBarWithBackButtonAndTitle(navController, "Date and time") },
@@ -251,12 +254,14 @@ fun SelectDateAndTimeScreen(navController: NavController, viewModel: CreateEvent
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                         )
                     }
-                }
-                errorMessage.value?.let { message ->
-                    Text(
-                        text = message,
-                        color = MaterialTheme.colorScheme.error,
-                    )
+                    errorMessage.value?.let { message ->
+                        Text(
+                            modifier = Modifier.padding(),
+                            text = message,
+                            color = MaterialTheme.colorScheme.error,
+                            textAlign = TextAlign.Center
+                        )
+                    }
                 }
                 Button(
                     modifier = Modifier
@@ -265,8 +270,8 @@ fun SelectDateAndTimeScreen(navController: NavController, viewModel: CreateEvent
                     onClick = {
                         viewModel.onConfirmMoreDetails(
                             onSuccess = {
-                                navController.navigate(AppNavigation.SelectEventLocation.route)
                                 viewModel.onErrorMessageChange("")
+                                navController.navigate(AppNavigation.SelectEventLocation.route)
                             },
                             onFailure = {
                                 viewModel.onErrorMessageChange("Please enter correct date and maximum number of participants")
@@ -283,24 +288,24 @@ fun SelectDateAndTimeScreen(navController: NavController, viewModel: CreateEvent
                 }
             }
             if (showStartDatePicker.value) {
-                DatePickerModal(
+                DatePickerDialog(
                     onDateSelected = { viewModel.onStartDateChange(convertMillisToDate(it!!)) },
                     onDismiss = { showStartDatePicker.value = false },
                     selectableDatesType = SelectableDatesTypes.Future)
             }
             if (showEndDatePicker.value) {
-                DatePickerModal(
+                DatePickerDialog(
                     onDateSelected = { viewModel.onEndDateChange(convertMillisToDate(it!!)) },
                     onDismiss = { showEndDatePicker.value = false },
                     selectableDatesType = SelectableDatesTypes.Future)
             }
             if (showStartTimePicker.value) {
-                TimePickerModal(
+                TimePickerDialog(
                     onDateSelected = { viewModel.onStartTimeChange(it.toString()) },
                     onDismiss = { showStartTimePicker.value = false })
             }
             if (showEndTimePicker.value) {
-                TimePickerModal(
+                TimePickerDialog(
                     onDateSelected = { viewModel.onEndTimeChange(it.toString()) },
                     onDismiss = { showEndTimePicker.value = false })
             }

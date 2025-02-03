@@ -100,6 +100,8 @@ kotlin {
 
             api(libs.moko.permissions)
             api(libs.moko.permissions.compose)
+
+            implementation(libs.konnectivity)
         }
         iosMain.dependencies {
             implementation((libs.ktor.client.darwin))

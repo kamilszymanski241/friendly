@@ -44,6 +44,9 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
     private val _buttonType = MutableStateFlow(EventDetailsButtonType.PleaseSignIn)
     val buttonType: Flow<EventDetailsButtonType> = _buttonType
 
+    private val _isEventDeleted = MutableStateFlow(false)
+    val isEventDeleted: Flow<Boolean> = _isEventDeleted
+
     private val _isNotFull = MutableStateFlow(true)
     val isNotFull: Flow<Boolean> = _isNotFull
 
@@ -139,6 +142,14 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
         viewModelScope.launch {
             eventUserRepository.removeUserFromEvent(userId, eventId)
             refresh()
+        }
+    }
+    fun onEventDelete(eventId: String){
+        _eventDetails.value = null
+        viewModelScope.launch {
+            eventRepository.deleteEvent(eventId)
+            storageRepository.deleteEventPicture(eventId)
+            _isEventDeleted.value = true
         }
     }
 }

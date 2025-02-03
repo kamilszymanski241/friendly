@@ -38,6 +38,8 @@ coil3 = "3.0.0-rc01"
 playServicesLocation = "21.3.0"
 google_places="4.1.0"
 moko = "0.18.0"
+konnectivity = "0.1-alpha01"
+
 
 
 [libraries]
@@ -103,6 +105,8 @@ google-places = {module="com.google.android.libraries.places:places", version.re
 
 moko-permissions = { module = "dev.icerock.moko:permissions", version.ref = "moko" }
 moko-permissions-compose = { module = "dev.icerock.moko:permissions-compose", version.ref = "moko" }
+
+konnectivity={module = "com.plusmobileapps:konnectivity", version.ref = "konnectivity"}
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

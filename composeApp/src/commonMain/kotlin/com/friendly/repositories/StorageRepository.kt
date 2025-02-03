@@ -66,4 +66,14 @@ class StorageRepository: IStorageRepository, KoinComponent {
             throw e
         }
     }
+    override suspend fun deleteEventPicture(eventId: String): Boolean {
+        val bucket = storage.from("eventPictures")
+        return try {
+            bucket.delete("$eventId/event.jpg")
+            true
+        } catch (e: Exception) {
+            println(e.message)
+            false
+        }
+    }
 }

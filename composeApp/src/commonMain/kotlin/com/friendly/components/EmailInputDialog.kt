@@ -4,8 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,23 +23,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TextInputDialog(
+fun EmailInputDialog(
     title: String,
     initialValue: String,
-    allowSpaces: Boolean,
-    minLength: Int,
-    maxLength: Int,
-    maxInputLines: Int,
     onConfirm: (String)-> Unit,
     onDismiss: ()-> Unit
 ){
-    var textFieldValue by remember{mutableStateOf(initialValue)}
-    var errorMessage by remember{mutableStateOf("")}
-    var isError by remember{mutableStateOf(false)}
+    var textFieldValue by remember{ mutableStateOf(initialValue) }
+    var errorMessage by remember{ mutableStateOf("") }
+    var isError by remember{ mutableStateOf(false) }
 
     BasicAlertDialog(
         onDismissRequest = onDismiss,
@@ -45,9 +44,15 @@ fun TextInputDialog(
         Column(
             modifier = Modifier.padding(20.dp).clip(RoundedCornerShape(16.dp)).background(Color.White).padding(20.dp)
         ) {
+            Text(
+                text = "After change, you'll need to confirm new email and sign in again",
+                color = Color.Black,
+                textAlign = TextAlign.Justify
+            )
+            Spacer(modifier = Modifier.size(10.dp))
             OutlinedTextField(
                 label = { Text(text = title) },
-                supportingText = {Text(errorMessage, color = Color.Red)},
+                supportingText = { Text(errorMessage, color = Color.Red) },
                 value = textFieldValue,
                 onValueChange = {textFieldValue = it },
                 isError = isError,
@@ -55,7 +60,7 @@ fun TextInputDialog(
                     focusedLabelColor = Color.Black,
                     focusedBorderColor = Color.Black
                 ),
-                maxLines = maxInputLines
+                maxLines = 1
             )
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -71,25 +76,21 @@ fun TextInputDialog(
                 }
                 TextButton(
                     onClick = {
-                        if(textFieldValue.length > maxLength){
-                            isError = true
-                            errorMessage = "Max $maxLength characters"
-                        }
-                        else if(textFieldValue.length < minLength) {
-                            isError = true
-                            if(textFieldValue.isEmpty()){
-                                errorMessage = "Cannot be empty"
-                            }
-                            else {
-                                errorMessage = "Must be at least $minLength characters"
-                            }
-                        }
-                        else if(!allowSpaces && (" " in textFieldValue)){
-                            isError = true
-                            errorMessage = "Cannot contain spaces"
+                        val emailAddressRegex = Regex(
+                            "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
+                                    "\\@" +
+                                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                                    "(" +
+                                    "\\." +
+                                    "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                                    ")+"
+                        )
+                        if (textFieldValue.matches(emailAddressRegex)){
+                            onConfirm(textFieldValue)
                         }
                         else{
-                            onConfirm(textFieldValue)
+                            isError = true
+                            errorMessage = "Invalid email"
                         }
                     }
                 ) {

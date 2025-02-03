@@ -27,6 +27,7 @@ import com.friendly.viewModels.userProfile.UserProfileViewModel
 import com.friendly.viewModels.eventDetails.EditEventDetailsViewModel
 import com.friendly.viewModels.eventDetails.EventSettingsScreenViewModel
 import com.friendly.viewModels.eventDetails.ShowAllParticipantsViewModel
+import com.friendly.viewModels.NetworkConnectionViewModel
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -42,6 +43,8 @@ val appModule = module {
     single<IEventUserRepository>{EventUserRepository()}
 
     single<ISessionManager>{SessionManager()}
+
+    viewModelOf(::NetworkConnectionViewModel)
 
     viewModelOf(::HomeScreenViewModel)
     viewModelOf(::DiscoverScreenViewModel)

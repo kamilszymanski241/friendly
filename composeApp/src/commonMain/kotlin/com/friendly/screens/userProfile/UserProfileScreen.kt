@@ -204,6 +204,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                                     )
                                     Text(
                                         text = userDetails.value!!.description,
+                                        modifier = Modifier.fillMaxWidth(),
                                         fontSize = (15.sp),
                                         color = Color.Black,
                                         textAlign = TextAlign.Justify

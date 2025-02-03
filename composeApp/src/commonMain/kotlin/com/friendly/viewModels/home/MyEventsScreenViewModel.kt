@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.friendly.managers.ISessionManager
 import com.friendly.models.Event
 import com.friendly.repositories.IEventRepository
-import com.friendly.repositories.IEventUserRepository
 import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.auth.user.UserInfo
 import kotlinx.coroutines.flow.Flow
@@ -53,7 +52,7 @@ class MyEventsScreenViewModel: ViewModel(), KoinComponent {
         viewModelScope.launch {
             try {
                 val events = eventRepository.getEventsByOrganizer(user.value!!.id).map { it.asDomainModel() }
-                _eventsList.value = events
+                _eventsList.value = events.sortedBy { it.startDate }
 
             } catch (e: Exception) {
                 println("Error loading events: ${e.message}")

@@ -1,6 +1,5 @@
 package com.friendly.screens.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,14 +27,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.friendly.components.EventSummaryCard
-import com.friendly.helpers.DateTimeHelper
-import com.friendly.models.Event
-import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.home.UpcomingEventsScreenViewModel
 import org.koin.compose.viewmodel.koinViewModel
 
