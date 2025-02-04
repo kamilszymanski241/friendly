@@ -20,7 +20,6 @@ import com.friendly.screens.createEvent.FillTitleAndDescriptionScreen
 import com.friendly.screens.createEvent.SelectDateAndTimeScreen
 import com.friendly.screens.createEvent.SelectLocationScreen
 import com.friendly.screens.eventDetails.EditEventDetailsScreen
-import com.friendly.screens.eventDetails.EventSettingsScreen
 import com.friendly.screens.eventDetails.ShowAllParticipantsScreen
 import com.friendly.screens.home.HomeScreen
 import com.friendly.screens.signInSignUp.ChooseSignUpMethodScreen
@@ -67,9 +66,6 @@ fun AppNavHost(
             if (eventId != null) {
                 EditEventDetailsScreen(eventId = eventId, navController = navController)
             }
-        }
-        composable(AppNavigation.EventSettings.route) {
-            EventSettingsScreen(navController)
         }
         composable(
             AppNavigation.UserProfile.route,

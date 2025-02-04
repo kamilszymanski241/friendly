@@ -147,7 +147,7 @@ fun ShowAllParticipantsScreen(eventId: String, navController: NavController) {
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center,
                                 text = "Organizer",
-                                fontSize = 8.sp,
+                                fontSize = 15.sp,
                                 color = Color.White
                             )
                         }

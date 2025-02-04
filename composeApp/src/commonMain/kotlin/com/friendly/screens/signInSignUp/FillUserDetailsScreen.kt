@@ -29,6 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -67,6 +68,9 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: SignUpViewMod
         val showDOBDatePicker = remember { mutableStateOf(false) }
         var expandedGenderSelect by remember { mutableStateOf(false) }
 
+        LaunchedEffect(Unit){
+            viewModel.setErrorMessage("")
+        }
 
         Scaffold(
             topBar = { TopBarWithBackButtonAndTitle(navController, "Enter your details") },
@@ -78,6 +82,7 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: SignUpViewMod
                     .fillMaxWidth()
                     .fillMaxHeight()
                     .padding(innerPadding)
+                    .padding(20.dp)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
@@ -85,14 +90,6 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: SignUpViewMod
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.size(30.dp))
-                    errorMessage.value?.let { message ->
-                        Text(
-                            text = message,
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                    }
-                    Spacer(modifier = Modifier.size(20.dp))
                     TextField(
                         shape = RoundedCornerShape(16.dp),
                         colors = TextFieldDefaults.colors(
@@ -103,8 +100,7 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: SignUpViewMod
                             unfocusedContainerColor = Color.White
                         ),
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 30.dp, end = 30.dp),
+                            .fillMaxWidth(),
                         value = name.value,
                         onValueChange = {
                             viewModel.onNameChange(it)
@@ -128,8 +124,7 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: SignUpViewMod
                             unfocusedContainerColor = Color.White
                         ),
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 30.dp, end = 30.dp),
+                            .fillMaxWidth(),
                         value = surname.value,
                         onValueChange = {
                             viewModel.onSurnameChange(it)
@@ -146,7 +141,6 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: SignUpViewMod
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 30.dp, end = 30.dp)
                     ) {
                         Column(Modifier.weight(1/2f)) {
                             TextField(
@@ -217,7 +211,6 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: SignUpViewMod
                     Spacer(modifier = Modifier.size(20.dp))
                     TextField(
                         modifier = Modifier
-                            .padding(start = 30.dp, end = 30.dp)
                             .fillMaxWidth()
                             .height(200.dp),
                         shape = RoundedCornerShape(16.dp),
@@ -240,10 +233,16 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: SignUpViewMod
                         },
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                     )
+                    Spacer(modifier = Modifier.size(20.dp))
+                    errorMessage.value?.let { message ->
+                        Text(
+                            text = message,
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
                 }
                 Button(
                     modifier = Modifier
-                        .padding(20.dp)
                         .fillMaxWidth(),
                     onClick = {
                         localSoftwareKeyboardController?.hide()

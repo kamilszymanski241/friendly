@@ -55,6 +55,9 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: SignUpVi
     var showPhotoPicker by remember { mutableStateOf(false) }
     val errorMessage = viewModel.errorMessage.collectAsState()
     var showDropDownMenu by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit){
+        viewModel.setErrorMessage("")
+    }
     FriendlyAppTheme {
         Scaffold(
             topBar = {
@@ -69,21 +72,14 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: SignUpVi
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
-                    .padding(innerPadding),
+                    .padding(innerPadding)
+                    .padding(20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.size(30.dp))
-                    errorMessage.value?.let { message ->
-                        Text(
-                            text = message,
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                    }
-                    Spacer(modifier = Modifier.size(20.dp))
                     Box() {
                         if (capturedPhoto.value == null) {
                             Image(
@@ -148,10 +144,16 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: SignUpVi
                             }
                         }
                     }
+                    Spacer(modifier = Modifier.size(20.dp))
+                    errorMessage.value?.let { message ->
+                        Text(
+                            text = message,
+                            color = MaterialTheme.colorScheme.error,
+                        )
+                    }
                 }
                 Button(
                     modifier = Modifier
-                        .padding(20.dp)
                         .fillMaxWidth(),
                     onClick = {
                         if (viewModel.onContinueToProfilePic()) {

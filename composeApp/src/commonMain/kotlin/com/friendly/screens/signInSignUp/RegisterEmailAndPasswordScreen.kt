@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
@@ -59,6 +60,9 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Sign
     val loading = viewModel.loading.collectAsState()
     val localSoftwareKeyboardController =
         LocalSoftwareKeyboardController.current
+    LaunchedEffect(Unit){
+        viewModel.setErrorMessage("")
+    }
     LaunchedEffect(successState.value) {
         if (successState.value) {
             navController.navigate(AppNavigation.HomeScreen.route)
@@ -75,24 +79,17 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Sign
                     modifier = Modifier
                         .fillMaxWidth()
                         .fillMaxHeight()
-                        .padding(innerPadding),
+                        .padding(innerPadding)
+                        .padding(20.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Spacer(modifier = Modifier.height(10.dp))
-                        errorMessage.value?.let { message ->
-                            Text(
-                                text = message,
-                                color = MaterialTheme.colorScheme.error,
-                            )
-                        }
                         TextField(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp),
+                                .fillMaxWidth(),
                             shape = MaterialTheme.shapes.medium,
                             colors = TextFieldDefaults.colors(
                                 focusedIndicatorColor = Color.Transparent,
@@ -112,10 +109,10 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Sign
                             },
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
                         )
+                        Spacer(modifier = Modifier.size(20.dp))
                         TextField(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp),
+                                .fillMaxWidth(),
                             shape = MaterialTheme.shapes.medium,
                             colors = TextFieldDefaults.colors(
                                 focusedIndicatorColor = Color.Transparent,
@@ -147,10 +144,10 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Sign
                                 }
                             }
                         )
+                        Spacer(modifier = Modifier.size(20.dp))
                         TextField(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 20.dp, end = 20.dp, top = 10.dp, bottom = 10.dp),
+                                .fillMaxWidth(),
                             shape = MaterialTheme.shapes.medium,
                             colors = TextFieldDefaults.colors(
                                 focusedIndicatorColor = Color.Transparent,
@@ -182,10 +179,16 @@ fun RegisterEmailAndPasswordScreen(navController: NavController, viewModel: Sign
                                 }
                             }
                         )
+                        Spacer(modifier = Modifier.size(20.dp))
+                        errorMessage.value?.let { message ->
+                            Text(
+                                text = message,
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
                     }
                     Button(
                         modifier = Modifier
-                            .padding(20.dp)
                             .fillMaxWidth(),
                         onClick = {
                             if (viewModel.onContinueToProfilePic()) {

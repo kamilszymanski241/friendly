@@ -79,7 +79,9 @@ fun HomeScreenTopBar(navController: NavController, viewModel: HomeScreenTopBarVi
                 )
                 if (sessionStatus is SessionStatus.NotAuthenticated ||
                     sessionStatus is SessionStatus.RefreshFailure) {
-                    Row {
+                    Row(
+                        modifier = Modifier.padding(10.dp)
+                    ) {
                         TextButton(
                             onClick = {
                                 navController.navigate(AppNavigation.SignIn.route) {

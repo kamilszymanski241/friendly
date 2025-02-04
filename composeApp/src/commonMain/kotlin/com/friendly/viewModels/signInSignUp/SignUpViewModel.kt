@@ -111,7 +111,6 @@ class SignUpViewModel: ViewModel(), KoinComponent {
 
     fun onContinueToEmailAndPassword(): Boolean {
         (if (_userProfilePicture.value != null) {
-            _errorMessage.value = ""
             return true
         } else {
             _errorMessage.value = "Profile picture is mandatory"
@@ -120,39 +119,44 @@ class SignUpViewModel: ViewModel(), KoinComponent {
     }
 
     fun onSignUp() {
-        if (password.value == passwordRepeat.value) {
-            loading.value = true
-            viewModelScope.launch {
-                try {
-                    if (authRepository.signUp(
-                            email = _email.value,
-                            password = _password.value
-                        )
-                    ) {
-                        if (userDetailsRepository.createUserDetails(
-                                UserDetailsDTO(
-                                    id = sessionManager.currentUser.value!!.id,
-                                    name = _name.value,
-                                    surname = _surname.value,
-                                    dateOfBirth = _dateOfBirth.value!!,
-                                    description = _description.value,
-                                    gender = _gender.value!!
-                                )
+        if (_password.value == _passwordRepeat.value) {
+            if(_email.value.isNotEmpty()) {
+                loading.value = true
+                viewModelScope.launch {
+                    try {
+                        if (authRepository.signUp(
+                                email = _email.value,
+                                password = _password.value
                             )
                         ) {
-                            if (storageRepository.uploadAProfilePicture(
-                                    sessionManager.currentUser.value!!.id,
-                                    _userProfilePicture.value!!
+                            if (userDetailsRepository.createUserDetails(
+                                    UserDetailsDTO(
+                                        id = sessionManager.currentUser.value!!.id,
+                                        name = _name.value,
+                                        surname = _surname.value,
+                                        dateOfBirth = _dateOfBirth.value!!,
+                                        description = _description.value,
+                                        gender = _gender.value!!
+                                    )
                                 )
                             ) {
-                                success.value = true
+                                if (storageRepository.uploadAProfilePicture(
+                                        sessionManager.currentUser.value!!.id,
+                                        _userProfilePicture.value!!
+                                    )
+                                ) {
+                                    success.value = true
+                                }
                             }
                         }
+                    } catch (e: Exception) {
+                        println("Couldn't register: ${e.message}")
+                        _errorMessage.value = "Couldn't register: ${e.message}"
+                        loading.value = false
                     }
-                } catch (e: Exception) {
-                    println("Couldn't register: ${e.message}")
-                    _errorMessage.value = "Couldn't register: ${e.message}"
                 }
+            }else{
+                _errorMessage.value = "Email cannot be empty"
             }
         } else {
             _errorMessage.value = "Passwords must be the same"
