@@ -1,23 +1,18 @@
 package com.friendly
 
-import androidx.compose.ui.graphics.ImageBitmap
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
-import io.ktor.client.engine.darwin.Darwin
+import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
-import platform.UIKit.UIDevice
 
-class IOSPlatform: Platform {
-    override val name: String = UIDevice.currentDevice.systemName() + " " + UIDevice.currentDevice.systemVersion
-}
-
-actual fun httpClient(config: HttpClientConfig<*>.() -> Unit) = HttpClient(Darwin) {
+actual fun httpClient(config: HttpClientConfig<*>.() -> Unit) = HttpClient(OkHttp) {
     config(this)
     engine {
-        configureRequest {
-            setAllowsCellularAccess(true)
+        config {
+            retryOnConnectionFailure(true)
         }
     }
     install(ContentNegotiation) {
@@ -28,6 +23,9 @@ actual fun httpClient(config: HttpClientConfig<*>.() -> Unit) = HttpClient(Darwi
             serializersModule
         })
     }
+    install(HttpTimeout) {
+        requestTimeoutMillis = 30_000
+        connectTimeoutMillis = 30_000
+        socketTimeoutMillis = 30_000
+    }
 }
-
-actual fun getPlatform(): Platform = IOSPlatform()

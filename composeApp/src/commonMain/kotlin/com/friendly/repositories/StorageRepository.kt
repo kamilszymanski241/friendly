@@ -1,12 +1,10 @@
 package com.friendly.repositories
 
 import androidx.compose.ui.graphics.ImageBitmap
-import com.friendly.compressBitmapToDesiredSize
-import com.friendly.cropBitmapToPanorama
-import com.friendly.cropBitmapToSquare
-import com.friendly.decodeBitMapToByteArray
-import com.friendly.decodeByteArrayToBitMap
-import com.friendly.resizeImageBitmapWithAspectRatio
+import com.friendly.helpers.cropBitmapToPanorama
+import com.friendly.helpers.cropBitmapToSquare
+import com.friendly.helpers.decodeBitMapToByteArray
+import com.friendly.helpers.resizeImageBitmapWithAspectRatio
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.UploadStatus
 import io.github.jan.supabase.storage.updateAsFlow

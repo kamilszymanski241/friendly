@@ -49,8 +49,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import com.friendly.CapturePhoto
-import com.friendly.PickPhoto
+import com.friendly.components.CapturePhoto
+import com.friendly.components.PickPhoto
 import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.components.TopBarWithBackEditAndSettingsButton
 import com.friendly.generated.resources.Res

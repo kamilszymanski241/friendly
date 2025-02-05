@@ -37,8 +37,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.friendly.CapturePhoto
-import com.friendly.PickPhoto
+import com.friendly.components.CapturePhoto
+import com.friendly.components.PickPhoto
 import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.defaultUserPicture
