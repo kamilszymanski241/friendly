@@ -45,8 +45,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.friendly.components.CapturePhoto
-import com.friendly.components.PickPhoto
+import com.friendly.components.CapturePhotoModal
+import com.friendly.components.PickPhotoModal
 import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.defaultEventPicture
@@ -249,7 +249,7 @@ fun FillTitleAndDescriptionScreen(navController: NavController, viewModel: Creat
                 LaunchedEffect(Unit) {
                     delay(100)
                 }
-                CapturePhoto(onSelect = { picture ->
+                CapturePhotoModal(onSelect = { picture ->
                     viewModel.onPictureChange(picture)
                     showCamera = false
                 },
@@ -261,7 +261,7 @@ fun FillTitleAndDescriptionScreen(navController: NavController, viewModel: Creat
                 LaunchedEffect(Unit) {
                     delay(100)
                 }
-                PickPhoto(onSelect = { picture ->
+                PickPhotoModal(onSelect = { picture ->
                     viewModel.onPictureChange(picture)
                     showPhotoPicker = false
                 },

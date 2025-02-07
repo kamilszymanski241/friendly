@@ -23,7 +23,7 @@ class SignInViewModel: ViewModel(), KoinComponent {
     private val _errorMessage = MutableStateFlow<String?>("")
     val errorMessage: StateFlow<String?> = _errorMessage.asStateFlow()
 
-    private val _success = MutableStateFlow<Boolean>(value = false)
+    private val _success = MutableStateFlow(false)
     val success = _success
 
     fun onEmailChange(email: String) {

@@ -37,8 +37,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.friendly.components.CapturePhoto
-import com.friendly.components.PickPhoto
+import com.friendly.components.CapturePhotoModal
+import com.friendly.components.PickPhotoModal
 import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.defaultUserPicture
@@ -176,7 +176,7 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: SignUpVi
                 LaunchedEffect(Unit) {
                     delay(100)
                 }
-                CapturePhoto(onSelect = { picture ->
+                CapturePhotoModal(onSelect = { picture ->
                     viewModel.onPictureChange(picture)
                     showCamera = false
                     viewModel.setErrorMessage("")
@@ -189,7 +189,7 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: SignUpVi
                 LaunchedEffect(Unit) {
                     delay(100)
                 }
-                PickPhoto(onSelect = { picture ->
+                PickPhotoModal(onSelect = { picture ->
                     viewModel.onPictureChange(picture)
                     showPhotoPicker = false
                     viewModel.setErrorMessage("")

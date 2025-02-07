@@ -24,7 +24,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -53,20 +52,15 @@ import org.koin.compose.viewmodel.koinViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetailsViewModel = koinViewModel()) {
-    val userDetails = viewModel.userDetails.collectAsState()
-    val updated = viewModel.updated.collectAsState()
 
-    var showNameInputModal by remember { mutableStateOf(false) }
-    var showSurnameInputModal by remember { mutableStateOf(false) }
-    var showDOBInputModal by remember { mutableStateOf(false) }
-    var showDescriptionInputModal by remember { mutableStateOf(false) }
-    var showGenderSelectModal by remember { mutableStateOf(false) }
+    val userDetails by viewModel.userDetails.collectAsState()
 
-    LaunchedEffect(updated.value) {
-        if(updated.value) {
-            viewModel.fetchUserDetails()
-        }
-    }
+    var showNameInputDialog by remember { mutableStateOf(false) }
+    var showSurnameInputDialog by remember { mutableStateOf(false) }
+    var showDOBInputDialog by remember { mutableStateOf(false) }
+    var showDescriptionInputDialog by remember { mutableStateOf(false) }
+    var showGenderSelectDialog by remember { mutableStateOf(false) }
+
     FriendlyAppTheme {
         Box(modifier = Modifier.fillMaxSize()) {
             Scaffold(
@@ -75,12 +69,12 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                 },
                 containerColor = MaterialTheme.colorScheme.secondary
             ) { innerPadding ->
-                if (userDetails.value != null) {
+                if (userDetails != null) {
                     Column(
                         modifier = Modifier.padding(innerPadding).fillMaxSize()
                     ) {
                         Row(
-                            modifier = Modifier.clickable { showNameInputModal = true }
+                            modifier = Modifier.clickable { showNameInputDialog = true }
                         ) {
                             Column(
                                 modifier = Modifier
@@ -95,7 +89,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = userDetails.value!!.name,
+                                    text = userDetails!!.name,
                                     fontSize = (15.sp),
                                     color = Color.White,
                                     textAlign = TextAlign.Justify
@@ -105,7 +99,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                             }
                         }
                         Row(
-                            modifier = Modifier.clickable { showSurnameInputModal = true }
+                            modifier = Modifier.clickable { showSurnameInputDialog = true }
                         ) {
                             Column(
                                 modifier = Modifier
@@ -120,7 +114,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = userDetails.value!!.surname,
+                                    text = userDetails!!.surname,
                                     fontSize = (15.sp),
                                     color = Color.White,
                                     textAlign = TextAlign.Justify
@@ -130,7 +124,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                             }
                         }
                         Row(
-                            modifier = Modifier.clickable { showDOBInputModal = true }
+                            modifier = Modifier.clickable { showDOBInputDialog = true }
                         ) {
                             Column(
                                 modifier = Modifier
@@ -145,7 +139,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = userDetails.value!!.dateOfBirth,
+                                    text = userDetails!!.dateOfBirth,
                                     fontSize = (15.sp),
                                     color = Color.White,
                                     textAlign = TextAlign.Justify
@@ -155,7 +149,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                             }
                         }
                         Row(
-                            modifier = Modifier.clickable { showGenderSelectModal = true }
+                            modifier = Modifier.clickable { showGenderSelectDialog = true }
                         ) {
                             Column(
                                 modifier = Modifier
@@ -170,7 +164,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = userDetails.value!!.gender.toString(),
+                                    text = userDetails!!.gender.toString(),
                                     fontSize = (15.sp),
                                     color = Color.White,
                                     textAlign = TextAlign.Justify
@@ -180,7 +174,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                             }
                         }
                         Row(
-                            modifier = Modifier.clickable { showDescriptionInputModal = true }
+                            modifier = Modifier.clickable { showDescriptionInputDialog = true }
                         ) {
                             Column(
                                 modifier = Modifier
@@ -195,7 +189,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = userDetails.value!!.description,
+                                    text = userDetails!!.description,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     fontSize = (15.sp),
@@ -206,37 +200,35 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                 )
                             }
                         }
-                        if (showNameInputModal) {
+                        if (showNameInputDialog) {
                             TextInputDialog(
                                 title = "Name",
-                                initialValue = userDetails.value!!.name,
+                                initialValue = userDetails!!.name,
                                 onConfirm = {
                                     viewModel.changeName(it)
-                                    showNameInputModal = false
-                                    viewModel.fetchUserDetails()
+                                    showNameInputDialog = false
                                 },
                                 allowSpaces = false,
                                 minLength = 1,
                                 maxLength = 20,
                                 maxInputLines = 1,
-                                onDismiss = { showNameInputModal = false })
+                                onDismiss = { showNameInputDialog = false })
                         }
-                        if (showSurnameInputModal) {
+                        if (showSurnameInputDialog) {
                             TextInputDialog(
                                 title = "Surname",
-                                initialValue = userDetails.value!!.surname,
+                                initialValue = userDetails!!.surname,
                                 onConfirm = {
                                     viewModel.changeSurname(it)
-                                    showSurnameInputModal = false
-                                    viewModel.fetchUserDetails()
+                                    showSurnameInputDialog = false
                                 },
                                 allowSpaces = false,
                                 minLength = 1,
                                 maxLength = 20,
                                 maxInputLines = 1,
-                                onDismiss = { showSurnameInputModal = false })
+                                onDismiss = { showSurnameInputDialog = false })
                         }
-                        if (showDOBInputModal) {
+                        if (showDOBInputDialog) {
                             DatePickerDialog(
                                 onDateSelected = {
                                     viewModel.changeDateOfBirth(
@@ -244,17 +236,16 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                             it!!
                                         )
                                     )
-                                    showDOBInputModal = false
-                                    viewModel.fetchUserDetails()
+                                    showDOBInputDialog = false
                                 },
-                                onDismiss = { showDOBInputModal = false },
+                                onDismiss = { showDOBInputDialog = false },
                                 selectableDatesType = SelectableDatesTypes.Past
                             )
                         }
-                        if (showGenderSelectModal) {
-                            var selectedGender by remember { mutableStateOf(userDetails.value!!.gender) }
+                        if (showGenderSelectDialog) {
+                            var selectedGender by remember { mutableStateOf(userDetails!!.gender) }
                             var expanded by remember { mutableStateOf(false) }
-                            BasicAlertDialog(onDismissRequest = { showGenderSelectModal = false }) {
+                            BasicAlertDialog(onDismissRequest = { showGenderSelectDialog = false }) {
                                 Column(
                                     modifier = Modifier.padding(20.dp)
                                         .clip(RoundedCornerShape(16.dp)).background(Color.White)
@@ -303,7 +294,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                         horizontalArrangement = Arrangement.End
                                     ) {
                                         TextButton(
-                                            onClick = { showGenderSelectModal = false }
+                                            onClick = { showGenderSelectDialog = false }
                                         ) {
                                             Text(
                                                 text = "Cancel",
@@ -313,8 +304,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                         TextButton(
                                             onClick = {
                                                 viewModel.changeGender(selectedGender)
-                                                showGenderSelectModal = false
-                                                viewModel.fetchUserDetails()
+                                                showGenderSelectDialog = false
                                             }
                                         ) {
                                             Text(
@@ -326,20 +316,19 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                 }
                             }
                         }
-                        if (showDescriptionInputModal) {
+                        if (showDescriptionInputDialog) {
                             TextInputDialog(
                                 title = "Description",
-                                initialValue = userDetails.value?.description ?: "",
+                                initialValue = userDetails?.description ?: "",
                                 onConfirm = {
                                     viewModel.changeDescription(it)
-                                    showDescriptionInputModal = false
-                                    viewModel.fetchUserDetails()
+                                    showDescriptionInputDialog = false
                                 },
                                 allowSpaces = true,
                                 minLength = 0,
                                 maxLength = 200,
                                 maxInputLines = 10,
-                                onDismiss = { showDescriptionInputModal = false })
+                                onDismiss = { showDescriptionInputDialog = false })
                         }
                     }
                 } else {

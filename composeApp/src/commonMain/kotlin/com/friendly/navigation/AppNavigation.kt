@@ -2,11 +2,14 @@ package com.friendly.navigation
 
 sealed class AppNavigation(val route: String, val label: String){
 
+    data object HomeScreen: AppNavigation(route="homeScreen", label = "Home Screen")
+
     data object SignUp: AppNavigation(route = "signUp", label = "Sign Up")
-    data object ChooseSignUpMethod: AppNavigation("chooseSignUpMethod", "Sign Up")
+    data object ChooseSignUpMethod: AppNavigation("chooseSignUpMethod", "Choose sign up method")
     data object FillUserDetails: AppNavigation(route = "fillUserDetails", label = "Fill User Details")
     data object UploadProfilePicture: AppNavigation(route = "uploadAProfilePicture", label = "Upload A Profile Picture")
     data object RegisterEmailAndPassword: AppNavigation(route = "registerEmailAndPassword", label = "Please provide email and password")
+
     data object SignIn: AppNavigation("signIn", "Sign In")
 
     data object UserProfile: AppNavigation(route= "userProfile/{userId}", label = "User Profile")
@@ -15,10 +18,7 @@ sealed class AppNavigation(val route: String, val label: String){
 
     data object EventDetails: AppNavigation(route="eventDetails/{eventId}", label = "Event Details")
     data object EditEventDetails: AppNavigation(route = "editEventDetails/{eventId}", label = "Edit Event Details")
-    data object EventSettings: AppNavigation(route="eventSettings", label = "Event settings")
     data object ShowAllParticipants: AppNavigation(route="showAllParticipants/{eventId}", label = "Show All Participants")
-
-    data object HomeScreen: AppNavigation(route="homeScreen", label = "Home Screen")
 
     data object CreateEvent : AppNavigation("createEvent", "Create New Event")
     data object FillEventTitleAndDescription: AppNavigation(route="fillEventTitleAndDescription", label = "Fill Basic EventDetails")

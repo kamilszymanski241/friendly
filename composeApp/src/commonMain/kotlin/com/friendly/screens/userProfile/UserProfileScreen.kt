@@ -49,8 +49,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import com.friendly.components.CapturePhoto
-import com.friendly.components.PickPhoto
+import com.friendly.components.CapturePhotoModal
+import com.friendly.components.PickPhotoModal
 import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.components.TopBarWithBackEditAndSettingsButton
 import com.friendly.generated.resources.Res
@@ -69,10 +69,10 @@ fun UserProfileScreen(userId: String, navController: NavController) {
         koinViewModel(parameters = { parametersOf(userId) })
     var showCamera by remember { mutableStateOf(false) }
     var showPhotoPicker by remember { mutableStateOf(false) }
-    val userDetails = viewModel.userDetails.collectAsState()
-    val isSelfProfile = viewModel.isSelfProfile.collectAsState()
-    val showSignInReminder = viewModel.showSignInReminder.collectAsState(false)
     var showDropDownMenu by remember { mutableStateOf(false) }
+    val userDetails by viewModel.userDetails.collectAsState()
+    val isSelfProfile by viewModel.isSelfProfile.collectAsState()
+    val showSignInReminder by viewModel.showSignInReminder.collectAsState(false)
     val isRefreshing by viewModel.isRefreshing.collectAsState()
     val pullToRefreshState = rememberPullToRefreshState()
     LaunchedEffect(Unit) {
@@ -81,7 +81,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
     Box {
         Scaffold(
             topBar = {
-                if (isSelfProfile.value) {
+                if (isSelfProfile) {
                     TopBarWithBackEditAndSettingsButton(
                         navController,
                         AppNavigation.EditUserDetails.route,
@@ -93,7 +93,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
             },
             containerColor = MaterialTheme.colorScheme.secondary
         ) { innerPadding ->
-            if (showSignInReminder.value) {
+            if (showSignInReminder) {
                 Column(
                     modifier = Modifier.fillMaxSize().padding(innerPadding),
                     horizontalAlignment = Alignment.CenterHorizontally,
@@ -116,7 +116,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                     }
                 }
             } else {
-                if (userDetails.value != null) {
+                if (userDetails != null) {
                     PullToRefreshBox(
                         isRefreshing = isRefreshing,
                         onRefresh = { viewModel.refresh() },
@@ -153,7 +153,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                                 ) {
                                     Spacer(modifier = Modifier.size(50.dp))
                                     Text(
-                                        text = userDetails.value!!.name + " " + userDetails.value!!.surname,
+                                        text = userDetails!!.name + " " + userDetails!!.surname,
                                         fontSize = (30.sp),
                                         color = Color.Black
                                     )
@@ -170,7 +170,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                                             fontWeight = FontWeight.Bold
                                         )
                                         Text(
-                                            text = userDetails.value!!.age.toString(),
+                                            text = userDetails!!.age.toString(),
                                             fontSize = (15.sp),
                                             color = Color.Black
                                         )
@@ -188,7 +188,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                                             fontWeight = FontWeight.Bold
                                         )
                                         Text(
-                                            text = userDetails.value!!.gender.toString(),
+                                            text = userDetails!!.gender.toString(),
                                             fontSize = (15.sp),
                                             color = Color.Black
                                         )
@@ -203,7 +203,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                                         fontWeight = FontWeight.Bold
                                     )
                                     Text(
-                                        text = userDetails.value!!.description,
+                                        text = userDetails!!.description,
                                         modifier = Modifier.fillMaxWidth(),
                                         fontSize = (15.sp),
                                         color = Color.Black,
@@ -215,7 +215,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                                         .align(Alignment.TopCenter)
                                 ) {
                                     AsyncImage(
-                                        model = userDetails.value?.profilePictureUrl,
+                                        model = userDetails?.profilePictureUrl,
                                         contentDescription = "User Profile Picture",
                                         placeholder = painterResource(Res.drawable.defaultUserPicture),
                                         fallback = painterResource(Res.drawable.defaultUserPicture),
@@ -224,7 +224,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                                             .clip(CircleShape)
                                             .size(180.dp)
                                     )
-                                    if (isSelfProfile.value) {
+                                    if (isSelfProfile) {
                                         IconButton(
                                             onClick = {
                                                 showDropDownMenu = !showDropDownMenu
@@ -285,7 +285,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
             LaunchedEffect(Unit) {
                 delay(100)
             }
-            CapturePhoto(onSelect = { picture ->
+            CapturePhotoModal(onSelect = { picture ->
                 viewModel.changeProfilePicture(picture)
                 showCamera = false
             },
@@ -297,7 +297,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
             LaunchedEffect(Unit) {
                 delay(100)
             }
-            PickPhoto(onSelect = { picture ->
+            PickPhotoModal(onSelect = { picture ->
                 viewModel.changeProfilePicture(picture)
                 showPhotoPicker = false
             },

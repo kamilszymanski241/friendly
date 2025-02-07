@@ -11,7 +11,7 @@ import com.friendly.helpers.uriToImageBitmap
 
 
 @Composable
-actual fun PickPhoto(
+actual fun PickPhotoModal(
     onSelect: (ImageBitmap) -> Unit,
     onClose: () -> Unit
 ) {

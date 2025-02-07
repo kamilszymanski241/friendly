@@ -42,10 +42,10 @@ class AuthRepository: IAuthRepository, KoinComponent {
         }
     }
 
-    override suspend fun updateEmail(emailReceived: String): Boolean{
+    override suspend fun updateEmail(email: String): Boolean{
         return try {
             auth.updateUser(updateCurrentUser = true) {
-                email = emailReceived
+                this.email = email
             }
             signOut()
             true
@@ -55,10 +55,10 @@ class AuthRepository: IAuthRepository, KoinComponent {
         }
     }
 
-    override suspend fun updatePassword(passwordReceived: String): Boolean{
+    override suspend fun updatePassword(password: String): Boolean{
         return try {
             auth.updateUser(updateCurrentUser = true) {
-                password = passwordReceived
+                this.password = password
             }
             signOut()
             true

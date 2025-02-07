@@ -3,13 +3,10 @@ package com.friendly.screens.signInSignUp
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -41,9 +38,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.friendly_logo_white
-import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.navigation.AppNavigation
 import com.friendly.themes.FriendlyAppTheme
 import com.friendly.viewModels.signInSignUp.SignInViewModel
@@ -52,14 +49,14 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SignInScreen(navController: NavController, viewModel: SignInViewModel = koinViewModel ()) {
-    val email = viewModel.email.collectAsState(initial = "")
-    val password = viewModel.password.collectAsState()
+    val email by viewModel.email.collectAsState(initial = "")
+    val password by viewModel.password.collectAsState()
+    val errorMessage by viewModel.errorMessage.collectAsState()
+    val successState by viewModel.success.collectAsState()
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
-    val errorMessage = viewModel.errorMessage.collectAsState()
-    val successState = viewModel.success.collectAsState()
     FriendlyAppTheme {
-        LaunchedEffect(successState.value) {
-            if (successState.value) {
+        LaunchedEffect(successState) {
+            if (successState) {
                 navController.navigate(AppNavigation.HomeScreen.route)
             }
         }
@@ -86,7 +83,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = koin
                     text = "Sign in",
                     fontSize = 40.sp
                 )
-                errorMessage.value?.let { message ->
+                errorMessage?.let { message ->
                     Text(
                         text = message,
                         color = MaterialTheme.colorScheme.error,
@@ -104,7 +101,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = koin
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.White
                     ),
-                    value = email.value,
+                    value = email,
                     onValueChange = {
                         viewModel.onEmailChange(it)
                     },
@@ -128,7 +125,7 @@ fun SignInScreen(navController: NavController, viewModel: SignInViewModel = koin
                         focusedContainerColor = Color.White,
                         unfocusedContainerColor = Color.White
                     ),
-                    value = password.value,
+                    value = password,
                     onValueChange = {
                         viewModel.onPasswordChange(it)
                     },

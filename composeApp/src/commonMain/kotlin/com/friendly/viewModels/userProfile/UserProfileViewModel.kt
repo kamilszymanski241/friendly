@@ -52,20 +52,24 @@ class UserProfileViewModel(private val userId: String): ViewModel(), KoinCompone
             _showSignInReminder.value = true
         } else {
             if (sessionManager.currentUser.value != null) {
-                if (userId == sessionManager.currentUser.value!!.id) {
-                    _isSelfProfile.value = true
-                    viewModelScope.launch {
-                        _userDetails.value =
-                            userDetailsRepository.getUserDetails(sessionManager.currentUser.value!!.id)
-                                .asDomainModel()
-                        cacheHelper.clearFromCacheByKey(_userDetails.value!!.profilePictureUrl)
+                try {
+                    if (userId == sessionManager.currentUser.value!!.id) {
+                        _isSelfProfile.value = true
+                        viewModelScope.launch {
+                            _userDetails.value =
+                                userDetailsRepository.getUserDetails(sessionManager.currentUser.value!!.id)
+                                    .asDomainModel()
+                            cacheHelper.clearFromCacheByKey(_userDetails.value!!.profilePictureUrl)
+                        }
+                    } else {
+                        viewModelScope.launch {
+                            _userDetails.value =
+                                userDetailsRepository.getUserDetails(userId).asDomainModel()
+                            cacheHelper.clearFromCacheByKey(_userDetails.value!!.profilePictureUrl)
+                        }
                     }
-                } else {
-                    viewModelScope.launch {
-                        _userDetails.value =
-                            userDetailsRepository.getUserDetails(userId).asDomainModel()
-                        cacheHelper.clearFromCacheByKey(_userDetails.value!!.profilePictureUrl)
-                    }
+                }catch(e:Exception){
+                    println(e.message)
                 }
             }
         }

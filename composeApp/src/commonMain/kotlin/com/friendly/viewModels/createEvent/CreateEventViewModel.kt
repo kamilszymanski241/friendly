@@ -104,7 +104,7 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
         viewModelScope.launch {
             locationAndGeocodingHelper.getLastLocation(onLocationRetrieved = {
                 _selectedLocationCoordinates.value = it
-            }, onPermissionDenied = {})//TODO()
+            }, onPermissionDenied = {})
         }
     }
 

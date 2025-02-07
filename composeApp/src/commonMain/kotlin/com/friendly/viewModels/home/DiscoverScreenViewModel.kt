@@ -76,7 +76,7 @@ class DiscoverScreenViewModel: ViewModel(), KoinComponent {
                     null,
                     null
                 ).map { it.asDomainModel() }
-                _eventsList.emit(events)
+                _eventsList.emit(events.sortedBy { it.startDate })
             } catch (e: Exception) {
                 println("Error loading events: ${e.message}")
             }

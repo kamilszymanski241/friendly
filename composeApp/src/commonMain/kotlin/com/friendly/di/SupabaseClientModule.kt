@@ -14,7 +14,6 @@ import org.koin.dsl.module
 
 val supabaseModule = module {
 
-    // SupabaseClient
     single<SupabaseClient> {
         createSupabaseClient(
             supabaseUrl = BuildConfig.SUPABASE_URL,
@@ -30,17 +29,14 @@ val supabaseModule = module {
         }
     }
 
-    // SupabaseDatabase
     single<Postgrest> {
         get<SupabaseClient>().postgrest
     }
 
-    // SupabaseAuth
     single<Auth> {
         get<SupabaseClient>().auth
     }
 
-    // SupabaseStorage
     single<Storage> {
         get<SupabaseClient>().storage
     }

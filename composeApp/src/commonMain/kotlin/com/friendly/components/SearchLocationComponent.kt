@@ -45,7 +45,7 @@ fun SearchLocationComponent(
     textFieldPlaceHolder: String= "",
     initialValue: String = "",
     leadingIcon: ImageVector,
-    onLocationSelected: (String) -> Unit
+    onLocationSelected: (String) -> Unit,
 ) {
     val query = viewModel.query.collectAsState()
     val suggestions = viewModel.suggestions.collectAsState()

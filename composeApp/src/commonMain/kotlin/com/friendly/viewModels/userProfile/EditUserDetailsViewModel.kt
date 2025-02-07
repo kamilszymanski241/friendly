@@ -1,6 +1,5 @@
 package com.friendly.viewModels.userProfile
 
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.friendly.managers.ISessionManager
@@ -14,78 +13,76 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class EditUserDetailsViewModel: ViewModel(), KoinComponent {
+
     private val sessionManager: ISessionManager by inject()
     private val userDetailsRepository: IUserDetailsRepository by inject()
 
     private var _userDetails = MutableStateFlow<UserDetails?>(null)
     val userDetails: StateFlow<UserDetails?> = _userDetails
 
-    private var _updated = MutableStateFlow(false)
-    val updated: StateFlow<Boolean> = _updated
-
     init{
         fetchUserDetails()
     }
-
-    fun fetchUserDetails(){
-        viewModelScope.launch {
-            _userDetails.value =
-                userDetailsRepository.getUserDetails(sessionManager.currentUser.value!!.id)
-                    .asDomainModel()
-            _updated.value = false
+    fun refresh(){
+        _userDetails.value = null
+        fetchUserDetails()
+    }
+    private fun fetchUserDetails(){
+        try {
+            viewModelScope.launch {
+                _userDetails.value =
+                    userDetailsRepository.getUserDetails(sessionManager.currentUser.value!!.id)
+                        .asDomainModel()
+            }
+        }catch(e: Exception){
+            println("Couldn't fetch user details: ${e.message}")
         }
     }
-
     fun changeName(name: String){
-        _userDetails.value = null
         viewModelScope.launch {
             try {
                 userDetailsRepository.changeName(sessionManager.currentUser.value!!.id, name)
-                _updated.value = true
+                refresh()
             }catch(e: Exception){
                 println("Couldn't change name: ${e.message}")
             }
         }
     }
     fun changeSurname(surname: String){
-        _userDetails.value = null
         viewModelScope.launch {
             try {
                 userDetailsRepository.changeSurname(sessionManager.currentUser.value!!.id, surname)
-                _updated.value = true
+                refresh()
             }catch(e: Exception){
                 println("Couldn't change surname: ${e.message}")
             }
         }
     }
     fun changeDateOfBirth(dateOfBirth: String){
-        _userDetails.value = null
         viewModelScope.launch {
             try {
                 userDetailsRepository.changeDateOfBirth(sessionManager.currentUser.value!!.id, dateOfBirth)
-                _updated.value = true
+                refresh()
             }catch(e: Exception){
                 println("Couldn't change surname: ${e.message}")
             }
         }
     }
     fun changeGender(gender: Gender){
-        _userDetails.value = null
         viewModelScope.launch {
             try {
                 userDetailsRepository.changeGender(sessionManager.currentUser.value!!.id, gender)
-                _updated.value = true
+                refresh()
             }catch(e: Exception){
-                println("Couldn't change surname: ${e.message}")
+                println("Couldn't change gender: ${e.message}")
             }
         }
     }
     fun changeDescription(description: String){
-        _userDetails.value = null
         viewModelScope.launch {
             try {
                 userDetailsRepository.changeDescription(sessionManager.currentUser.value!!.id, description)
-                _updated.value = true
+                refresh()
             }catch(e: Exception){
                 println("Couldn't change description: ${e.message}")
             }

@@ -1,7 +1,6 @@
 package com.friendly.screens.eventDetails
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,16 +20,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -63,13 +59,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
-import com.friendly.components.CapturePhoto
+import com.friendly.components.CapturePhotoModal
 import com.friendly.components.ConfirmDialog
-import com.friendly.components.PickPhoto
+import com.friendly.components.PickPhotoModal
 import com.friendly.components.StaticMapComponent
 import com.friendly.components.TopBarWithBackButtonAndTitle
 import com.friendly.components.TopBarWithBackEditAndDeleteButton
-import com.friendly.components.TopBarWithBackEditAndSettingsButton
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.defaultEventPicture
 import com.friendly.navigation.AppNavigation
@@ -542,7 +537,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
             LaunchedEffect(Unit) {
                 delay(100)
             }
-            CapturePhoto(onSelect = { picture ->
+            CapturePhotoModal(onSelect = { picture ->
                 viewModel.changeEventPicture(picture)
                 showCamera = false
             },
@@ -554,7 +549,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
             LaunchedEffect(Unit) {
                 delay(100)
             }
-            PickPhoto(onSelect = { picture ->
+            PickPhotoModal(onSelect = { picture ->
                 viewModel.changeEventPicture(picture)
                 showPhotoPicker = false
             },
