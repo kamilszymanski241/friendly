@@ -13,14 +13,18 @@ import com.friendly.helpers.uriToImageBitmap
 @Composable
 actual fun PickPhotoModal(
     onSelect: (ImageBitmap) -> Unit,
-    onClose: () -> Unit
+    onClose: (String) -> Unit
 ) {
     val context = LocalContext.current
     val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
-            onSelect(uriToImageBitmap(context, uri)!!)
+            try {
+                onSelect(uriToImageBitmap(context, uri))
+            }catch (e: Exception){
+                onClose("Couldn't load the image.")
+            }
         } else {
-            onClose()
+            onClose("Couldn't load the image.")
         }
     }
     LaunchedEffect(Unit) {

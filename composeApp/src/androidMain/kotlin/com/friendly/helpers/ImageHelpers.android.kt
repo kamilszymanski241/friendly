@@ -69,16 +69,15 @@ actual fun decodeBitMapToByteArray(bitmap: ImageBitmap): ByteArray {
     }
 }
 
-fun uriToImageBitmap(context: Context, uri: Uri): ImageBitmap? {
-    return try {
-        val resolver = context.contentResolver
-        val inputStream = resolver.openInputStream(uri)
-        val bitmap = BitmapFactory.decodeStream(inputStream)
-        inputStream?.close()
-        bitmap?.asImageBitmap()
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
+fun uriToImageBitmap(context: Context, uri: Uri): ImageBitmap {
+    val inputStream = context.contentResolver.openInputStream(uri)
+        ?: throw Exception("Couldn't load image: $uri")
+
+    inputStream.use { stream ->
+        val bitmap = BitmapFactory.decodeStream(stream)
+            ?: throw Exception("Couldn't decode bitmap for: $uri")
+
+        return bitmap.asImageBitmap()
     }
 }
 

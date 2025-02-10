@@ -150,7 +150,7 @@ fun EventSummaryCard(event: Event, navController: NavController, modifier: Modif
                             .weight(2/5f, true),
                     ) {
                         Column() {
-                            val spotsLeft = event.maxParticipants!! - (event.participants?.size ?: 0)
+                            val spotsLeft = event.maxParticipants - (event.participants?.size ?: 0)
                             Row(){
                                 if(spotsLeft > 0) {
                                     Text(

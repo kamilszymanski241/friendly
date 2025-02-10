@@ -81,19 +81,19 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: SignUpVi
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Box() {
-                        if (capturedPhoto.value == null) {
+                        capturedPhoto.value?.let { bitmap ->
                             Image(
-                                painter = painterResource(Res.drawable.defaultUserPicture),
-                                null,
+                                bitmap = bitmap,
+                                contentDescription = null,
+                                contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .size(250.dp)
                                     .clip(CircleShape)
                             )
-                        } else {
+                        } ?: run {
                             Image(
-                                bitmap = capturedPhoto.value!!,
-                                null,
-                                contentScale = ContentScale.Crop,
+                                painter = painterResource(Res.drawable.defaultUserPicture),
+                                contentDescription = null,
                                 modifier = Modifier
                                     .size(250.dp)
                                     .clip(CircleShape)
@@ -156,7 +156,7 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: SignUpVi
                     modifier = Modifier
                         .fillMaxWidth(),
                     onClick = {
-                        if (viewModel.onContinueToProfilePic()) {
+                        if (viewModel.onContinueToProfilePictureSelection()) {
                             if(viewModel.onContinueToEmailAndPassword()) {
                                 viewModel.setErrorMessage("")
                                 navController.navigate(AppNavigation.RegisterEmailAndPassword.route)
@@ -194,8 +194,9 @@ fun UploadProfilePictureScreen(navController: NavController, viewModel: SignUpVi
                     showPhotoPicker = false
                     viewModel.setErrorMessage("")
                 },
-                    onClose = {
+                    onClose = { message ->
                         showPhotoPicker = false
+                        viewModel.setErrorMessage(message)
                     })
             }
         }

@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.friendly.dtos.UserDetailsDTO
-import com.friendly.helpers.DateTimeHelper
 import com.friendly.managers.ISessionManager
 import com.friendly.models.Gender
 import com.friendly.repositories.IAuthRepository
@@ -100,7 +99,7 @@ class SignUpViewModel: ViewModel(), KoinComponent {
     fun onPictureChange(picture: ImageBitmap?){
         _userProfilePicture.value = picture
     }
-    fun onContinueToProfilePic(): Boolean {
+    fun onContinueToProfilePictureSelection(): Boolean {
         if (_name.value == "" || _surname.value == "" || _gender.value == null || _dateOfBirth.value == null) {
             _errorMessage.value = "All fields must be filled"
             return false

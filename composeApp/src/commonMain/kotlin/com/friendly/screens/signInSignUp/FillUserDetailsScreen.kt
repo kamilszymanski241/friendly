@@ -246,7 +246,7 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: SignUpViewMod
                         .fillMaxWidth(),
                     onClick = {
                         localSoftwareKeyboardController?.hide()
-                        if (viewModel.onContinueToProfilePic()) {
+                        if (viewModel.onContinueToProfilePictureSelection()) {
                             viewModel.setErrorMessage("")
                             navController.navigate(AppNavigation.UploadProfilePicture.route)
                         }

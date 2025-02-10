@@ -36,15 +36,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
-import androidx.navigation.PopUpToBuilder
 import coil3.compose.AsyncImage
 import com.friendly.generated.resources.Res
 import com.friendly.generated.resources.friendly_logo_white
-import com.friendly.managers.UserDetailsStatus
 import com.friendly.navigation.AppNavigation
 import com.friendly.viewModels.home.HomeScreenTopBarViewModel
-import io.github.jan.supabase.auth.status.RefreshFailureCause
 import io.github.jan.supabase.auth.status.SessionStatus
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel

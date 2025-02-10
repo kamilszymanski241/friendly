@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.CircularProgressIndicator
@@ -54,6 +56,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetailsViewModel = koinViewModel()) {
 
     val userDetails by viewModel.userDetails.collectAsState()
+    val errorMessage = viewModel.errorMessage.collectAsState()
 
     var showNameInputDialog by remember { mutableStateOf(false) }
     var showSurnameInputDialog by remember { mutableStateOf(false) }
@@ -89,7 +92,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = userDetails!!.name,
+                                    text = userDetails?.name ?: "",
                                     fontSize = (15.sp),
                                     color = Color.White,
                                     textAlign = TextAlign.Justify
@@ -114,7 +117,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = userDetails!!.surname,
+                                    text = userDetails?.surname ?: "",
                                     fontSize = (15.sp),
                                     color = Color.White,
                                     textAlign = TextAlign.Justify
@@ -139,7 +142,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = userDetails!!.dateOfBirth,
+                                    text = userDetails?.dateOfBirth ?: "",
                                     fontSize = (15.sp),
                                     color = Color.White,
                                     textAlign = TextAlign.Justify
@@ -164,7 +167,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = userDetails!!.gender.toString(),
+                                    text = userDetails?.gender.toString(),
                                     fontSize = (15.sp),
                                     color = Color.White,
                                     textAlign = TextAlign.Justify
@@ -189,7 +192,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = userDetails!!.description,
+                                    text = userDetails?.description  ?: "",
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     fontSize = (15.sp),
@@ -203,7 +206,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                         if (showNameInputDialog) {
                             TextInputDialog(
                                 title = "Name",
-                                initialValue = userDetails!!.name,
+                                initialValue = userDetails?.name  ?: "",
                                 onConfirm = {
                                     viewModel.changeName(it)
                                     showNameInputDialog = false
@@ -217,7 +220,7 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                         if (showSurnameInputDialog) {
                             TextInputDialog(
                                 title = "Surname",
-                                initialValue = userDetails!!.surname,
+                                initialValue = userDetails?.surname  ?: "",
                                 onConfirm = {
                                     viewModel.changeSurname(it)
                                     showSurnameInputDialog = false
@@ -230,20 +233,22 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                         }
                         if (showDOBInputDialog) {
                             DatePickerDialog(
-                                onDateSelected = {
+                                onDateSelected = { dateInMillis ->
+                                if (dateInMillis != null) {
                                     viewModel.changeDateOfBirth(
-                                        DateTimeHelper.convertMillisToDate(
-                                            it!!
-                                        )
+                                        DateTimeHelper.convertMillisToDate(dateInMillis)
                                     )
-                                    showDOBInputDialog = false
-                                },
+                                } else {
+                                    viewModel.setErrorMessage("Something went wrong")
+                                }
+                                showDOBInputDialog = false
+                            },
                                 onDismiss = { showDOBInputDialog = false },
                                 selectableDatesType = SelectableDatesTypes.Past
                             )
                         }
                         if (showGenderSelectDialog) {
-                            var selectedGender by remember { mutableStateOf(userDetails!!.gender) }
+                            var selectedGender by remember { mutableStateOf(userDetails?.gender) }
                             var expanded by remember { mutableStateOf(false) }
                             BasicAlertDialog(onDismissRequest = { showGenderSelectDialog = false }) {
                                 Column(
@@ -303,7 +308,12 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                         }
                                         TextButton(
                                             onClick = {
-                                                viewModel.changeGender(selectedGender)
+                                                val gender = selectedGender
+                                                if (gender != null) {
+                                                    viewModel.changeGender(gender)
+                                                } else {
+                                                    viewModel.setErrorMessage("Something went wrong")
+                                                }
                                                 showGenderSelectDialog = false
                                             }
                                         ) {
@@ -330,6 +340,11 @@ fun EditUserDetailsScreen(navController: NavController, viewModel: EditUserDetai
                                 maxInputLines = 10,
                                 onDismiss = { showDescriptionInputDialog = false })
                         }
+                        Spacer(modifier = Modifier.size(20.dp))
+                        Text(
+                            text = errorMessage.value,
+                            color = MaterialTheme.colorScheme.error,
+                        )
                     }
                 } else {
                     Column(

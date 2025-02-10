@@ -10,7 +10,4 @@ import kotlinx.coroutines.flow.StateFlow
 interface ISessionManager {
     val sessionStatus: StateFlow<SessionStatus>
     val currentUser: StateFlow<UserInfo?>
-    //val currentUserDetails: StateFlow<UserDetails?>
- //  val userDetailsStatus: StateFlow<UserDetailsStatus>
-   // suspend fun initUserDetails()
 }

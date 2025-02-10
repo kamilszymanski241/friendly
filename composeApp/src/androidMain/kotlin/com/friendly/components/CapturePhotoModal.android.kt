@@ -246,13 +246,15 @@ actual fun CapturePhotoModal(onSelect: (ImageBitmap) -> Unit, onClose: () -> Uni
                         .align(Alignment.Center)
                         .background(Color.Black)
                 ) {
-                    Image(
-                        bitmap = capturedBitmap.value!!,
-                        contentDescription = "Captured Photo",
-                        modifier = Modifier
-                            .align(Alignment.Center),
-                        contentScale = ContentScale.Crop
-                    )
+                    capturedBitmap.value?.let { bitmap ->
+                        Image(
+                            bitmap = bitmap,
+                            contentDescription = "Captured Photo",
+                            modifier = Modifier
+                                .align(Alignment.Center),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
                 Row(
                     modifier = Modifier
@@ -276,7 +278,11 @@ actual fun CapturePhotoModal(onSelect: (ImageBitmap) -> Unit, onClose: () -> Uni
                         )
                     }
                     IconButton(
-                        onClick = { onSelect(capturedBitmap.value!!) },
+                        onClick = {
+                            capturedBitmap.value?.let { bitmap ->
+                                onSelect(bitmap)
+                            }
+                        },
                         modifier = Modifier
                             .size(80.dp)
                             .background(MaterialTheme.colorScheme.tertiary, shape = CircleShape)

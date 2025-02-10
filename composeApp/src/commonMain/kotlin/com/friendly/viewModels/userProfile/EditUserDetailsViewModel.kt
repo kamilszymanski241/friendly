@@ -8,6 +8,7 @@ import com.friendly.models.UserDetails
 import com.friendly.repositories.IUserDetailsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -20,6 +21,9 @@ class EditUserDetailsViewModel: ViewModel(), KoinComponent {
     private var _userDetails = MutableStateFlow<UserDetails?>(null)
     val userDetails: StateFlow<UserDetails?> = _userDetails
 
+    private val _errorMessage = MutableStateFlow("")
+    val errorMessage: StateFlow<String> = _errorMessage.asStateFlow()
+
     init{
         fetchUserDetails()
     }
@@ -27,64 +31,73 @@ class EditUserDetailsViewModel: ViewModel(), KoinComponent {
         _userDetails.value = null
         fetchUserDetails()
     }
+    fun setErrorMessage(message: String){
+        _errorMessage.value = message
+    }
     private fun fetchUserDetails(){
         try {
+            val id = sessionManager.currentUser.value?.id ?: throw Exception()
             viewModelScope.launch {
                 _userDetails.value =
-                    userDetailsRepository.getUserDetails(sessionManager.currentUser.value!!.id)
+                    userDetailsRepository.getUserDetails(id)
                         .asDomainModel()
             }
         }catch(e: Exception){
-            println("Couldn't fetch user details: ${e.message}")
+            setErrorMessage("Something went wrong")
         }
     }
     fun changeName(name: String){
         viewModelScope.launch {
             try {
-                userDetailsRepository.changeName(sessionManager.currentUser.value!!.id, name)
+                val id = sessionManager.currentUser.value?.id ?: throw Exception()
+                userDetailsRepository.changeName(id, name)
                 refresh()
             }catch(e: Exception){
-                println("Couldn't change name: ${e.message}")
+                setErrorMessage("Something went wrong")
             }
         }
     }
     fun changeSurname(surname: String){
         viewModelScope.launch {
             try {
-                userDetailsRepository.changeSurname(sessionManager.currentUser.value!!.id, surname)
+                val id = sessionManager.currentUser.value?.id ?: throw Exception()
+                userDetailsRepository.changeSurname(id, surname)
                 refresh()
             }catch(e: Exception){
-                println("Couldn't change surname: ${e.message}")
+                setErrorMessage("Something went wrong")
             }
         }
     }
     fun changeDateOfBirth(dateOfBirth: String){
         viewModelScope.launch {
             try {
-                userDetailsRepository.changeDateOfBirth(sessionManager.currentUser.value!!.id, dateOfBirth)
+                val id = sessionManager.currentUser.value?.id ?: throw Exception()
+                userDetailsRepository.changeDateOfBirth(id, dateOfBirth)
                 refresh()
             }catch(e: Exception){
-                println("Couldn't change surname: ${e.message}")
+                setErrorMessage("Something went wrong")
             }
         }
     }
     fun changeGender(gender: Gender){
         viewModelScope.launch {
             try {
-                userDetailsRepository.changeGender(sessionManager.currentUser.value!!.id, gender)
+                val id = sessionManager.currentUser.value?.id ?: throw Exception()
+                userDetailsRepository.changeGender(id, gender)
                 refresh()
             }catch(e: Exception){
-                println("Couldn't change gender: ${e.message}")
+                setErrorMessage("Something went wrong")
             }
         }
     }
     fun changeDescription(description: String){
         viewModelScope.launch {
             try {
-                userDetailsRepository.changeDescription(sessionManager.currentUser.value!!.id, description)
+                val id = sessionManager.currentUser.value?.id ?: throw Exception()
+                userDetailsRepository.changeDescription(id, description)
                 refresh()
             }catch(e: Exception){
-                println("Couldn't change description: ${e.message}")
+                setErrorMessage("Something went wrong")
             }
         }
     }
