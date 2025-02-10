@@ -64,15 +64,16 @@ fun FillTitleAndDescriptionScreen(navController: NavController, viewModel: Creat
     var showCamera by remember { mutableStateOf(false) }
     var showPhotoPicker by remember { mutableStateOf(false) }
     val errorMessage = viewModel.errorMessage.collectAsState("")
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         viewModel.onErrorMessageChange("")
     }
     FriendlyAppTheme {
         Scaffold(
             topBar = {
                 if (showCamera.not()) {
-                TopBarWithBackButtonAndTitle(navController, "Event details")
-            } },
+                    TopBarWithBackButtonAndTitle(navController, "Event details")
+                }
+            },
             bottomBar = {},
             containerColor = MaterialTheme.colorScheme.secondary
         ) { innerPadding ->
@@ -95,27 +96,25 @@ fun FillTitleAndDescriptionScreen(navController: NavController, viewModel: Creat
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(start = 30.dp, end = 30.dp)
-                            .aspectRatio(16/9f)
+                            .aspectRatio(16 / 9f)
                     ) {
-                        if (capturedPhoto.value == null) {
+                        capturedPhoto.value?.let { bitmap ->
                             Image(
-                                painter = painterResource(Res.drawable.defaultEventPicture),
-                                null,
+                                bitmap = bitmap,
+                                contentDescription = null,
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .clip(RoundedCornerShape(16.dp))
                             )
-                        } else {
-                            Image(
-                                bitmap = capturedPhoto.value!!,
-                                null,
-                                contentScale = ContentScale.Crop,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .clip(RoundedCornerShape(16.dp))
-                            )
-                        }
+                        } ?: Image(
+                            painter = painterResource(Res.drawable.defaultEventPicture),
+                            contentDescription = null,
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .clip(RoundedCornerShape(16.dp))
+                        )
                         var showDropDownMenu by remember { mutableStateOf(false) }
                         Box(
                             modifier = Modifier
@@ -232,7 +231,6 @@ fun FillTitleAndDescriptionScreen(navController: NavController, viewModel: Creat
                                 viewModel.onErrorMessageChange("")
                             },
                             onFailure = {
-                                viewModel.onErrorMessageChange("The title must be at least 10 characters")
                             }
                         )
                     },

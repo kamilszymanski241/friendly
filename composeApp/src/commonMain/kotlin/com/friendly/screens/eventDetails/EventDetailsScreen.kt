@@ -143,7 +143,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                 modifier = Modifier
                             ) {
                                 AsyncImage(
-                                    model = eventDetails.value!!.eventPictureUrl,
+                                    model = eventDetails.value?.eventPictureUrl,
                                     contentDescription = "Event Picture",
                                     placeholder = painterResource(Res.drawable.defaultEventPicture),
                                     fallback = painterResource(Res.drawable.defaultEventPicture),
@@ -208,7 +208,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                             ) {
                                 Spacer(modifier = Modifier.height(5.dp))
                                 Text(
-                                    text = eventDetails.value!!.title,
+                                    text = eventDetails.value?.title ?: "",
                                     fontSize = 30.sp,
                                     color = Color.Black
                                 )
@@ -234,7 +234,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                             tint = Color.Black
                                         )
                                         Text(
-                                            text = eventDetails.value!!.startDate,
+                                            text = eventDetails.value?.startDate ?: "",
                                             color = Color.Black,
                                             fontSize = 15.sp,
                                         )
@@ -246,7 +246,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                             tint = Color.Black
                                         )
                                         Text(
-                                            text = eventDetails.value!!.startTime,
+                                            text = eventDetails.value?.startTime ?: "",
                                             color = Color.Black,
                                             fontSize = 15.sp,
                                         )
@@ -274,7 +274,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                             tint = Color.Black
                                         )
                                         Text(
-                                            text = eventDetails.value!!.endDate,
+                                            text = eventDetails.value?.endDate ?: "",
                                             color = Color.Black,
                                             fontSize = 15.sp,
                                         )
@@ -286,7 +286,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                             tint = Color.Black
                                         )
                                         Text(
-                                            text = eventDetails.value!!.endTime,
+                                            text = eventDetails.value?.endTime ?: "",
                                             color = Color.Black,
                                             fontSize = 15.sp,
                                         )
@@ -302,7 +302,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = eventDetails.value!!.description ?: "",
+                                    text = eventDetails.value?.description ?: "",
                                     fontSize = (15.sp),
                                     color = Color.Black,
                                     textAlign = TextAlign.Justify
@@ -330,8 +330,7 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                                 tint = Color.Black
                                             )
                                             Text(
-                                                text = (eventDetails.value!!.participants?.size
-                                                    ?: 0).toString() + "/" + eventDetails.value!!.maxParticipants.toString(),
+                                                text = (eventDetails.value?.participants?.size ?: 0).toString() + "/" + (eventDetails.value?.maxParticipants ?: 0).toString(),
                                                 fontSize = (15.sp),
                                                 color = Color.Black,
                                             )
@@ -339,76 +338,67 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                     }
                                 }
                                 if (eventDetails.value?.participants != null) {
-                                    val organizer = eventDetails.value!!.participants!!.firstOrNull { it.id == eventDetails.value!!.organizer }
-                                    val participantsWithOrganizerFirst = listOfNotNull(organizer) +
-                                            eventDetails.value!!.participants!!
-                                                .filter { it.id != eventDetails.value!!.organizer }
-                                                .take(3)
-                                    for (participant in participantsWithOrganizerFirst.take(3)) {
-                                        Spacer(modifier = Modifier.height(10.dp))
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth(),
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.SpaceBetween
-                                        ) {
+                                    val event = eventDetails.value
+                                    val organizer = event?.participants?.firstOrNull { it.id == event.organizer }
+
+                                    if (organizer != null) {
+                                        val participantsWithOrganizerFirst = listOf(organizer) +
+                                                event.participants.filter { it.id != event.organizer }.take(3)
+
+                                        for (participant in participantsWithOrganizerFirst.take(3)) {
+                                            Spacer(modifier = Modifier.height(10.dp))
                                             Row(
-                                                verticalAlignment = Alignment.CenterVertically
+                                                modifier = Modifier.fillMaxWidth(),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.SpaceBetween
                                             ) {
-                                                AsyncImage(
-                                                    model = participant.profilePictureUrl,
-                                                    contentDescription = "Profile pic",
-                                                    modifier = Modifier
-                                                        .clip(CircleShape)
-                                                        .size(35.dp)
-                                                )
-                                                Spacer(modifier = Modifier.width(5.dp))
-                                                Text(
-                                                    participant.name + " " + participant.surname + ", " + participant.age,
-                                                    fontSize = (15.sp),
-                                                    color = Color.Black,
-                                                )
-                                            }
-                                            Row {
-                                                IconButton(
-                                                    onClick = {
-                                                        navController.navigate("userProfile/${participant.id}")
-                                                    }
-                                                ) {
-                                                    Icon(
-                                                        Icons.Default.Info,
-                                                        "",
-                                                        tint = Color.Black
+                                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                                    AsyncImage(
+                                                        model = participant.profilePictureUrl,
+                                                        contentDescription = "Profile pic",
+                                                        modifier = Modifier
+                                                            .clip(CircleShape)
+                                                            .size(35.dp)
+                                                    )
+                                                    Spacer(modifier = Modifier.width(5.dp))
+                                                    Text(
+                                                        "${participant.name} ${participant.surname}, ${participant.age}",
+                                                        fontSize = 15.sp,
+                                                        color = Color.Black
                                                     )
                                                 }
-                                                if (isViewedByOrganizer.value && participant.id != eventDetails.value!!.organizer) {
+
+                                                Row {
                                                     IconButton(
                                                         onClick = {
-                                                            viewModel.removeParticipant(
-                                                                participant.id
-                                                            )
+                                                            navController.navigate("userProfile/${participant.id}")
                                                         }
                                                     ) {
-                                                        Icon(
-                                                            Icons.Default.Cancel,
-                                                            "",
-                                                            tint = Color.Red
-                                                        )
+                                                        Icon(Icons.Default.Info, "", tint = Color.Black)
+                                                    }
+
+                                                    if (isViewedByOrganizer.value && participant.id != event.organizer) {
+                                                        IconButton(
+                                                            onClick = {
+                                                                viewModel.removeParticipant(participant.id)
+                                                            }
+                                                        ) {
+                                                            Icon(Icons.Default.Cancel, "", tint = Color.Red)
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
-                                        if(participant.id == eventDetails.value!!.organizer){
-                                            HorizontalDivider(
-                                                color = Color.Black
-                                            )
-                                            Text(
-                                               modifier = Modifier.fillMaxWidth(),
-                                                textAlign = TextAlign.Center,
-                                                text = "Organizer",
-                                                fontSize = 15.sp,
-                                                color = Color.Black
-                                            )
+
+                                            if (participant.id == event.organizer) {
+                                                HorizontalDivider(color = Color.Black)
+                                                Text(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    textAlign = TextAlign.Center,
+                                                    text = "Organizer",
+                                                    fontSize = 15.sp,
+                                                    color = Color.Black
+                                                )
+                                            }
                                         }
                                     }
                                 }
@@ -416,7 +406,8 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                     modifier= Modifier.fillMaxWidth(),
                                     horizontalArrangement = Arrangement.Center
                                 ) {
-                                    if (eventDetails.value!!.participants!!.size > 3) {
+                                    val participantsSize = eventDetails.value?.participants?.size ?: 0
+                                    if (participantsSize > 3) {
                                         TextButton(
                                             onClick = {  navController.navigate("showAllParticipants/${eventId}") },
                                         ) {
@@ -438,18 +429,20 @@ fun EventDetailsScreen(eventId: String, navController: NavController) {
                                 )
                                 Spacer(modifier = Modifier.width(10.dp))
                                 Text(
-                                    text = eventDetails.value!!.locationText,
+                                    text = eventDetails.value?.locationText ?: "",
                                     overflow = TextOverflow.Ellipsis,
                                     fontSize = 15.sp,
                                     color = Color.Black
                                 )
                                 Spacer(modifier = Modifier.height(15.dp))
+                                val coordinates = eventDetails.value?.locationCoordinates
+                                if(coordinates != null)
                                 StaticMapComponent(
                                     modifier = Modifier
                                         .fillMaxWidth()
                                         .height(300.dp)
                                         .clip(RoundedCornerShape(16.dp)),
-                                    eventDetails.value!!.locationCoordinates,
+                                    coordinates,
                                     15f
                                 )
                                 Spacer(modifier = Modifier.height(15.dp))

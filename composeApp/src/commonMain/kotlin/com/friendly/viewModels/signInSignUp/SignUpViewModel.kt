@@ -128,24 +128,34 @@ class SignUpViewModel: ViewModel(), KoinComponent {
                                 password = _password.value
                             )
                         ) {
-                            if (userDetailsRepository.createUserDetails(
-                                    UserDetailsDTO(
-                                        id = sessionManager.currentUser.value!!.id,
-                                        name = _name.value,
-                                        surname = _surname.value,
-                                        dateOfBirth = _dateOfBirth.value!!,
-                                        description = _description.value,
-                                        gender = _gender.value!!
-                                    )
-                                )
-                            ) {
-                                if (storageRepository.uploadAProfilePicture(
-                                        sessionManager.currentUser.value!!.id,
-                                        _userProfilePicture.value!!
-                                    )
-                                ) {
-                                    success.value = true
+                            val registeredId = sessionManager.currentUser.value?.id
+                            if(registeredId != null)
+                            {
+                                if(_gender.value != null && _dateOfBirth.value != null)
+                                {
+                                    if (userDetailsRepository.createUserDetails(
+                                            UserDetailsDTO(
+                                                id = registeredId,
+                                                name = _name.value,
+                                                surname = _surname.value,
+                                                dateOfBirth = _dateOfBirth.value ?: throw Exception("Something went wrong")  ,
+                                                description = _description.value,
+                                                gender = _gender.value ?: throw Exception("Something went wrong")
+                                            )
+                                        )
+                                    ) {
+                                        if (storageRepository.uploadAProfilePicture(
+                                                registeredId,
+                                                _userProfilePicture.value ?: throw Exception("Something went wrong")
+                                            )
+                                        ) {
+                                            success.value = true
+                                        }
+                                    }
                                 }
+                            }
+                            else{
+                                throw Exception("Something went wrong")
                             }
                         }
                     } catch (e: Exception) {

@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.friendly.dtos.EventDTO
 import com.friendly.dtos.EventUserDTO
 import com.friendly.helpers.DateTimeHelper
+import com.friendly.helpers.DateTimeHelper.Companion.convertMillisToDate
 import com.friendly.helpers.LocationAndGeocodingHelper
 import com.friendly.managers.ISessionManager
 import com.friendly.repositories.IEventRepository
@@ -80,12 +81,23 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
         _maxParticipants.value = newMax
     }
 
-    fun onStartDateChange(date: String) {
-        _startDate.value = date
+    fun onStartDateChange(date: Long?) {
+        if(date != null)
+        {
+            _startDate.value = convertMillisToDate(date)
+        }
+        else{
+            onErrorMessageChange("Something went wrong while picking the date")
+        }
     }
 
-    fun onEndDateChange(date: String) {
-        _endDate.value = date
+    fun onEndDateChange(date: Long?) {
+        if(date != null) {
+            _endDate.value = convertMillisToDate(date)
+        }
+        else{
+            onErrorMessageChange("Something went wrong while picking the date")
+        }
     }
 
     fun onStartTimeChange(time: String) {
@@ -136,6 +148,7 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
 
     fun onConfirmBasicDetails(onSuccess: () -> Unit, onFailure: () -> Unit) {
         if (_title.value.isEmpty() || _title.value.toCharArray().size < 10){
+            onErrorMessageChange("The title must be at least 10 characters")
             onFailure()
         }
         else{
@@ -145,67 +158,79 @@ class CreateEventViewModel (): ViewModel(), KoinComponent {
 
     fun onConfirmMoreDetails(onSuccess: () -> Unit, onFailure: () -> Unit) {
         val maxParticipantsInt = _maxParticipants.value.toIntOrNull()
-        if (maxParticipantsInt != null && _startTime.value != null && _endTime.value != null && _startDate.value != null && _endDate.value != null){
-            if(maxParticipantsInt > 0){
-                if(_startDate.value == _endDate.value){
-                    if(_startTime.value!! <= _endTime.value!!){
-                        onSuccess()
-                    }
-                }
-                else{
-                    if(_startDate.value!! < _endDate.value!!){
-                        onSuccess()
-                    }
-                }
+        val startTime = _startTime.value
+        val endTime = _endTime.value
+        val startDate = _startDate.value
+        val endDate = _endDate.value
+
+        if (maxParticipantsInt != null && maxParticipantsInt > 0 && startTime != null && endTime != null && startDate != null && endDate != null) {
+            if (startDate == endDate && startTime <= endTime) {
+                onSuccess()
+                return
+            }
+            if (startDate < endDate) {
+                onSuccess()
+                return
             }
         }
         onFailure()
     }
 
-    fun onConfirm(onSuccess: ()->Unit, onFailure: ()->Unit) {
+
+    fun onConfirm(onSuccess: () -> Unit, onFailure: () -> Unit) {
         viewModelScope.launch {
-            val startDateTime = DateTimeHelper.convertDateAndTimeToSupabaseTimestamptz(
-                _startDate.value!!,
-                _startTime.value!!
-            )
-            val endDateTime = DateTimeHelper.convertDateAndTimeToSupabaseTimestamptz(
-                _endDate.value!!,
-                _endTime.value!!
-            )
-            val locationCoordinates =
-                "POINT(${_selectedLocationCoordinates.value?.first} ${_selectedLocationCoordinates.value?.second})"
-            println(locationCoordinates)
-            val eventDTO = EventDTO(
-                title = _title.value,
-                description = _description.value,
-                locationWKB = locationCoordinates,
-                startDateTime = startDateTime,
-                endDateTime = endDateTime,
-                locationText = _selectedLocationAddress.value,
-                maxParticipants = _maxParticipants.value.toInt(),
-                organizer = sessionManager.currentUser.value!!.id,
-            )
             try {
-                val event = eventsRepository.postEvent(eventDTO)
-                if(event.id != null) {
-                    eventUserRepository.addUserToEvent(EventUserDTO(eventId = event.id, userId = sessionManager.currentUser.value!!.id))
-                    if (_eventPicture.value != null) {
-                        if(storageRepository.uploadEventPicture(event.id, _eventPicture.value!!)) {
+                val startDate = _startDate.value
+                val startTime = _startTime.value
+                val endDate = _endDate.value
+                val endTime = _endTime.value
+                val currentUserId = sessionManager.currentUser.value?.id
+                val locationCoordinates = _selectedLocationCoordinates.value
+                val maxParticipantsInt = _maxParticipants.value.toIntOrNull()
+                if (startDate != null && startTime != null && endDate != null && endTime != null && currentUserId != null && maxParticipantsInt != null) {
+                    val startDateTime = DateTimeHelper.convertDateAndTimeToSupabaseTimestamptz(startDate, startTime)
+                    val endDateTime = DateTimeHelper.convertDateAndTimeToSupabaseTimestamptz(endDate, endTime)
+                    val locationCoordinatesString = "POINT(${locationCoordinates.first} ${locationCoordinates.second})"
+
+                    val eventDTO = EventDTO(
+                        title = _title.value,
+                        description = _description.value,
+                        locationWKB = locationCoordinatesString,
+                        startDateTime = startDateTime,
+                        endDateTime = endDateTime,
+                        locationText = _selectedLocationAddress.value,
+                        maxParticipants = maxParticipantsInt,
+                        organizer = currentUserId
+                    )
+
+                    val event = eventsRepository.postEvent(eventDTO)
+
+                    if (event.id != null) {
+                        eventUserRepository.addUserToEvent(EventUserDTO(eventId = event.id, userId = currentUserId))
+
+                        val eventPicture = _eventPicture.value
+                        if (eventPicture != null) {
+                            if (storageRepository.uploadEventPicture(event.id, eventPicture)) {
+                                onSuccess()
+                            } else {
+                                onFailure()
+                            }
+                        } else {
                             onSuccess()
                         }
+                    } else {
+                        onFailure()
                     }
-                    else{
-                        onSuccess()
-                    }
-                }
-                else{
+                } else {
+                    onErrorMessageChange("Invalid input values")
                     onFailure()
                 }
-            }catch(e: Exception)
-            {
-                println("Error while adding new event:" + e.message)
+            } catch (e: Exception) {
+                println("Error while adding new event: ${e.message}")
+                onErrorMessageChange("Something went wrong")
                 onFailure()
             }
         }
     }
+
 }

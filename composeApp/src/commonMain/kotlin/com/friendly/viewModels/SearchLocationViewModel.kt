@@ -1,6 +1,5 @@
 package com.friendly.viewModels
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.friendly.helpers.LocationAndGeocodingHelper

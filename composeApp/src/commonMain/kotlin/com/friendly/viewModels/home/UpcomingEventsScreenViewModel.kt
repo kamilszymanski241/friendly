@@ -54,10 +54,13 @@ class UpcomingEventsScreenViewModel: ViewModel(), KoinComponent {
     private fun getEvents() {
         viewModelScope.launch {
             try {
-                val eventsIds = eventUserRepository.getAllUserEvents(user.value!!.id)
-                val events = eventRepository.getMultipleEventsByIDs(eventsIds).map { it.asDomainModel() }
-                _eventsList.emit(events.groupBy { it.startDate })
-
+                val userId = user.value?.id
+                if(userId != null)
+                {
+                    val eventsIds = eventUserRepository.getAllUserEvents(userId)
+                    val events = eventRepository.getMultipleEventsByIDs(eventsIds).map { it.asDomainModel() }
+                    _eventsList.emit(events.groupBy { it.startDate })
+                }
             } catch (e: Exception) {
                 println("Error loading events: ${e.message}")
             }

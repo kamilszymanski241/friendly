@@ -25,9 +25,10 @@ class HomeScreenTopBarViewModel: ViewModel(), KoinComponent {
 
     fun fetchUserDetails(){
         viewModelScope.launch {
-            if(user.value != null) {
+            val userId = user.value?.id
+            if(userId != null) {
                 _userDetails.value =
-                    userDetailsRepository.getUserDetails(sessionManager.currentUser.value!!.id).asDomainModel()
+                    userDetailsRepository.getUserDetails(userId).asDomainModel()
             }
         }
     }

@@ -34,7 +34,14 @@ class AppSettingsScreenViewModel: KoinComponent, ViewModel() {
     init{
         if(sessionManager.currentUser.value != null)
         {
-            _email.value = sessionManager.currentUser.value!!.email ?: ""
+            val email = sessionManager.currentUser.value?.email
+            if(email != null)
+            {
+                _email.value = email
+            }
+            else{
+                _email.value = ""
+            }
         }
     }
     fun onSignOut(){

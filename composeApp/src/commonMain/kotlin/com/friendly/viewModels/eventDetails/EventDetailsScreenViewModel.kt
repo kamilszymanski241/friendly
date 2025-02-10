@@ -61,42 +61,53 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
         viewModelScope.launch {
             _eventDetails.value =
                 eventRepository.getSingleEventWithParticipants(eventId).asDomainModel()
-            cacheHelper.clearFromCacheByKey(_eventDetails.value!!.eventPictureUrl)
-            if (_eventDetails.value!!.maxParticipants <= _eventDetails.value!!.participants!!.size) {
-                _isNotFull.value = false
+            val pictureURL = _eventDetails.value?.eventPictureUrl
+            if(pictureURL != null)
+            {
+                cacheHelper.clearFromCacheByKey(pictureURL)
             }
-            if (sessionManager.sessionStatus.value == SessionStatus.NotAuthenticated(false) ||
-                sessionManager.sessionStatus.value == SessionStatus.NotAuthenticated(true)
-            ) {
+            _eventDetails.value?.let { eventDetails ->
+                val maxParticipants = eventDetails.maxParticipants
+                val currentParticipants = eventDetails.participants?.size ?: 0
+
+                _isNotFull.value = maxParticipants > currentParticipants
+            }
+            val sessionStatus = sessionManager.sessionStatus.value
+            val currentUserId = sessionManager.currentUser.value?.id
+            val eventDetails = _eventDetails.value
+
+            if (sessionStatus == SessionStatus.NotAuthenticated(false) || sessionStatus == SessionStatus.NotAuthenticated(true)) {
                 _buttonType.value = EventDetailsButtonType.PleaseSignIn
             } else {
-                if (_eventDetails.value!!.organizer == sessionManager.currentUser.value!!.id) {
+                if (eventDetails?.organizer == currentUserId) {
                     _buttonType.value = EventDetailsButtonType.None
                     _isViewedByOrganizer.value = true
-                } else if (eventId in eventUserRepository.getAllUserEvents(sessionManager.currentUser.value!!.id)) {
+                } else if (currentUserId != null && eventId in eventUserRepository.getAllUserEvents(currentUserId)) {
                     _buttonType.value = EventDetailsButtonType.Quit
                 } else {
                     _buttonType.value = EventDetailsButtonType.Join
                 }
             }
-        }
-    }
 
-    fun loadEvent() {
-        viewModelScope.launch {
-            _eventDetails.value = eventRepository.getSingleEventWithParticipants(eventId).asDomainModel()
         }
     }
 
     fun onJoin() {
         viewModelScope.launch {
             try {
-                val eventUser =
+                val userId=sessionManager.currentUser.value?.id
+                if(userId != null)
+                {
+                    val eventUser =
                     EventUserDTO(
-                        _eventDetails.value!!.id,
-                        sessionManager.currentUser.value!!.id
+                        eventId,
+                        userId
                     )
                 eventUserRepository.addUserToEvent(eventUser)
+                }
+                else{
+                    throw Exception("No user id")
+                }
             }
             catch (e: Exception)
             {
@@ -107,11 +118,18 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
 
     fun onQuit(){
         viewModelScope.launch {
+            val userId = sessionManager.currentUser.value?.id
             try {
-                eventUserRepository.removeUserFromEvent(
-                    sessionManager.currentUser.value!!.id,
-                    eventId
-                )
+                if(userId != null)
+                {
+                    eventUserRepository.removeUserFromEvent(
+                        userId,
+                        eventId
+                    )
+                }
+                else{
+                    throw Exception("No user id")
+                }
             }
             catch (e: Exception)
             {
@@ -120,7 +138,7 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
         }
     }
     fun changeEventPicture(picture: ImageBitmap) {
-        val pictureURL = _eventDetails.value!!.eventPictureUrl
+        val pictureURL = _eventDetails.value?.eventPictureUrl
         _eventDetails.value = null
         viewModelScope.launch {
             try {
@@ -129,7 +147,10 @@ class EventDetailsScreenViewModel(private val eventId: String): ViewModel(), Koi
                         picture
                     )
                 ) {
-                    cacheHelper.clearFromCacheByKey(pictureURL)
+                    if(pictureURL != null)
+                    {
+                        cacheHelper.clearFromCacheByKey(pictureURL)
+                    }
                     initialize()
                 }
             } catch (e: Exception) {

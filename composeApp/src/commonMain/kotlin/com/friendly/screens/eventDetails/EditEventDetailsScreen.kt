@@ -95,10 +95,10 @@ fun EditEventDetailsScreen(eventId: String, navController: NavController) {
     }
     LaunchedEffect(event.value){
         if(event.value != null) {
-            selectedStartDate = event.value!!.startDate
-            selectedStartTime = event.value!!.startTime
-            selectedEndDate = event.value!!.endDate
-            selectedEndTime = event.value!!.endTime
+            selectedStartDate = event.value?.startDate ?: ""
+            selectedStartTime = event.value?.startTime ?: ""
+            selectedEndDate = event.value?.endDate ?: ""
+            selectedEndTime = event.value?.endTime ?: ""
         }
     }
     LaunchedEffect(coordinates.value){
@@ -132,7 +132,7 @@ fun EditEventDetailsScreen(eventId: String, navController: NavController) {
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = event.value!!.title,
+                                    text = event.value?.title ?: "Unknown title",
                                     fontSize = (15.sp),
                                     color = Color.White,
                                     textAlign = TextAlign.Justify
@@ -157,7 +157,7 @@ fun EditEventDetailsScreen(eventId: String, navController: NavController) {
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = event.value!!.description ?: "",
+                                    text = event.value?.description ?: "No description",
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     fontSize = (15.sp),
@@ -184,7 +184,7 @@ fun EditEventDetailsScreen(eventId: String, navController: NavController) {
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = "From " + event.value!!.startDate +", "+ event.value!!.startTime + " to " + event.value!!.endDate +", " + event.value!!.endTime,
+                                    text = "From ${event.value?.startDate ?: "unknown date"}, ${event.value?.startTime ?: "unknown time"} to ${event.value?.endDate ?: "unknown date"}, ${event.value?.endTime ?: "unknown time"}",
                                     fontSize = (15.sp),
                                     color = Color.White,
                                     textAlign = TextAlign.Justify
@@ -210,7 +210,7 @@ fun EditEventDetailsScreen(eventId: String, navController: NavController) {
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = event.value!!.maxParticipants.toString(),
+                                    text = event.value?.maxParticipants?.let { it.toString() } ?: "Unknown",
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     fontSize = (15.sp),
@@ -237,7 +237,7 @@ fun EditEventDetailsScreen(eventId: String, navController: NavController) {
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = event.value!!.locationText,
+                                    text = event.value?.locationText ?: "Unknown location",
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis,
                                     fontSize = (15.sp),
@@ -251,7 +251,7 @@ fun EditEventDetailsScreen(eventId: String, navController: NavController) {
                         if (showTitleInputModal) {
                             TextInputDialog(
                                 title = "Title",
-                                initialValue = event.value!!.title,
+                                initialValue = event.value?.title ?: "",
                                 onConfirm = {
                                     viewModel.changeTitle(it)
                                     showTitleInputModal = false
@@ -441,13 +441,29 @@ fun EditEventDetailsScreen(eventId: String, navController: NavController) {
                         }
                         if (showStartDatePicker.value) {
                             DatePickerDialog(
-                                onDateSelected = { selectedStartDate = convertMillisToDate(it!!) },
+                                onDateSelected = {
+                                    if(it != null)
+                                    {
+                                        selectedStartDate = convertMillisToDate(it)
+                                    }
+                                    else{
+                                        showEndTimePicker.value = false
+                                    }
+                                },
                                 onDismiss = { showStartDatePicker.value = false },
                                 selectableDatesType = SelectableDatesTypes.Future)
                         }
                         if (showEndDatePicker.value) {
                             DatePickerDialog(
-                                onDateSelected = { selectedEndDate = convertMillisToDate(it!!) },
+                                onDateSelected = {
+                                    if(it != null)
+                                    {
+                                        selectedEndDate = convertMillisToDate(it)
+                                    }
+                                    else{
+                                        showEndTimePicker.value = false
+                                    }
+                                },
                                 onDismiss = { showEndDatePicker.value = false },
                                 selectableDatesType = SelectableDatesTypes.Future)
                         }
@@ -464,9 +480,9 @@ fun EditEventDetailsScreen(eventId: String, navController: NavController) {
                         if (showMaxParticipantsInputModal){
                             NumberInputDialog(
                                 title = "Max participants",
-                                minValue = event.value!!.participants!!.size,
+                                minValue = event.value?.participants?.size ?: 0,
                                 maxValue = 0,
-                                initialValue = event.value!!.maxParticipants,
+                                initialValue = event.value?.participants?.size ?: 0,
                                 onConfirm = {
                                     viewModel.changeMaxParticipants(it)
                                     showMaxParticipantsInputModal = false

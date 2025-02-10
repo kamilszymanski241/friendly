@@ -261,7 +261,14 @@ fun FillUserDetailsScreen(navController: NavController, viewModel: SignUpViewMod
                 }
                 if (showDOBDatePicker.value) {
                     DatePickerDialog(
-                        onDateSelected = { viewModel.onDateOfBirthChange(convertMillisToDate(it!!)) },
+                        onDateSelected = {
+                            if (it != null) {
+                                viewModel.onDateOfBirthChange(convertMillisToDate(it))
+                            }
+                            else{
+                                showDOBDatePicker.value = false
+                            }
+                        },
                         onDismiss = { showDOBDatePicker.value = false },
                         selectableDatesType = SelectableDatesTypes.Past)
                 }

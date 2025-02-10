@@ -94,56 +94,59 @@ fun UpcomingEventsScreen(navController: NavController, modifier: Modifier = Modi
                ) {
                    CircularProgressIndicator()
                }
-           } else if (events.value!!.isEmpty()) {
-               Column(
-                   horizontalAlignment = Alignment.CenterHorizontally,
-                   verticalArrangement = Arrangement.Center,
-                   modifier = modifier
-               ) {
-                   Row()
-                   {
-                       Icon(
-                           imageVector = Icons.Default.Search,
-                           contentDescription = "",
-                           modifier = Modifier
-                               .size(100.dp)
-                       )
-                   }
-                   Row(){
-                       Text(
-                           text = "Find interesting events on discover page!",
-                           fontSize = 15.sp
-                       )
+           } else {
+               val eventsSize = events.value?.size ?: 0
+               if (eventsSize ==0) {
+                   Column(
+                       horizontalAlignment = Alignment.CenterHorizontally,
+                       verticalArrangement = Arrangement.Center,
+                       modifier = modifier
+                   ) {
+                       Row()
+                       {
+                           Icon(
+                               imageVector = Icons.Default.Search,
+                               contentDescription = "",
+                               modifier = Modifier
+                                   .size(100.dp)
+                           )
+                       }
+                       Row(){
+                           Text(
+                               text = "Find interesting events on discover page!",
+                               fontSize = 15.sp
+                           )
+                       }
                    }
                }
-           }
-           else {
-               LazyColumn(
-                   modifier = modifier.then(Modifier.padding(top = 10.dp))
-               ) {
+               else {
+                   LazyColumn(
+                       modifier = modifier.then(Modifier.padding(top = 10.dp))
+                   ) {
                        (events.value ?: emptyMap()).forEach { (date, events) ->
-                       item{
-                           Row(
-                               modifier = Modifier.fillMaxWidth(),
-                               verticalAlignment = Alignment.CenterVertically,
-                               horizontalArrangement = Arrangement.Center
-                           ) {
-                               Icon(
-                                   Icons.Filled.Event,
-                                   "",
-                               )
-                               Text(
-                                   text = " $date",
-                                   fontSize = 22.sp
+                           item{
+                               Row(
+                                   modifier = Modifier.fillMaxWidth(),
+                                   verticalAlignment = Alignment.CenterVertically,
+                                   horizontalArrangement = Arrangement.Center
+                               ) {
+                                   Icon(
+                                       Icons.Filled.Event,
+                                       "",
+                                   )
+                                   Text(
+                                       text = " $date",
+                                       fontSize = 22.sp
+                                   )
+                               }
+                           }
+                           items(events) { event ->
+                               EventSummaryCard(
+                                   event = event,
+                                   modifier = Modifier,
+                                   navController = navController
                                )
                            }
-                       }
-                       items(events) { event ->
-                           EventSummaryCard(
-                               event = event,
-                               modifier = Modifier,
-                               navController = navController
-                           )
                        }
                    }
                }

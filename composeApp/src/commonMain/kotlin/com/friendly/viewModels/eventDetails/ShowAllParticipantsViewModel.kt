@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.friendly.managers.ISessionManager
 import com.friendly.models.Event
-import com.friendly.models.UserDetails
 import com.friendly.repositories.IEventRepository
 import com.friendly.repositories.IEventUserRepository
 import kotlinx.coroutines.flow.Flow
@@ -31,9 +30,11 @@ class ShowAllParticipantsViewModel (private val eventId: String): ViewModel(), K
     fun initialize(){
         viewModelScope.launch {
             _eventDetails.value = eventRepository.getSingleEventWithParticipants(eventId).asDomainModel()
-            if(sessionManager.currentUser.value != null && _eventDetails.value != null)
+            val userId = sessionManager.currentUser.value?.id
+            val eventOrganizerID = _eventDetails.value?.organizer
+            if(userId != null && eventOrganizerID != null)
             {
-                _isOrganizer.value = sessionManager.currentUser.value!!.id == _eventDetails.value!!.organizer
+                _isOrganizer.value = userId == eventOrganizerID
             }
         }
     }

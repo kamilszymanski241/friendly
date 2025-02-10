@@ -53,19 +53,29 @@ class UserProfileViewModel(private val userId: String): ViewModel(), KoinCompone
         } else {
             if (sessionManager.currentUser.value != null) {
                 try {
-                    if (userId == sessionManager.currentUser.value!!.id) {
+                    val currentUserId = sessionManager.currentUser.value?.id ?: ""
+                    if (userId == currentUserId) {
                         _isSelfProfile.value = true
                         viewModelScope.launch {
-                            _userDetails.value =
-                                userDetailsRepository.getUserDetails(sessionManager.currentUser.value!!.id)
-                                    .asDomainModel()
-                            cacheHelper.clearFromCacheByKey(_userDetails.value!!.profilePictureUrl)
+                            if(currentUserId.isNotEmpty())
+                            {
+                                _userDetails.value =
+                                    userDetailsRepository.getUserDetails(currentUserId)
+                                        .asDomainModel()
+                                val profilePictureUrl = _userDetails.value?.profilePictureUrl ?: ""
+                                if (profilePictureUrl.isNotEmpty()){
+                                    cacheHelper.clearFromCacheByKey(profilePictureUrl)
+                                }
+                            }
                         }
                     } else {
                         viewModelScope.launch {
                             _userDetails.value =
                                 userDetailsRepository.getUserDetails(userId).asDomainModel()
-                            cacheHelper.clearFromCacheByKey(_userDetails.value!!.profilePictureUrl)
+                            val profilePictureUrl = _userDetails.value?.profilePictureUrl ?: ""
+                            if (profilePictureUrl.isNotEmpty()){
+                                cacheHelper.clearFromCacheByKey(profilePictureUrl)
+                            }
                         }
                     }
                 }catch(e:Exception){
@@ -81,17 +91,27 @@ class UserProfileViewModel(private val userId: String): ViewModel(), KoinCompone
         _isRefreshing.value = false
     }
     fun changeProfilePicture(picture: ImageBitmap) {
-        val pictureURL = _userDetails.value!!.profilePictureUrl
+        val pictureURL = _userDetails.value?.profilePictureUrl ?: ""
+        val userId = sessionManager.currentUser.value?.id ?: ""
         _userDetails.value = null
             viewModelScope.launch {
                 try {
-                    if (storageRepository.upsertProfilePicture(
-                            sessionManager.currentUser.value!!.id,
-                            picture
-                        )
-                    ) {
-                        cacheHelper.clearFromCacheByKey(pictureURL)
-                        initialize()
+                    if(pictureURL.isNotEmpty())
+                    {
+                        if(userId.isNotEmpty())
+                        {
+                            if (storageRepository.upsertProfilePicture(
+                                    userId,
+                                    picture
+                                )
+                            ) {
+                                if(pictureURL.isNotEmpty())
+                                {
+                                    cacheHelper.clearFromCacheByKey(pictureURL)
+                                }
+                                initialize()
+                            }
+                        }
                     }
                 } catch (e: Exception) {
                     println("Couldn't update photo: ${e.message}")

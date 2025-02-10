@@ -51,9 +51,14 @@ class MyEventsScreenViewModel: ViewModel(), KoinComponent {
     private fun getEvents() {
         viewModelScope.launch {
             try {
-                val events = eventRepository.getEventsByOrganizer(user.value!!.id).map { it.asDomainModel() }
-                _eventsList.value = events.sortedBy { it.startDate }
-
+                val userId = user.value?.id
+                if (userId != null) {
+                    val events =
+                        eventRepository.getEventsByOrganizer(userId).map { it.asDomainModel() }
+                    _eventsList.value = events.sortedBy { it.startDate }
+                } else {
+                    throw Exception("No user id")
+                }
             } catch (e: Exception) {
                 println("Error loading events: ${e.message}")
             }

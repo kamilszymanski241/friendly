@@ -153,7 +153,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                                 ) {
                                     Spacer(modifier = Modifier.size(50.dp))
                                     Text(
-                                        text = userDetails!!.name + " " + userDetails!!.surname,
+                                        text = (userDetails?.name ?: "") + " " + (userDetails?.surname ?: ""),
                                         fontSize = (30.sp),
                                         color = Color.Black
                                     )
@@ -170,7 +170,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                                             fontWeight = FontWeight.Bold
                                         )
                                         Text(
-                                            text = userDetails!!.age.toString(),
+                                            text = userDetails?.age.toString(),
                                             fontSize = (15.sp),
                                             color = Color.Black
                                         )
@@ -188,7 +188,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                                             fontWeight = FontWeight.Bold
                                         )
                                         Text(
-                                            text = userDetails!!.gender.toString(),
+                                            text = userDetails?.gender.toString(),
                                             fontSize = (15.sp),
                                             color = Color.Black
                                         )
@@ -203,7 +203,7 @@ fun UserProfileScreen(userId: String, navController: NavController) {
                                         fontWeight = FontWeight.Bold
                                     )
                                     Text(
-                                        text = userDetails!!.description,
+                                        text = userDetails?.description ?: "",
                                         modifier = Modifier.fillMaxWidth(),
                                         fontSize = (15.sp),
                                         color = Color.Black,

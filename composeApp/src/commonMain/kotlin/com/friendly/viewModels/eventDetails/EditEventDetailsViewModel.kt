@@ -1,15 +1,10 @@
 package com.friendly.viewModels.eventDetails
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.friendly.helpers.DateTimeHelper
 import com.friendly.helpers.LocationAndGeocodingHelper
-import com.friendly.managers.ISessionManager
 import com.friendly.models.Event
-import com.friendly.models.Gender
-import com.friendly.models.UserDetails
 import com.friendly.repositories.IEventRepository
-import com.friendly.repositories.IUserDetailsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -34,8 +29,8 @@ class EditEventDetailsViewModel(private val eventId: String): ViewModel(), KoinC
 
     init {
         fetchEventDetails()
-        if (event.value != null) {
-            onLocationTextChange(event.value!!.locationText)
+        event.value?.let { event ->
+            onLocationTextChange(event.locationText)
         }
     }
 
@@ -80,7 +75,7 @@ class EditEventDetailsViewModel(private val eventId: String): ViewModel(), KoinC
                 eventRepository.changeTitle(eventId, title)
                 _updated.value = true
             } catch (e: Exception) {
-                println("Couldn't change name: ${e.message}")
+                println("Couldn't change title: ${e.message}")
             }
         }
     }
@@ -91,7 +86,7 @@ class EditEventDetailsViewModel(private val eventId: String): ViewModel(), KoinC
                 eventRepository.changeDescription(eventId, description)
                 _updated.value = true
             } catch (e: Exception) {
-                println("Couldn't change name: ${e.message}")
+                println("Couldn't change description: ${e.message}")
             }
         }
     }
@@ -104,7 +99,7 @@ class EditEventDetailsViewModel(private val eventId: String): ViewModel(), KoinC
                 eventRepository.changeDateTimes(eventId, start, end)
                 _updated.value = true
             } catch (e: Exception) {
-                println("Couldn't change name: ${e.message}")
+                println("Couldn't change date and time: ${e.message}")
             }
         }
     }
@@ -115,7 +110,7 @@ class EditEventDetailsViewModel(private val eventId: String): ViewModel(), KoinC
                 eventRepository.changeLocation(eventId, _selectedLocationCoordinates.value, _selectedLocationAddress.value)
                 _updated.value = true
             } catch (e: Exception) {
-                println("Couldn't change name: ${e.message}")
+                println("Couldn't change location: ${e.message}")
             }
         }
     }
@@ -126,7 +121,7 @@ class EditEventDetailsViewModel(private val eventId: String): ViewModel(), KoinC
                 eventRepository.changeMaxParticipants(eventId, maxParticipants)
                 _updated.value = true
             } catch (e: Exception) {
-                println("Couldn't change name: ${e.message}")
+                println("Couldn't change location: ${e.message}")
             }
         }
     }

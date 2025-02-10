@@ -289,13 +289,13 @@ fun SelectDateAndTimeScreen(navController: NavController, viewModel: CreateEvent
             }
             if (showStartDatePicker.value) {
                 DatePickerDialog(
-                    onDateSelected = { viewModel.onStartDateChange(convertMillisToDate(it!!)) },
+                    onDateSelected = { viewModel.onStartDateChange(it) },
                     onDismiss = { showStartDatePicker.value = false },
                     selectableDatesType = SelectableDatesTypes.Future)
             }
             if (showEndDatePicker.value) {
                 DatePickerDialog(
-                    onDateSelected = { viewModel.onEndDateChange(convertMillisToDate(it!!)) },
+                    onDateSelected = { viewModel.onEndDateChange(it) },
                     onDismiss = { showEndDatePicker.value = false },
                     selectableDatesType = SelectableDatesTypes.Future)
             }

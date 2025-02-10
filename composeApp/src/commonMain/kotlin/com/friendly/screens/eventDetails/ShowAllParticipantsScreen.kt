@@ -11,27 +11,27 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
@@ -40,7 +40,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import com.friendly.components.TopBarWithBackButtonAndTitle
-import com.friendly.viewModels.eventDetails.EditEventDetailsViewModel
 import com.friendly.viewModels.eventDetails.ShowAllParticipantsViewModel
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -54,48 +53,51 @@ fun ShowAllParticipantsScreen(eventId: String, navController: NavController) {
     val isOrganizer = viewModel.isOrganizer.collectAsState(false)
     val isRefreshing = viewModel.isRefreshing.collectAsState(false)
     val pullToRefreshState = rememberPullToRefreshState()
-    LaunchedEffect(Unit){
+
+    LaunchedEffect(Unit) {
         viewModel.initialize()
     }
+
     Scaffold(
         topBar = {
             TopBarWithBackButtonAndTitle(navController, "All Participants")
         },
         containerColor = MaterialTheme.colorScheme.secondary
     ) { innerPadding ->
-        if (eventDetails.value != null) {
-            val organizer = eventDetails.value!!.participants?.firstOrNull { it.id == eventDetails.value!!.organizer }
-            val participantsWithOrganizerFirst = listOfNotNull(organizer) +
-                    eventDetails.value!!.participants!!
-                        .filter { it.id != eventDetails.value!!.organizer }
-            PullToRefreshBox(
-                isRefreshing = isRefreshing.value,
-                onRefresh = { viewModel.refresh() },
-                state = pullToRefreshState,
-                indicator = {
-                    Indicator(
-                        modifier = Modifier.align(Alignment.TopCenter),
-                        isRefreshing = isRefreshing.value,
-                        containerColor = Color.White,
-                        color = MaterialTheme.colorScheme.tertiary,
-                        state = pullToRefreshState
-                    )
-                }
-            ) {
+
+        PullToRefreshBox(
+            isRefreshing = isRefreshing.value,
+            onRefresh = { viewModel.refresh() },
+            state = pullToRefreshState,
+            indicator = {
+                Indicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    isRefreshing = isRefreshing.value,
+                    containerColor = Color.White,
+                    color = MaterialTheme.colorScheme.tertiary,
+                    state = pullToRefreshState
+                )
+            }
+        ) {
+            eventDetails.value?.let { details ->
+                val organizer = details.participants?.firstOrNull { it.id == details.organizer }
+                val participantsWithOrganizerFirst = listOfNotNull(organizer) +
+                        (details.participants?.filter { it.id != details.organizer } ?: emptyList())
+
                 LazyColumn(
-                    modifier = Modifier.padding(innerPadding).padding(start = 15.dp, end = 15.dp) .fillMaxSize()
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .padding(start = 15.dp, end = 15.dp)
+                        .fillMaxSize()
                 ) {
                     items(participantsWithOrganizerFirst) { participant ->
                         Spacer(modifier = Modifier.height(10.dp))
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
                                 AsyncImage(
                                     model = participant.profilePictureUrl,
                                     contentDescription = "Profile pic",
@@ -105,8 +107,8 @@ fun ShowAllParticipantsScreen(eventId: String, navController: NavController) {
                                 )
                                 Spacer(modifier = Modifier.width(5.dp))
                                 Text(
-                                    participant.name + " " + participant.surname + ", " + participant.age,
-                                    fontSize = (15.sp),
+                                    "${participant.name} ${participant.surname}, ${participant.age}",
+                                    fontSize = 15.sp,
                                     color = Color.White,
                                 )
                             }
@@ -122,12 +124,10 @@ fun ShowAllParticipantsScreen(eventId: String, navController: NavController) {
                                         tint = Color.White
                                     )
                                 }
-                                if (isOrganizer.value && participant.id != eventDetails.value!!.organizer) {
+                                if (isOrganizer.value && participant.id != details.organizer) {
                                     IconButton(
                                         onClick = {
-                                            viewModel.removeParticipant(
-                                                participant.id
-                                            )
+                                            viewModel.removeParticipant(participant.id)
                                         }
                                     ) {
                                         Icon(
@@ -139,10 +139,8 @@ fun ShowAllParticipantsScreen(eventId: String, navController: NavController) {
                                 }
                             }
                         }
-                        if (participant.id == eventDetails.value!!.organizer) {
-                            HorizontalDivider(
-                                color = Color.White
-                            )
+                        if (participant.id == details.organizer) {
+                            HorizontalDivider(color = Color.White)
                             Text(
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center,
@@ -153,14 +151,14 @@ fun ShowAllParticipantsScreen(eventId: String, navController: NavController) {
                         }
                     }
                 }
-            }
-        } else {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                CircularProgressIndicator()
+            } ?: run {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator()
+                }
             }
         }
     }

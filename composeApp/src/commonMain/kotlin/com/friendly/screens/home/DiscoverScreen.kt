@@ -184,7 +184,8 @@ fun DiscoverScreen(navController: NavController, modifier: Modifier = Modifier, 
                     )
                 }
             ) {
-                if (events.value!!.isEmpty()) {
+                val eventsSize = events.value?.size ?: 0
+                if (eventsSize == 0) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center,
