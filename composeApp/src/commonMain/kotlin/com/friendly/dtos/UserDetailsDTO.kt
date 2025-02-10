@@ -39,7 +39,7 @@ data class UserDetailsDTO (
     fun asDomainModel(): UserDetails {
         return UserDetails(
             id = this.id,
-            joined = this.createdAt ?: "", //TODO()
+            joined = this.createdAt ?: "",
             name = this.name,
             surname = this.surname,
             dateOfBirth = this.dateOfBirth,

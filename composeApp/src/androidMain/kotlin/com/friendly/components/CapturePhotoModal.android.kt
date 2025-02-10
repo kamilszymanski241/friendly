@@ -85,7 +85,6 @@ actual fun CapturePhotoModal(onSelect: (ImageBitmap) -> Unit, onClose: () -> Uni
         } else {
             println("PERMISSION DENIED")
             onClose()
-            //TODO()
         }
     }
 

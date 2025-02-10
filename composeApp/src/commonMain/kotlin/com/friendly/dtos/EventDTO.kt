@@ -52,9 +52,9 @@ data class EventDTO (
     fun asDomainModel(): Event {
         return Event(
 
-            id = this.id ?: "", //TODO()
+            id = this.id ?: "",
 
-            createdAt = this.createdAt ?: "", //TODO()
+            createdAt = this.createdAt ?: "",
 
             title = this.title,
 

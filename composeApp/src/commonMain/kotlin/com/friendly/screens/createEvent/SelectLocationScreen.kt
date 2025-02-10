@@ -133,7 +133,7 @@ fun SelectLocationScreen(navController: NavController, viewModel: CreateEventVie
                                     popUpTo(AppNavigation.CreateEvent.route) { inclusive = true }
                                 }
                             },
-                            onFailure = {}//TODO())
+                            onFailure = {}
                         )
                     },
                     colors = ButtonDefaults.buttonColors(

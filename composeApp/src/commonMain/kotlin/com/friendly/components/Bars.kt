@@ -132,7 +132,6 @@ fun HomeScreenTopBar(navController: NavController, viewModel: HomeScreenTopBarVi
                                     .clip(CircleShape)
                             )
                         } else {
-                            //TODO()
                             Text(
                                 text = "ERROR",
                                 color = Color.Red
